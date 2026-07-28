@@ -1,24 +1,24 @@
 [submodule "an5Agent"]
 	path = an5Agent
-	url = https://github.com/an5ORM/an5Agent.git
+	url = https://n2flowjs-bot@github.com/an5ORM/an5Agent.git
 [submodule "an5Adapters"]
 	path = an5Adapters
-	url = https://github.com/an5ORM/an5Adapters.git
+	url = https://n2flowjs-bot@github.com/an5ORM/an5Adapters.git
 [submodule "an5Client"]
 	path = an5Client
-	url = https://github.com/an5ORM/an5Client.git
+	url = https://n2flowjs-bot@github.com/an5ORM/an5Client.git
 [submodule "an5Orm"]
 	path = an5Orm
-	url = https://github.com/an5ORM/an5Orm.git
+	url = https://n2flowjs-bot@github.com/an5ORM/an5Orm.git
 [submodule "an5Schema"]
 	path = an5Schema
-	url = https://github.com/an5ORM/an5Schema.git
+	url = https://n2flowjs-bot@github.com/an5ORM/an5Schema.git
 [submodule "an5OrmVScode"]
 	path = an5OrmVScode
-	url = https://github.com/an5ORM/an5OrmVScode.git
+	url = https://n2flowjs-bot@github.com/an5ORM/an5OrmVScode.git
 [submodule "an5Cli"]
 	path = an5Cli
-	url = https://github.com/an5ORM/an5Cli.git
+	url = https://n2flowjs-bot@github.com/an5ORM/an5Cli.git
 [submodule "an5Tasks"]
 	path = an5Tasks
-	url = https://github.com/an5ORM/an5Tasks.git
+	url = https://n2flowjs-bot@github.com/an5ORM/an5Tasks.git
