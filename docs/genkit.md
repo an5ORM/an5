@@ -61,7 +61,7 @@ This indexes `.mssql` schema files and `query-samples.json` into the local vecto
 ### an5Agent — RAG Retrieval
 
 ```typescript
-import { retrieveSchema, retrieveQuerySamples } from 'an5-agent';
+import { retrieveSchema, retrieveQuerySamples } from '@an5/agent';
 
 // Retrieve schema context for a user question
 const schemaContext = await retrieveSchema('How do I find users with their orders?');

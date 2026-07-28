@@ -444,7 +444,7 @@ try {
 ### Constructor
 
 ```typescript
-import { An5Agent } from 'an5-agent';
+import { An5Agent } from '@an5/agent';
 
 const agent = new An5Agent(options?: An5AgentOptions);
 ```

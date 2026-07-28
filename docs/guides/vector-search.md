@@ -39,7 +39,7 @@ model Document {
 ### 3. Generate Embeddings
 
 ```typescript
-import { generateEmbedding } from 'an5-agent';
+import { generateEmbedding } from '@an5/agent';
 
 // Generate embedding for a document
 const embedding = await generateEmbedding(document.content);
@@ -176,7 +176,7 @@ const results = await store.search({
 ## Use Case: RAG Pipeline
 
 ```typescript
-import { generateEmbedding, generateText } from 'an5-agent';
+import { generateEmbedding, generateText } from '@an5/agent';
 
 async function ragQuery(question: string) {
   // 1. Generate query embedding

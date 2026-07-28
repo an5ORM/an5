@@ -277,7 +277,7 @@ await agent.executeTool('task', {
 ## Natural Language Processing
 
 ```typescript
-import { An5Agent } from 'an5-agent';
+import { An5Agent } from '@an5/agent';
 
 const agent = new An5Agent({
   workspaceDir: process.cwd(),

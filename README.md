@@ -30,6 +30,7 @@
 |----------|---------|--------|---------|
 | npm | [`@an5/orm`](https://www.npmjs.com/package/@an5/orm) | Published | `npm install @an5/orm` |
 | npm | [`@an5/adapters`](https://www.npmjs.com/package/@an5/adapters) | Published | `npm install @an5/adapters` |
+| npm | [`@an5/agent`](https://www.npmjs.com/package/@an5/agent) | Published | `npm install @an5/agent` |
 | PyPI | `an5-adapters` | Package configured; publish requires PyPI token/organization setup | `pip install an5-adapters` |
 
 See [Feature Status](https://an5orm.github.io/an5/guides/feature-status/) for the current maturity level of each module.
@@ -119,7 +120,7 @@ await db.user.delete({ where: { id: user.id } });
 | **[an5Orm](an5Orm/)** (`@an5/orm`) | Core ORM runtime and `an5` CLI | Proxy client, CRUD, vector search, middleware, transactions |
 | **[an5Client](an5Client/)** | Generated client code | Type-safe models for TypeScript, Python, .NET |
 | **[an5Adapters](an5Adapters/)** (`@an5/adapters`) | Database adapters | SQL Server/Postgres/MySQL/SQLite engines, Google Sheets, Python/.NET sources |
-| **[an5Agent](an5Agent/)** | AI Database Agent | 7 tools: schema, query, database, retrieve, task |
+| **[an5Agent](an5Agent/)** (`@an5/agent`) | AI Database Agent | 7 tools: schema, query, database, retrieve, task |
 | **[an5Cli](an5Cli/)** | CLI & Local UI | Release automation, LLM commits, documentation |
 | **[an5Schema](an5Schema/)** | Schema definitions | `.an5` files with types, relations, indexes |
 | **[an5OrmVScode](an5OrmVScode/)** | VS Code extension | Syntax highlighting, snippets, formatting |
@@ -142,7 +143,7 @@ await db.user.delete({ where: { id: user.id } });
 | `task` | create, list, update, delete | Manage tasks |
 
 ```typescript
-import { An5Agent } from 'an5-agent';
+import { An5Agent } from '@an5/agent';
 
 const agent = new An5Agent({
   workspaceDir: process.cwd(),
