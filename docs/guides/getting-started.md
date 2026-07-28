@@ -8,6 +8,8 @@ description: Install and set up an5 ORM in your project
 
 This guide will help you set up an5 ORM in your project in under 5 minutes.
 
+For the current implementation and package maturity overview, see [Feature Status]({{ '/guides/feature-status/' | relative_url }}).
+
 ## Prerequisites
 
 - Node.js 18+ (Node 24 recommended)

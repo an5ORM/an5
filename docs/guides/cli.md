@@ -8,6 +8,8 @@ description: Command-line interface for schema management and development
 
 an5 ORM provides two CLIs: `an5` for project-level ORM/database work, and `an5-cli` for monorepo release/workspace automation.
 
+Use [Feature Status]({{ '/guides/feature-status/' | relative_url }}) to see which commands are stable and which migration workflows are still evolving.
+
 ## Installation
 
 For application projects, install the published ORM package:

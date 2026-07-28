@@ -173,6 +173,8 @@ spec:
 
 ## Database Migrations
 
+The current migration commands support schema/database comparison and SQL generation. Full apply/rollback tracking is still evolving; see [Feature Status]({{ '/guides/feature-status/' | relative_url }}).
+
 ### Push Schema
 
 ```bash

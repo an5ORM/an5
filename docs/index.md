@@ -14,6 +14,7 @@ description: A modern, type-safe ORM for SQL Server
     </p>
     <div class="hero-buttons">
       <a href="{{ '/guides/getting-started/' | relative_url }}" class="btn btn-primary">Get Started</a>
+      <a href="{{ '/guides/feature-status/' | relative_url }}" class="btn btn-secondary">Feature Status</a>
       <a href="{{ '/guides/schema/' | relative_url }}" class="btn btn-secondary">Documentation</a>
       <a href="https://github.com/an5ORM/an5" class="btn btn-outline">
         <i class="fab fa-github"></i> GitHub
@@ -47,6 +48,8 @@ const user = await db.user.create({
 </div>
 
 ## Why an5 ORM?
+
+Install the published package with `npm install @an5/orm`, then use the built-in `an5` CLI for schema generation and database commands.
 
 <div class="features-grid">
   <div class="feature-card">

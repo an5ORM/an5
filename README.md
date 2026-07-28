@@ -24,6 +24,16 @@
 | **Transactions** | Atomic operations with rollback support |
 | **VS Code Extension** | Syntax highlighting and formatting for `.an5` files |
 
+## Published Packages
+
+| Registry | Package | Status | Install |
+|----------|---------|--------|---------|
+| npm | [`@an5/orm`](https://www.npmjs.com/package/@an5/orm) | Published | `npm install @an5/orm` |
+| npm | [`@an5/adapters`](https://www.npmjs.com/package/@an5/adapters) | Published | `npm install @an5/adapters` |
+| PyPI | `an5-adapters` | Package configured; publish requires PyPI token/organization setup | `pip install an5-adapters` |
+
+See [Feature Status](https://an5orm.github.io/an5/guides/feature-status/) for the current maturity level of each module.
+
 ---
 
 ## Quick Start
@@ -106,9 +116,9 @@ await db.user.delete({ where: { id: user.id } });
 
 | Package | Description | Key Features |
 |---------|-------------|--------------|
-| **[an5Orm](an5Orm/)** | Core ORM runtime | Proxy client, CRUD, vector search, middleware, transactions |
+| **[an5Orm](an5Orm/)** (`@an5/orm`) | Core ORM runtime and `an5` CLI | Proxy client, CRUD, vector search, middleware, transactions |
 | **[an5Client](an5Client/)** | Generated client code | Type-safe models for TypeScript, Python, .NET |
-| **[an5Adapters](an5Adapters/)** | Database adapters | Connection pooling, table clients, multi-language |
+| **[an5Adapters](an5Adapters/)** (`@an5/adapters`) | Database adapters | SQL Server/Postgres/MySQL/SQLite engines, Google Sheets, Python/.NET sources |
 | **[an5Agent](an5Agent/)** | AI Database Agent | 7 tools: schema, query, database, retrieve, task |
 | **[an5Cli](an5Cli/)** | CLI & Local UI | Release automation, LLM commits, documentation |
 | **[an5Schema](an5Schema/)** | Schema definitions | `.an5` files with types, relations, indexes |
@@ -288,6 +298,7 @@ EMBEDDING_MODEL=text-embedding-3-small
 | Document | Description |
 |----------|-------------|
 | [Getting Started](https://an5orm.github.io/an5/guides/getting-started/) | Installation and setup |
+| [Feature Status](https://an5orm.github.io/an5/guides/feature-status/) | Published packages, maturity, known gaps |
 | [Schema](https://an5orm.github.io/an5/guides/schema/) | Define your data models |
 | [CRUD Operations](https://an5orm.github.io/an5/guides/crud/) | Create, read, update, delete |
 | [Relations](https://an5orm.github.io/an5/guides/relations/) | Define relationships |
