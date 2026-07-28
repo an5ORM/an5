@@ -12,10 +12,10 @@ This page summarizes what is currently implemented, published, and still maturin
 
 | Package | Registry | Latest | Status | Notes |
 |---------|----------|--------|--------|-------|
-| `@an5/orm` | npm | `1.0.3` | Published | Core ORM runtime plus `an5` / `an5-orm` CLI bins |
-| `@an5/adapters` | npm | `0.1.2` | Published | Runtime database adapters for TypeScript apps |
+| `@an5/orm` | npm | `1.0.5` | Published | Core ORM runtime plus `an5` / `an5-orm` CLI bins |
+| `@an5/adapters` | npm | `0.2.0` | Published | Runtime database adapters for TypeScript apps |
 | `@an5/agent` | npm | `0.1.1` | Published | AI database agent with 7 consolidated tools |
-| `an5-adapters` | PyPI | `0.1.2` target | Build-ready | Wheel/sdist pass `twine check`; upload requires PyPI token |
+| `an5-adapters` | PyPI | `0.2.0` target | Build-ready | Wheel/sdist pass `twine check`; upload requires PyPI token |
 
 PyPI does not use npm-style scopes like `@an5/adapters`. The Python package name remains `an5-adapters`.
 
