@@ -1,0 +1,142 @@
+---
+layout: page
+title: Getting Started
+description: Install and set up an5 ORM in your project
+---
+
+# Getting Started
+
+This guide will help you set up an5 ORM in your project in under 5 minutes.
+
+## Prerequisites
+
+- Node.js 18+ (Node 24 recommended)
+- SQL Server instance (local or remote)
+- npm or yarn package manager
+
+## Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/an5ORM/an5.git
+cd an5
+
+# Install dependencies
+npm install
+
+# Build all packages
+npm run build
+```
+
+## Configuration
+
+### 1. Set up Environment Variables
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and configure your database connection:
+
+```ini
+# Database connection string
+DATABASE_URL=sqlserver://localhost:1433;database=mydb;user=sa;password=yourpassword
+
+# Optional: LLM configuration for AI features
+LLM_PROVIDER=openai
+LLM_API_KEY=sk-your-api-key
+LLM_MODEL=gpt-4o-mini
+```
+
+### 2. Define Your Schema
+
+Create `.an5` files in the `an5Schema/` directory:
+
+```an5
+// an5Schema/User.an5
+model User {
+  id        NVARCHAR(1000) @id @default(uuid())
+  email     NVARCHAR(255)  @unique
+  name      NVARCHAR(255)?
+  createdAt DATETIME2      @default(now())
+  
+  @@map("users")
+}
+```
+
+### 3. Generate Client Code
+
+```bash
+npm run generate
+```
+
+This generates type-safe client code in `an5Client/`.
+
+### 4. Push Schema to Database
+
+```bash
+npm run db:push
+```
+
+This creates the tables in your database.
+
+## Your First Query
+
+```typescript
+import { An5ORM } from 'an5-orm';
+
+// Initialize the ORM
+const db = new An5ORM({
+  connectionString: process.env.DATABASE_URL
+});
+
+async function main() {
+  // Create a user
+  const user = await db.user.create({
+    data: {
+      email: 'john@example.com',
+      name: 'John Doe'
+    }
+  });
+  
+  console.log('Created user:', user);
+  
+  // Find all users
+  const users = await db.user.findMany();
+  console.log('All users:', users);
+}
+
+main()
+  .catch(console.error)
+  .finally(() => db.$disconnect());
+```
+
+## Project Structure
+
+```
+an5/
+├── an5Schema/           # Schema definitions (.an5 files)
+├── an5Orm/              # Core ORM runtime
+├── an5Client/           # Generated client code
+├── an5Adapters/         # Database adapters
+├── an5Agent/            # AI agent tools
+├── an5Cli/              # CLI tools
+└── .env                 # Configuration
+```
+
+## Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `npm run generate` | Generate client code from schema |
+| `npm run db:push` | Push schema to database |
+| `npm run db:pull` | Pull schema from database |
+| `npm run db:seed` | Seed database with sample data |
+| `npm run build` | Build all packages |
+| `npm test` | Run all tests |
+
+## Next Steps
+
+- [Schema Definition]({{ '/guides/schema/' | relative_url }}) - Learn how to define your data models
+- [CRUD Operations]({{ '/guides/crud/' | relative_url }}) - Create, read, update, and delete data
+- [Relations]({{ '/guides/relations/' | relative_url }}) - Define relationships between models

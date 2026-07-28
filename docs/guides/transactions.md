@@ -1,0 +1,178 @@
+---
+layout: page
+title: Transactions
+description: Execute multiple operations atomically
+---
+
+# Transactions
+
+an5 ORM supports transactions to ensure data consistency when performing multiple related operations.
+
+## Basic Transaction
+
+```typescript
+await db.$transaction(async (tx) => {
+  // All operations succeed or all fail
+  const user = await tx.user.create({
+    data: { email: 'john@example.com', name: 'John' }
+  });
+  
+  const order = await tx.order.create({
+    data: {
+      userId: user.id,
+      total: 100
+    }
+  });
+  
+  // If any error occurs, all changes are rolled back
+});
+```
+
+## Transaction with Rollback
+
+```typescript
+try {
+  await db.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: { email: 'john@example.com', name: 'John' }
+    });
+    
+    // This will fail if email already exists
+    const duplicate = await tx.user.create({
+      data: { email: 'john@example.com', name: 'Another John' }
+    });
+  });
+} catch (error) {
+  console.log('Transaction rolled back:', error.message);
+}
+```
+
+## Nested Transactions
+
+```typescript
+await db.$transaction(async (tx) => {
+  // Outer transaction
+  const user = await tx.user.create({
+    data: { email: 'john@example.com' }
+  });
+  
+  // Inner transaction (uses the same connection)
+  await tx.$transaction(async (innerTx) => {
+    const order = await innerTx.order.create({
+      data: { userId: user.id, total: 100 }
+    });
+    
+    await innerTx.inventory.update({
+      where: { productId: 'product-1' },
+      data: { quantity: { decrement: 1 } }
+    });
+  });
+});
+```
+
+## Common Use Cases
+
+### Transfer Funds
+
+```typescript
+await db.$transaction(async (tx) => {
+  // Debit sender
+  await tx.account.update({
+    where: { id: senderId },
+    data: { balance: { decrement: amount } }
+  });
+  
+  // Credit receiver
+  await tx.account.update({
+    where: { id: receiverId },
+    data: { balance: { increment: amount } }
+  });
+  
+  // Create transaction record
+  await tx.transaction.create({
+    data: {
+      fromId: senderId,
+      toId: receiverId,
+      amount
+    }
+  });
+});
+```
+
+### Order with Inventory
+
+```typescript
+await db.$transaction(async (tx) => {
+  // Check inventory
+  const product = await tx.product.findUnique({
+    where: { id: productId }
+  });
+  
+  if (product.quantity < quantity) {
+    throw new Error('Insufficient inventory');
+  }
+  
+  // Create order
+  const order = await tx.order.create({
+    data: {
+      userId,
+      items: {
+        create: [{ productId, quantity, price: product.price }]
+      },
+      total: product.price * quantity
+    }
+  });
+  
+  // Update inventory
+  await tx.product.update({
+    where: { id: productId },
+    data: { quantity: { decrement: quantity } }
+  });
+  
+  return order;
+});
+```
+
+## Transaction Options
+
+```typescript
+await db.$transaction(async (tx) => {
+  // Operations here
+}, {
+  maxWait: 5000,  // Maximum time to wait for transaction slot (ms)
+  timeout: 10000  // Maximum time for transaction to complete (ms)
+});
+```
+
+## Interactive Transactions
+
+For longer-running operations:
+
+```typescript
+const tx = await db.$begin();
+
+try {
+  const user = await tx.user.create({
+    data: { email: 'john@example.com' }
+  });
+  
+  // Perform other operations...
+  
+  await tx.$commit();
+} catch (error) {
+  await tx.$rollback();
+  throw error;
+}
+```
+
+## Best Practices
+
+1. **Keep transactions short** - Minimize the time the database is locked
+2. **Handle errors properly** - Always catch and handle transaction errors
+3. **Use appropriate isolation levels** - For concurrent scenarios
+4. **Avoid deadlocks** - Access resources in a consistent order
+
+## Next Steps
+
+- [Vector Search]({{ '/guides/vector-search/' | relative_url }}) - AI-powered search
+- [Raw Queries]({{ '/guides/raw-queries/' | relative_url }}) - Execute raw SQL

@@ -1,0 +1,120 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+env:
+  GIT_TERMINAL_PROMPT: 0
+
+jobs:
+  test-orm:
+    name: Test an5Orm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: an5Orm
+        run: npm ci || npm install
+      - name: Run unit tests
+        working-directory: an5Orm
+        run: node test/unit.test.js
+      - name: Run generator tests
+        working-directory: an5Orm
+        run: node test/generator.test.js
+      - name: Run smoke test
+        working-directory: an5Orm
+        run: npm test
+
+  test-adapters:
+    name: Test an5Adapters
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run TypeScript tests
+        working-directory: an5Adapters
+        run: node test/unit.test.js
+      - name: Run Python tests
+        working-directory: an5Adapters
+        run: python -m compileall python
+
+  test-agent:
+    name: Test an5Agent
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: an5Agent
+        run: npm ci || npm install
+      - name: Run unit tests
+        working-directory: an5Agent
+        run: node test/unit.test.js
+
+  test-cli:
+    name: Test an5Cli
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: an5Cli
+        run: npm ci || npm install
+      - name: Install UI dependencies
+        working-directory: an5Cli
+        run: npm install --prefix ui
+      - name: Build
+        working-directory: an5Cli
+        run: npm run build
+      - name: Run smoke test
+        working-directory: an5Cli
+        run: npm test
+
+  test-vscode:
+    name: Test an5OrmVScode
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: an5OrmVScode
+        run: npm ci || npm install
+      - name: Compile
+        working-directory: an5OrmVScode
+        run: npm run compile
+      - name: Run tests
+        working-directory: an5OrmVScode
+        run: npm test

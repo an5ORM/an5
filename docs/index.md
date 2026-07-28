@@ -1,0 +1,181 @@
+---
+layout: default
+title: an5 ORM - Modern SQL Server ORM
+description: A modern, type-safe ORM for SQL Server
+---
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>an5 ORM</h1>
+    <p class="hero-subtitle">A modern, type-safe ORM for SQL Server</p>
+    <p class="hero-description">
+      Build data-driven applications with an intuitive API, type-safe queries, 
+      and powerful features like vector search and AI agent integration.
+    </p>
+    <div class="hero-buttons">
+      <a href="{{ '/guides/getting-started/' | relative_url }}" class="btn btn-primary">Get Started</a>
+      <a href="{{ '/guides/schema/' | relative_url }}" class="btn btn-secondary">Documentation</a>
+      <a href="https://github.com/an5ORM/an5" class="btn btn-outline">
+        <i class="fab fa-github"></i> GitHub
+      </a>
+    </div>
+  </div>
+  <div class="hero-code">
+    <pre><code class="language-typescript">import { An5ORM } from 'an5-orm';
+
+const db = new An5ORM();
+
+// Type-safe queries
+const users = await db.user.findMany({
+  where: { email: { contains: '@example.com' } },
+  include: { orders: true },
+  orderBy: { createdAt: 'desc' },
+  take: 10,
+});
+
+// Create with relations
+const user = await db.user.create({
+  data: {
+    email: 'john@example.com',
+    name: 'John',
+    orders: {
+      create: [{ total: 100 }, { total: 200 }]
+    }
+  }
+});</code></pre>
+  </div>
+</div>
+
+## Why an5 ORM?
+
+<div class="features-grid">
+  <div class="feature-card">
+    <div class="feature-icon">🎯</div>
+    <h3>Type-Safe</h3>
+    <p>Full TypeScript support with autocompletion and type checking for all queries.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">📝</div>
+    <h3>Intuitive API</h3>
+    <p>Syntax that's easy to learn and powerful enough for complex queries.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🔗</div>
+    <h3>Relations</h3>
+    <p>Define and query relations with nested includes and implicit joins.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🔍</div>
+    <h3>Vector Search</h3>
+    <p>Built-in vector search for AI and ML applications using SQL Server.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🤖</div>
+    <h3>AI Agent</h3>
+    <p>7 intelligent tools for natural language database queries and schema exploration.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🔄</div>
+    <h3>Multi-Language</h3>
+    <p>Generate type-safe clients for TypeScript, Python, and .NET.</p>
+  </div>
+</div>
+
+## Quick Example
+
+<div class="example-tabs">
+  <div class="example-tabs-header">
+    <button class="tab-btn active" onclick="showTab('schema')">Schema</button>
+    <button class="tab-btn" onclick="showTab('query')">Query</button>
+    <button class="tab-btn" onclick="showTab('result')">Result</button>
+  </div>
+  <div class="tab-content active" id="schema">
+    <pre><code class="language-an5">model User {
+  id        NVARCHAR(1000) @id @default(uuid())
+  email     NVARCHAR(255)  @unique
+  name      NVARCHAR(255)?
+  createdAt DATETIME2      @default(now())
+  orders    Order[]
+
+  @@map("users")
+}
+
+model Order {
+  id     NVARCHAR(1000) @id @default(uuid())
+  total  INT            @default(0)
+  user   User           @relation(fields: [userId], references: [id])
+  userId NVARCHAR(1000)
+
+  @@map("orders")
+}</code></pre>
+  </div>
+  <div class="tab-content" id="query">
+    <pre><code class="language-typescript">const users = await db.user.findMany({
+  where: {
+    orders: {
+      some: { total: { gt: 100 } }
+    }
+  },
+  include: {
+    orders: {
+      select: { total: true },
+      orderBy: { total: 'desc' }
+    }
+  }
+});</code></pre>
+  </div>
+  <div class="tab-content" id="result">
+    <pre><code class="language-json">[
+  {
+    "id": "uuid-1",
+    "email": "john@example.com",
+    "name": "John",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "orders": [
+      { "total": 500 },
+      { "total": 150 }
+    ]
+  }
+]</code></pre>
+  </div>
+</div>
+
+## Comparison with Other ORMs
+
+| Feature | an5 ORM | Prisma | TypeORM | Sequelize |
+|---------|---------|--------|---------|-----------|
+| Type Safety | ✅ Full | ✅ Full | ⚠️ Partial | ⚠️ Partial |
+| Schema-first | ✅ | ✅ | ❌ | ❌ |
+| SQL Server | ✅ Native | ✅ | ✅ | ✅ |
+| Vector Search | ✅ Built-in | ❌ | ❌ | ❌ |
+| AI Agent | ✅ 7 tools | ❌ | ❌ | ❌ |
+| Multi-language | ✅ TS/Py/.NET | ⚠️ TS only | ⚠️ TS only | ⚠️ TS only |
+
+## Trusted By
+
+<div class="trusted-section">
+  <p>Used by teams building:</p>
+  <ul>
+    <li>Enterprise applications</li>
+    <li>AI-powered products</li>
+    <li>Real-time systems</li>
+    <li>Multi-tenant platforms</li>
+  </ul>
+</div>
+
+<div class="cta-section">
+  <h2>Ready to get started?</h2>
+  <p>Get up and running with an5 ORM in under 5 minutes.</p>
+  <a href="{{ '/guides/getting-started/' | relative_url }}" class="btn btn-primary btn-large">
+    Start Building →
+  </a>
+</div>
+
+<script>
+function showTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>

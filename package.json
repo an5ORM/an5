@@ -1,0 +1,56 @@
+{
+  "name": "an5-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "An5 ORM workspace - parent repo managing all submodules",
+  "workspaces": [
+    "an5Orm",
+    "an5Client",
+    "an5Adapters",
+    "an5Agent",
+    "an5Cli",
+    "an5Cli/ui",
+    "an5OrmVScode",
+    "an5Schema",
+    "an5Tasks"
+  ],
+  "repos": [
+    { "name": "an5Orm", "path": "an5Orm", "description": "Core ORM runtime with proxy-based client, CRUD, vector search" },
+    { "name": "an5Client", "path": "an5Client", "description": "Generated client artifacts (TypeScript, Python, .NET)" },
+    { "name": "an5Adapters", "path": "an5Adapters", "description": "Standalone language adapters (TS, Python, C#)" },
+    { "name": "an5Agent", "path": "an5Agent", "description": "Agent-oriented library with tools for database understanding" },
+    { "name": "an5Cli", "path": "an5Cli", "description": "CLI for release automation, changelog, and LLM-powered commits" },
+    { "name": "an5OrmVScode", "path": "an5OrmVScode", "description": "VS Code extension for .mssql schema files" },
+    { "name": "an5Schema", "path": "an5Schema", "description": "Sample .mssql schema definitions" },
+    { "name": "an5Tasks", "path": "an5Tasks", "description": "Genkit-integrated task manager for database schema issues and LLM review task generation" }
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "build:orm": "npm run build -w an5Orm",
+    "build:client": "npm run build -w an5Client",
+    "build:adapters": "npm run build -w an5Adapters",
+    "build:agent": "npm run build -w an5Agent",
+    "build:cli": "npm run build -w an5Cli",
+    "build:tasks": "npm run build -w an5Tasks",
+    "test": "npm run test --workspaces --if-present",
+    "test:orm": "npm run test -w an5Orm",
+    "test:agent": "npm run test -w an5Agent",
+    "generate": "npm run generate -w an5Orm",
+    "login": "node an5Cli/dist/index.js login",
+    "release": "node an5Cli/dist/index.js release . --push",
+    "release:all": "node an5Cli/dist/index.js ws . --push",
+    "dryrun": "node an5Cli/dist/index.js ws . --dry-run",
+    "status": "node an5Cli/dist/index.js ws . --all --dry-run",
+    "ui": "node an5Cli/dist/index.js ui .",
+    "ui:tunnel": "node an5Cli/dist/index.js ui . --tunnel",
+    "doc": "node an5Cli/dist/index.js doc",
+    "format": "node an5Cli/dist/index.js format",
+    "git:clean-branches": "node scripts/git-cleanup-branches.js",
+    "git:clean-branches:dry": "node scripts/git-cleanup-branches.js --dry-run",
+    "git:reset-history": "node scripts/git-reset-history.js",
+    "git:reset-history:dry": "node scripts/git-reset-history.js --dry-run"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,50 @@
+title: "an5 ORM"
+description: "A modern, type-safe ORM for SQL Server"
+url: "https://an5orm.github.io"
+baseurl: "/an5"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# Navigation
+header_pages:
+  - index.md
+  - guides/getting-started.md
+  - guides/schema.md
+  - guides/crud.md
+  - guides/relations.md
+  - guides/queries.md
+  - guides/agent-tools.md
+  - guides/api-reference.md
+
+# Defaults
+defaults:
+  - scope:
+      path: "guides"
+    values:
+      layout: "page"
+
+# Exclude
+exclude:
+  - node_modules
+  - package-lock.json
+  - .gitmodules
+  - scripts
+  - Makefile
+  - TESTING.md
+  - CHANGELOG.md
+  - tsconfig.base.json
+  - .env.example
+  - an5Orm
+  - an5Client
+  - an5Adapters
+  - an5Agent
+  - an5Cli
+  - an5OrmVScode
+  - an5Schema
+  - an5Tasks
+  - lib
+  - tasks.json
+  - packages
