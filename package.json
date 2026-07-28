@@ -45,6 +45,8 @@
     "ui:tunnel": "node an5Cli/dist/index.js ui . --tunnel",
     "doc": "node an5Cli/dist/index.js doc",
     "format": "node an5Cli/dist/index.js format",
+    "version:bump": "node scripts/auto-bump-version.js",
+    "version:bump:dry": "node scripts/auto-bump-version.js --dry-run",
     "git:clean-branches": "node scripts/git-cleanup-branches.js",
     "git:clean-branches:dry": "node scripts/git-cleanup-branches.js --dry-run",
     "git:reset-history": "node scripts/git-reset-history.js",
