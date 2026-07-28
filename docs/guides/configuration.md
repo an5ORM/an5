@@ -31,12 +31,6 @@ module.exports = {
     },
   },
 
-  // Database push options
-  push: {
-    dropColumns: false,   // Don't drop columns
-    dropTables: false,    // Don't drop tables
-  },
-
   // Database pull options
   pull: {
     exclude: ['^__', '^sys\\.'],  // Exclude system tables
@@ -60,8 +54,6 @@ module.exports = {
 | `outputs.typescript.metadataFile` | `string` | `'an5Client/typescript/an5Metadata.ts'` | Metadata file path |
 | `outputs.python.metadataFile` | `string` | `'an5Client/python/an5_metadata.py'` | Python metadata path |
 | `outputs.dotnet.outputDir` | `string` | `'an5Client/dotnet'` | .NET output directory |
-| `push.dropColumns` | `boolean` | `false` | Drop columns not in schema |
-| `push.dropTables` | `boolean` | `false` | Drop tables not in schema |
 | `pull.exclude` | `string[]` | `['^__', '^sys\\.']` | Tables to exclude from pull |
 | `pull.preserveRelations` | `boolean` | `true` | Keep relations in schema |
 | `generation.generateComments` | `boolean` | `true` | Generate JSDoc comments |

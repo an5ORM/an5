@@ -45,23 +45,6 @@ module.exports = {
   },
 
   /**
-   * Database push configuration
-   */
-  push: {
-    /** 
-     * Whether to drop columns that exist in database but not in schema
-     * Default: false (safer)
-     */
-    dropColumns: false,
-
-    /**
-     * Whether to drop tables that exist in database but not in schema
-     * Default: false (safer)
-     */
-    dropTables: false,
-  },
-
-  /**
    * Database pull configuration
    */
   pull: {

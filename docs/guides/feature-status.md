@@ -12,7 +12,7 @@ This page summarizes what is currently implemented, published, and still maturin
 
 | Package | Registry | Latest | Status | Notes |
 |---------|----------|--------|--------|-------|
-| `@an5/orm` | npm | `1.0.2` | Published | Core ORM runtime plus `an5` / `an5-orm` CLI bins |
+| `@an5/orm` | npm | `1.0.3` | Published | Core ORM runtime plus `an5` / `an5-orm` CLI bins |
 | `@an5/adapters` | npm | `0.1.2` | Published | Runtime database adapters for TypeScript apps |
 | `@an5/agent` | npm | `0.1.1` | Published | AI database agent with 7 consolidated tools |
 | `an5-adapters` | PyPI | `0.1.2` target | Build-ready | Wheel/sdist pass `twine check`; upload requires PyPI token |
@@ -39,7 +39,7 @@ PyPI does not use npm-style scopes like `@an5/adapters`. The Python package name
 |---------|--------|---------|
 | `npx an5 generate` | Implemented | Generate TypeScript, Python, and .NET client artifacts from `an5Schema/` |
 | `npx an5 db:generate` | Implemented | Alias for `generate` |
-| `npx an5 db:push` | Implemented | Create tables, add missing columns, and optionally drop extra tables with `push.dropTables=true` |
+| `npx an5 db:push` | Implemented | Safe additive push: create tables and add missing columns from schema |
 | `npx an5 db:pull` | Implemented | Introspect database tables into `.an5` files |
 | `npx an5 db:migrate diff` | Implemented, evolving | Compare schema with database |
 | `npx an5 db:migrate generate` | Implemented, evolving | Generate SQL migration file |
