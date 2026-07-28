@@ -176,19 +176,19 @@ spec:
 ### Push Schema
 
 ```bash
-npm run db:push
+npx an5 db:push
 ```
 
 ### Pull Schema (Reverse)
 
 ```bash
-npm run db:pull
+npx an5 db:pull
 ```
 
 ### Manual Migration
 
 ```typescript
-import { An5ORM } from 'an5-orm';
+import { An5ORM } from '@an5/orm';
 
 async function migrate() {
   const db = new An5ORM({

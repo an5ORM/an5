@@ -154,7 +154,7 @@ const results = await db.document.vectorSearch({
 For development or when SQL Server vector support is unavailable:
 
 ```typescript
-import { InMemoryVectorStore } from 'an5-orm';
+import { InMemoryVectorStore } from '@an5/orm';
 
 const store = new InMemoryVectorStore();
 

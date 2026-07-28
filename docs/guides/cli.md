@@ -6,17 +6,29 @@ description: Command-line interface for schema management and development
 
 # CLI Commands
 
-an5 ORM provides a powerful CLI for managing your schema, database, and development workflow.
+an5 ORM provides two CLIs: `an5` for project-level ORM/database work, and `an5-cli` for monorepo release/workspace automation.
 
 ## Installation
 
-The CLI is included in the an5 workspace. No separate installation needed.
+For application projects, install the published ORM package:
 
 ```bash
-# Run CLI commands via npm
+npm install @an5/orm
+```
+
+This exposes two equivalent binaries:
+
+```bash
+npx an5 --help
+npx an5-orm --help
+```
+
+For this monorepo workspace, npm scripts are also available:
+
+```bash
 npm run <command>
 
-# Or use an5-cli directly
+# Workspace/release CLI
 npx an5-cli <command>
 ```
 
@@ -28,10 +40,10 @@ Generate type-safe client code from your schema files.
 
 ```bash
 # Generate all clients (TypeScript, Python, .NET)
-npm run generate
+npx an5 generate
 
-# Generate for specific module
-npm run generate -w an5Orm
+# Alias
+npx an5 db:generate
 ```
 
 **Output:**
@@ -48,7 +60,7 @@ Create or update database tables based on your schema.
 
 ```bash
 # Push schema to database
-npm run db:push
+npx an5 db:push
 ```
 
 **What it does:**
@@ -63,7 +75,7 @@ Reverse-engineer schema from existing database.
 
 ```bash
 # Pull schema from database
-npm run db:pull
+npx an5 db:pull
 ```
 
 **Output:** Creates `.an5` files in `an5Schema/` directory.
@@ -74,7 +86,20 @@ Populate database with sample data.
 
 ```bash
 # Run seed script
-npm run db:seed
+npx an5 db:seed
+```
+
+### Migrations
+
+```bash
+# Compare schema with database
+npx an5 db:migrate diff
+
+# Generate migration SQL
+npx an5 db:migrate generate
+
+# Show migration status
+npx an5 db:migrate status
 ```
 
 ## Development Commands
@@ -216,25 +241,18 @@ export LLM_MODEL=gpt-4o-mini
 ### New Project Setup
 
 ```bash
-# 1. Clone repository
-git clone https://github.com/an5ORM/an5.git
-cd an5
+# 1. Install package
+npm install @an5/orm
 
-# 2. Install dependencies
-npm install
-
-# 3. Configure database
-cp .env.example .env
+# 2. Configure database
+# Create .env and set DATABASE_URL
 # Edit .env with your DATABASE_URL
 
-# 4. Generate code
-npm run generate
+# 3. Generate code
+npx an5 generate
 
-# 5. Push schema
-npm run db:push
-
-# 6. Start development
-npm run ui
+# 4. Push schema
+npx an5 db:push
 ```
 
 ### Daily Development
@@ -266,9 +284,28 @@ npm run dryrun
 npm run release:all
 ```
 
+### Auto Version Bump
+
+For maintainers publishing npm packages under the `@an5` organization:
+
+```bash
+# Preview next versions
+npm run version:bump:dry
+
+# Apply patch bumps based on latest npm versions
+npm run version:bump
+
+# Bump minor or major
+node scripts/auto-bump-version.js minor
+node scripts/auto-bump-version.js major
+```
+
+The default package set is `@an5/adapters` and `@an5/orm`. The script also updates internal dependency ranges, for example `@an5/orm` depending on the new `@an5/adapters` version.
+
 ## Tips
 
 - Use `npm run ui` for visual feedback during development
 - Run `npm run status` before commits to check everything
 - Use `npx an5-cli format` to keep schema files consistent
+- Use `npx an5 generate` in application projects instead of calling files under `node_modules/@an5/orm`
 - Check `npm run dryrun` before releases

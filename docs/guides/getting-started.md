@@ -17,16 +17,10 @@ This guide will help you set up an5 ORM in your project in under 5 minutes.
 ## Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/an5ORM/an5.git
-cd an5
-
-# Install dependencies
-npm install
-
-# Build all packages
-npm run build
+npm install @an5/orm
 ```
+
+This installs the ORM runtime, the `an5` CLI, and the required `@an5/adapters` package.
 
 ## Configuration
 
@@ -67,7 +61,7 @@ model User {
 ### 3. Generate Client Code
 
 ```bash
-npm run generate
+npx an5 generate
 ```
 
 This generates type-safe client code in `an5Client/`.
@@ -75,7 +69,7 @@ This generates type-safe client code in `an5Client/`.
 ### 4. Push Schema to Database
 
 ```bash
-npm run db:push
+npx an5 db:push
 ```
 
 This creates the tables in your database.
@@ -83,7 +77,7 @@ This creates the tables in your database.
 ## Your First Query
 
 ```typescript
-import { An5ORM } from 'an5-orm';
+import { An5ORM } from '@an5/orm';
 
 // Initialize the ORM
 const db = new An5ORM({
@@ -116,11 +110,9 @@ main()
 ```
 an5/
 ├── an5Schema/           # Schema definitions (.an5 files)
-├── an5Orm/              # Core ORM runtime
-├── an5Client/           # Generated client code
-├── an5Adapters/         # Database adapters
-├── an5Agent/            # AI agent tools
-├── an5Cli/              # CLI tools
+├── node_modules/@an5/orm      # Core ORM runtime and CLI
+├── node_modules/@an5/adapters # Database adapters
+├── an5Client/                # Generated client code
 └── .env                 # Configuration
 ```
 
@@ -128,10 +120,11 @@ an5/
 
 | Command | Description |
 |---------|-------------|
-| `npm run generate` | Generate client code from schema |
-| `npm run db:push` | Push schema to database |
-| `npm run db:pull` | Pull schema from database |
-| `npm run db:seed` | Seed database with sample data |
+| `npx an5 generate` | Generate client code from schema |
+| `npx an5 db:push` | Push schema to database |
+| `npx an5 db:pull` | Pull schema from database |
+| `npx an5 db:seed` | Seed database with sample data |
+| `npx an5 db:migrate diff` | Compare schema with database |
 | `npm run build` | Build all packages |
 | `npm test` | Run all tests |
 

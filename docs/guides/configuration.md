@@ -118,7 +118,7 @@ DATABASE_URL=sqlserver://your-server.database.windows.net:1433;database=mydb;use
 Configure in your code:
 
 ```typescript
-import { An5ORM } from 'an5-orm';
+import { An5ORM } from '@an5/orm';
 
 const db = new An5ORM({
   connectionString: process.env.DATABASE_URL,
@@ -135,7 +135,7 @@ const db = new An5ORM({
 ### Basic Setup
 
 ```typescript
-import { An5ORM } from 'an5-orm';
+import { An5ORM } from '@an5/orm';
 
 const db = new An5ORM({
   connectionString: process.env.DATABASE_URL,

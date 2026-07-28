@@ -6,7 +6,7 @@
 
 > A modern, type-safe ORM for SQL Server with AI-agent database capabilities, multi-language code generation, and Prisma-like API.
 
-**[Documentation](https://an5orm.github.io/an5/)** | **[GitHub](https://github.com/an5ORM/an5)** | **[NPM](https://www.npmjs.com/package/an5-orm)**
+**[Documentation](https://an5orm.github.io/an5/)** | **[GitHub](https://github.com/an5ORM/an5)** | **[NPM](https://www.npmjs.com/package/@an5/orm)**
 
 ---
 
@@ -28,13 +28,10 @@
 
 ## Quick Start
 
-### 1. Clone & Install
+### 1. Install
 
 ```bash
-git clone https://github.com/an5ORM/an5.git
-cd an5
-git submodule update --init --recursive
-npm install
+npm install @an5/orm
 ```
 
 ### 2. Configure Database
@@ -67,14 +64,14 @@ model User {
 ### 4. Generate & Push
 
 ```bash
-npm run generate    # Generate client code
-npm run db:push     # Push schema to database
+npx an5 generate    # Generate client code
+npx an5 db:push     # Push schema to database
 ```
 
 ### 5. Use in Code
 
 ```typescript
-import { An5ORM } from 'an5-orm';
+import { An5ORM } from '@an5/orm';
 
 const db = new An5ORM({
   connectionString: process.env.DATABASE_URL
@@ -218,10 +215,11 @@ model Post {
 
 | Command | Description |
 |---------|-------------|
-| `npm run generate` | Generate client code from schema |
-| `npm run db:push` | Push schema to database |
-| `npm run db:pull` | Pull schema from database |
-| `npm run db:seed` | Seed database with sample data |
+| `npx an5 generate` | Generate client code from schema |
+| `npx an5 db:push` | Push schema to database |
+| `npx an5 db:pull` | Pull schema from database |
+| `npx an5 db:seed` | Seed database with sample data |
+| `npx an5 db:migrate diff` | Compare schema with database |
 
 ### Development
 
@@ -239,6 +237,8 @@ model Post {
 | `npm run status` | Check status across all packages |
 | `npm run dryrun` | Preview release changes |
 | `npm run release:all` | Release all packages |
+| `npm run version:bump:dry` | Preview npm version bumps |
+| `npm run version:bump` | Auto bump npm package versions |
 
 ---
 

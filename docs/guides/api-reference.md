@@ -13,7 +13,7 @@ Complete API documentation for an5 ORM.
 ### Constructor
 
 ```typescript
-import { An5ORM } from 'an5-orm';
+import { An5ORM } from '@an5/orm';
 
 const db = new An5ORM(options?: An5ORMOptions);
 ```
@@ -410,7 +410,7 @@ const result = await db.$executeRaw`
 ## Error Handling
 
 ```typescript
-import { An5ORMError } from 'an5-orm';
+import { An5ORMError } from '@an5/orm';
 
 try {
   await db.user.create({
@@ -489,10 +489,11 @@ For detailed tool documentation, see [AI Agent Tools]({{ '/guides/agent-tools/' 
 
 | Command | Description |
 |---------|-------------|
-| `npm run generate` | Generate client code from schema |
-| `npm run db:push` | Push schema to database |
-| `npm run db:pull` | Pull schema from database |
-| `npm run db:seed` | Seed database with sample data |
+| `npx an5 generate` | Generate client code from schema |
+| `npx an5 db:push` | Push schema to database |
+| `npx an5 db:pull` | Pull schema from database |
+| `npx an5 db:seed` | Seed database with sample data |
+| `npx an5 db:migrate diff` | Compare schema with database |
 
 ### Development
 

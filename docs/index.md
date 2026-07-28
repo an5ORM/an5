@@ -21,7 +21,7 @@ description: A modern, type-safe ORM for SQL Server
     </div>
   </div>
   <div class="hero-code">
-    <pre><code class="language-typescript">import { An5ORM } from 'an5-orm';
+    <pre><code class="language-typescript">import { An5ORM } from '@an5/orm';
 
 const db = new An5ORM();
 

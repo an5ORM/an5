@@ -225,15 +225,15 @@ const users = await db.user.findMany({
 
 ### TypeScript Errors
 
-**Error:** `Cannot find module 'an5-orm'`
+**Error:** `Cannot find module '@an5/orm'`
 
 **Solution:**
 ```bash
-# Rebuild
-npm run build
+# Install the published ORM package
+npm install @an5/orm
 
-# Or rebuild specific package
-npm run build -w an5Orm
+# Verify the CLI is available
+npx an5 --help
 ```
 
 ### Generation Fails
@@ -247,7 +247,7 @@ npm run build -w an5Orm
 
 ```bash
 npx an5-cli format schema/
-npm run generate
+npx an5 generate
 ```
 
 ## Environment Issues
