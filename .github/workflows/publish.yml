@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
     inputs:
       publish-npm:
-        description: 'Publish npm packages (@an5/adapters, an5-client, @an5/orm, @an5/agent, an5-cli, an5-tasks)'
+        description: 'Publish npm packages (@an5/adapters, @an5/orm)'
         type: boolean
         default: true
       publish-pypi:
-        description: 'Publish PyPI packages (an5-adapters, an5-client)'
+        description: 'Publish PyPI packages (an5-adapters, an5-orm)'
         type: boolean
         default: true
 
@@ -62,38 +62,14 @@ jobs:
           npm ci || npm install
           npm run build
 
-      - name: Publish @an5/adapters
+      - name: Publish @an5/adapters to npm
         working-directory: an5Adapters
         run: npm publish --access public --if-present
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish an5-client
-        working-directory: an5Client
-        run: npm publish --access public --if-present
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish @an5/orm
+      - name: Publish @an5/orm to npm
         working-directory: an5Orm
-        run: npm publish --access public --if-present
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish @an5/agent
-        working-directory: an5Agent
-        run: npm publish --access public --if-present
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish an5-cli
-        working-directory: an5Cli
-        run: npm publish --access public --if-present
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish an5-tasks
-        working-directory: an5Tasks
         run: npm publish --access public --if-present
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
