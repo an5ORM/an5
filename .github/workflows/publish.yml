@@ -99,6 +99,7 @@ jobs:
       - name: Publish an5-adapters to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          password: ${{ secrets.PYPI_TOKEN }}
           packages-dir: an5Adapters/dist/
           skip-existing: true
 
@@ -109,5 +110,6 @@ jobs:
       - name: Publish an5-orm to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
+          password: ${{ secrets.PYPI_TOKEN }}
           packages-dir: an5Orm/dist/
           skip-existing: true
