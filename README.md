@@ -1,5 +1,9 @@
 # an5 ORM
 
+<p align="center">
+  <img src="an5OrmVScode/icons/an5-128x128.png" width="96" height="96" alt="AN5 ORM Logo" />
+</p>
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-blue.svg)](https://www.typescriptlang.org/)
