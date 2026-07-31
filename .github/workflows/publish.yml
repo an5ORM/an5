@@ -126,12 +126,12 @@ jobs:
           packages-dir: an5Adapters/dist/
           skip-existing: true
 
-      - name: Build an5-client
-        working-directory: an5Client
+      - name: Build an5-orm
+        working-directory: an5Orm
         run: python -m build
 
-      - name: Publish an5-client to PyPI
+      - name: Publish an5-orm to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: an5Client/dist/
+          packages-dir: an5Orm/dist/
           skip-existing: true
