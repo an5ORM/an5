@@ -30,7 +30,7 @@ jobs:
         run: node test/unit.test.js
       - name: Run generator tests
         working-directory: an5Orm
-        run: node test/generator.test.js
+        run: npm run generate && node test/generator.test.js
       - name: Run smoke test
         working-directory: an5Orm
         run: npm test
