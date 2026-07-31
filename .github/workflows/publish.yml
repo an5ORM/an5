@@ -28,6 +28,8 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Sync submodules to latest main
+        run: git submodule update --init --recursive --remote || true
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -51,6 +53,8 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Sync submodules to latest main
+        run: git submodule update --init --recursive --remote || true
 
       - uses: actions/setup-node@v4
         with:
@@ -84,6 +88,8 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Sync submodules to latest main
+        run: git submodule update --init --recursive --remote || true
 
       - uses: actions/setup-python@v5
         with:
