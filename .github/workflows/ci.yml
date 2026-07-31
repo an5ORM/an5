@@ -21,10 +21,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Install dependencies
         working-directory: an5Orm
-        run: npm ci || npm install
+        run: npm install
       - name: Run unit tests
         working-directory: an5Orm
         run: node test/unit.test.js
@@ -45,7 +45,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -66,10 +66,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Install dependencies
         working-directory: an5Agent
-        run: npm ci || npm install
+        run: npm install
       - name: Run unit tests
         working-directory: an5Agent
         run: node test/unit.test.js
@@ -84,10 +84,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Install dependencies
         working-directory: an5Cli
-        run: npm ci || npm install
+        run: npm install
       - name: Install UI dependencies
         working-directory: an5Cli
         run: npm install --prefix ui
@@ -108,10 +108,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Install dependencies
         working-directory: an5OrmVScode
-        run: npm ci || npm install
+        run: npm install
       - name: Compile
         working-directory: an5OrmVScode
         run: npm run compile
@@ -129,7 +129,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -150,10 +150,10 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Install dependencies
         working-directory: an5Tasks
-        run: npm ci || npm install
+        run: npm install
       - name: Build
         working-directory: an5Tasks
         run: npm run build

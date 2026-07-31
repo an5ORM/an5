@@ -32,12 +32,12 @@ jobs:
         run: git submodule update --init --recursive --remote || true
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install dependencies
-        run: npm ci || npm install
+        run: npm install
       - name: Build all workspaces
         run: npm run build
       - name: Run unit & smoke tests
@@ -58,12 +58,12 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies & build
         run: |
-          npm ci || npm install
+          npm install
           npm run build
 
       - name: Publish @an5/adapters to npm
