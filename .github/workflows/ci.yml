@@ -118,3 +118,46 @@ jobs:
       - name: Run tests
         working-directory: an5OrmVScode
         run: npm test
+
+  test-client:
+    name: Test an5Client
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run TypeScript check
+        working-directory: an5Client
+        run: npm test
+      - name: Run Python check
+        working-directory: an5Client
+        run: npm run test:python
+
+  test-tasks:
+    name: Test an5Tasks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        working-directory: an5Tasks
+        run: npm ci || npm install
+      - name: Build
+        working-directory: an5Tasks
+        run: npm run build
+      - name: Run tests
+        working-directory: an5Tasks
+        run: npm test
+

@@ -4,7 +4,7 @@ SHELL := powershell.exe
 CLI := node an5Cli/dist/index.js
 
 help: ## Show this help
-	@Write-Host "MSSQL Workspace Commands:"; \
+	@Write-Host "an5 Workspace Commands:"; \
 	Write-Host "  make install    - Install all workspace dependencies"; \
 	Write-Host "  make build      - Build all modules"; \
 	Write-Host "  make test       - Run all tests"; \

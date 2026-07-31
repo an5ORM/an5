@@ -1,0 +1,137 @@
+name: Publish to npm and PyPI
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      publish-npm:
+        description: 'Publish npm packages (@an5/adapters, an5-client, @an5/orm, @an5/agent, an5-cli, an5-tasks)'
+        type: boolean
+        default: true
+      publish-pypi:
+        description: 'Publish PyPI packages (an5-adapters, an5-client)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build-and-test:
+    name: Build & Test All Packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: npm ci || npm install
+      - name: Build all workspaces
+        run: npm run build
+      - name: Run unit & smoke tests
+        run: npm run test
+
+  publish-npm:
+    name: Publish npm packages
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.publish-npm == 'true') || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies & build
+        run: |
+          npm ci || npm install
+          npm run build
+
+      - name: Publish @an5/adapters
+        working-directory: an5Adapters
+        run: npm publish --access public --if-present
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish an5-client
+        working-directory: an5Client
+        run: npm publish --access public --if-present
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @an5/orm
+        working-directory: an5Orm
+        run: npm publish --access public --if-present
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish @an5/agent
+        working-directory: an5Agent
+        run: npm publish --access public --if-present
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish an5-cli
+        working-directory: an5Cli
+        run: npm publish --access public --if-present
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish an5-tasks
+        working-directory: an5Tasks
+        run: npm publish --access public --if-present
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-pypi:
+    name: Publish PyPI packages
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: (github.event_name == 'workflow_dispatch' && github.event.inputs.publish-pypi == 'true') || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install build tooling
+        run: pip install build twine
+
+      - name: Build an5-adapters
+        working-directory: an5Adapters
+        run: python -m build
+
+      - name: Publish an5-adapters to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: an5Adapters/dist/
+          skip-existing: true
+
+      - name: Build an5-client
+        working-directory: an5Client
+        run: python -m build
+
+      - name: Publish an5-client to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: an5Client/dist/
+          skip-existing: true

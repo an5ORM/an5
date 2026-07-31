@@ -1,5 +1,35 @@
 node_modules
 package-lock.json
-tasks.json
 *.env
 .npmrc
+
+# Build output
+dist/
+build/
+out/
+*.tsbuildinfo
+*.vsix
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python (tracked in submodules but catch at root too)
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+
+# Temp
+*.tmp
+tasks.json
