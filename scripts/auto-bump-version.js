@@ -126,13 +126,21 @@ for (const entry of packages) {
   }
   if (!dryRun) {
     writeJson(entry.packageJsonPath, entry.packageJson);
+
+    const pyprojectPath = path.join(entry.fullPath, 'pyproject.toml');
+    if (fs.existsSync(pyprojectPath)) {
+      let pyContent = fs.readFileSync(pyprojectPath, 'utf8');
+      const nextVersion = entry.packageJson.version;
+      pyContent = pyContent.replace(/version\s*=\s*"[^"]+"/, `version = "${nextVersion}"`);
+      fs.writeFileSync(pyprojectPath, pyContent);
+    }
   }
 }
 
 if (dryRun) {
   console.log('\nNo files changed.');
 } else {
-  console.log('\nUpdated package.json files:');
+  console.log('\nUpdated package.json & pyproject.toml files:');
   for (const entry of packages) {
     console.log(`- ${path.relative(ROOT, entry.packageJsonPath)}`);
   }
