@@ -1,7 +1,7 @@
 SHELL := powershell.exe
-.PHONY: help install build test clean release release-all dryrun pull status
+.PHONY: help install build test clean release release-all dryrun pull status lint
 
-CLI := node mssqlCli/dist/index.js
+CLI := node an5Cli/dist/index.js
 
 help: ## Show this help
 	@Write-Host "MSSQL Workspace Commands:"; \
@@ -19,9 +19,6 @@ help: ## Show this help
 
 install: ## Install all workspace dependencies
 	@npm install
-
-build: ## Build all modules
-	@npm run build
 
 build: ## Build all modules
 	@npm run build
@@ -58,8 +55,8 @@ status: ## Show git status of all repos
 	@$(foreach repo,$(wildcard */.),echo "=== $(repo:/=) ==="; git -C $(repo) status --short; echo "";)
 
 lint: ## Run TypeScript type checking on all modules
-	@Write-Host "Checking mssqlOrm..."; cd mssqlOrm; npx tsc --noEmit; \
-	Write-Host "Checking mssqlClient..."; cd ../mssqlClient; npx tsc --noEmit; \
-	Write-Host "Checking mssqlAdapters..."; cd ../mssqlAdapters; npx tsc --noEmit; \
-	Write-Host "Checking mssqlAgent..."; cd ../mssqlAgent; npx tsc --noEmit; \
+	@Write-Host "Checking an5Orm..."; cd an5Orm; npx tsc --noEmit; \
+	Write-Host "Checking an5Client..."; cd ../an5Client; npx tsc --noEmit; \
+	Write-Host "Checking an5Adapters..."; cd ../an5Adapters; npx tsc --noEmit; \
+	Write-Host "Checking an5Agent..."; cd ../an5Agent; npx tsc --noEmit; \
 	Write-Host "All checks passed!"
