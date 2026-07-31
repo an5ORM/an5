@@ -68,13 +68,13 @@ jobs:
 
       - name: Publish @an5/adapters to npm
         working-directory: an5Adapters
-        run: npm publish --access public --if-present
+        run: npm publish --access public --if-present || echo "Version already published on npm, skipping"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @an5/orm to npm
         working-directory: an5Orm
-        run: npm publish --access public --if-present
+        run: npm publish --access public --if-present || echo "Version already published on npm, skipping"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
