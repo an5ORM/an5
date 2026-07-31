@@ -35,7 +35,8 @@
 | npm | [`@an5/orm`](https://www.npmjs.com/package/@an5/orm) | Published | `npm install @an5/orm` |
 | npm | [`@an5/adapters`](https://www.npmjs.com/package/@an5/adapters) | Published | `npm install @an5/adapters` |
 | npm | [`@an5/agent`](https://www.npmjs.com/package/@an5/agent) | Published | `npm install @an5/agent` |
-| PyPI | `an5-adapters` | Package configured; publish requires PyPI token/organization setup | `pip install an5-adapters` |
+| PyPI | `an5-adapters` | Package configured; PyPI token / trusted publisher setup | `pip install an5-adapters` |
+| PyPI | `an5-orm` | Package configured; PyPI token / trusted publisher setup | `pip install an5-orm` |
 
 See [Feature Status](https://an5orm.github.io/an5/guides/feature-status/) for the current maturity level of each module.
 

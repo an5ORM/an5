@@ -12,12 +12,13 @@ This page summarizes what is currently implemented, published, and still maturin
 
 | Package | Registry | Latest | Status | Notes |
 |---------|----------|--------|--------|-------|
-| `@an5/orm` | npm | `1.0.5` | Published | Core ORM runtime plus `an5` / `an5-orm` CLI bins |
-| `@an5/adapters` | npm | `0.2.0` | Published | Runtime database adapters for TypeScript apps |
+| `@an5/orm` | npm | `1.0.7` | Published | Core ORM runtime plus `an5` / `an5-orm` CLI bins |
+| `@an5/adapters` | npm | `0.2.3` | Published | Runtime database adapters for TypeScript apps |
 | `@an5/agent` | npm | `0.1.1` | Published | AI database agent with 7 consolidated tools |
-| `an5-adapters` | PyPI | `0.2.0` target | Build-ready | Wheel/sdist pass `twine check`; upload requires PyPI token |
+| `an5-adapters` | PyPI | `0.2.3` target | Build-ready | Wheel/sdist pass `twine check`; PyPI token / trusted publisher setup |
+| `an5-orm` | PyPI | `1.0.7` target | Build-ready | Wheel/sdist pass `twine check`; PyPI token / trusted publisher setup |
 
-PyPI does not use npm-style scopes like `@an5/adapters`. The Python package name remains `an5-adapters`.
+PyPI does not use npm-style scopes like `@an5/orm`. The Python package names are `an5-adapters` and `an5-orm`.
 
 ## Core ORM
 
@@ -119,8 +120,8 @@ For adapter-only TypeScript usage:
 npm install @an5/adapters
 ```
 
-For Python adapter usage after PyPI publication:
+For Python usage after PyPI publication:
 
 ```bash
-pip install an5-adapters
+pip install an5-orm an5-adapters
 ```
