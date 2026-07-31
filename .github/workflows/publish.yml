@@ -100,22 +100,22 @@ jobs:
 
       - name: Build an5-adapters
         working-directory: an5Adapters
-        run: python -m build
+        run: python -m build --outdir dist-py
 
       - name: Publish an5-adapters to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_TOKEN }}
-          packages-dir: an5Adapters/dist/
+          packages-dir: an5Adapters/dist-py/
           skip-existing: true
 
       - name: Build an5-orm
         working-directory: an5Orm
-        run: python -m build
+        run: python -m build --outdir dist-py
 
       - name: Publish an5-orm to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           password: ${{ secrets.PYPI_TOKEN }}
-          packages-dir: an5Orm/dist/
+          packages-dir: an5Orm/dist-py/
           skip-existing: true
