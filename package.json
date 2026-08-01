@@ -2,7 +2,14 @@
   "name": "an5-workspace",
   "version": "1.0.0",
   "private": true,
-  "description": "An5 ORM workspace - parent repo managing all submodules",
+  "description": "AN5 ORM monorepo workspace — lightweight, type-safe ORM for TypeScript, Python & .NET",
+  "author": "an5ORM",
+  "homepage": "https://an5orm.github.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/an5ORM/an5.git"
+  },
+  "license": "MIT",
   "workspaces": [
     "an5Orm",
     "an5Client",
@@ -14,25 +21,14 @@
     "an5Schema",
     "an5Tasks"
   ],
-  "repos": [
-    { "name": "an5Orm", "path": "an5Orm", "description": "Core ORM runtime with proxy-based client, CRUD, vector search" },
-    { "name": "an5Client", "path": "an5Client", "description": "Generated client artifacts (TypeScript, Python, .NET)" },
-    { "name": "an5Adapters", "path": "an5Adapters", "description": "Standalone language adapters (TS, Python, C#)" },
-    { "name": "an5Agent", "path": "an5Agent", "description": "Agent-oriented library with tools for database understanding" },
-    { "name": "an5Cli", "path": "an5Cli", "description": "CLI for release automation, changelog, and LLM-powered commits" },
-    { "name": "an5OrmVScode", "path": "an5OrmVScode", "description": "VS Code extension for .mssql schema files" },
-    { "name": "an5Schema", "path": "an5Schema", "description": "Sample .mssql schema definitions" },
-    { "name": "an5Tasks", "path": "an5Tasks", "description": "Genkit-integrated task manager for database schema issues and LLM review task generation" }
-  ],
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present",
-    "sync": "git submodule update --init --recursive --remote",
-    "bump": "node scripts/auto-bump-version.js",
-    "generate": "npm run generate -w an5Orm",
-    "release": "node an5Cli/dist/index.js ws . --push",
-    "dryrun": "node an5Cli/dist/index.js ws . --dry-run",
-    "ui": "node an5Cli/dist/index.js ui ."
+    "build":        "npm run build --workspaces --if-present",
+    "test":         "npm run test --workspaces --if-present",
+    "sync":         "git submodule update --init --recursive --remote",
+    "generate":     "npm run generate -w an5Orm",
+    "release":      "node an5Cli/dist/index.js ws . --push",
+    "dryrun":       "node an5Cli/dist/index.js ws . --dry-run",
+    "ui":           "node an5Cli/dist/index.js ui ."
   },
   "devDependencies": {
     "typescript": "^6.0.3"

@@ -2,162 +2,207 @@ name: CI
 
 on:
   pull_request:
-    branches: [main, master]
+    branches: [main]
   push:
-    branches: [main, master]
+    branches: [main]
   workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   GIT_TERMINAL_PROMPT: 0
+  NODE_VERSION: '22'
 
 jobs:
+  # ── an5Orm ──────────────────────────────────────────────────────────────────
   test-orm:
-    name: Test an5Orm
+    name: 🧪 an5Orm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout an5Orm submodule only
+        run: git submodule update --init --depth=1 an5Orm
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-      - name: Install dependencies
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: an5Orm/package-lock.json
+      - run: npm ci
         working-directory: an5Orm
-        run: npm install
-      - name: Run unit tests
+      - run: node test/unit.test.js
         working-directory: an5Orm
-        run: node test/unit.test.js
-      - name: Run generator tests
+      - run: npm run generate && node test/generator.test.js
         working-directory: an5Orm
-        run: npm run generate && node test/generator.test.js
-      - name: Run smoke test
+      - run: npm test
         working-directory: an5Orm
-        run: npm test
 
+  # ── an5Adapters ─────────────────────────────────────────────────────────────
   test-adapters:
-    name: Test an5Adapters
+    name: 🧪 an5Adapters
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout an5Adapters submodule only
+        run: git submodule update --init --depth=1 an5Adapters
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ env.NODE_VERSION }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Run TypeScript tests
+      - run: node test/unit.test.js
         working-directory: an5Adapters
-        run: node test/unit.test.js
-      - name: Run Python tests
+      - run: python -m compileall python
         working-directory: an5Adapters
-        run: python -m compileall python
 
+  # ── an5Agent ────────────────────────────────────────────────────────────────
   test-agent:
-    name: Test an5Agent
+    name: 🧪 an5Agent
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout an5Agent submodule only
+        run: git submodule update --init --depth=1 an5Agent
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-      - name: Install dependencies
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: an5Agent/package-lock.json
+      - run: npm ci
         working-directory: an5Agent
-        run: npm install
-      - name: Run unit tests
+      - run: node test/unit.test.js
         working-directory: an5Agent
-        run: node test/unit.test.js
 
+  # ── an5Cli ──────────────────────────────────────────────────────────────────
   test-cli:
-    name: Test an5Cli
+    name: 🧪 an5Cli
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout an5Cli submodule only
+        run: git submodule update --init --depth=1 an5Cli
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-      - name: Install dependencies
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: an5Cli/package-lock.json
+      - run: npm ci
         working-directory: an5Cli
-        run: npm install
-      - name: Install UI dependencies
+      - run: npm ci
+        working-directory: an5Cli/ui
+      - run: npm run build
         working-directory: an5Cli
-        run: npm install --prefix ui
-      - name: Build
+      - run: npm test
         working-directory: an5Cli
-        run: npm run build
-      - name: Run smoke test
-        working-directory: an5Cli
-        run: npm test
 
+  # ── an5OrmVScode ────────────────────────────────────────────────────────────
   test-vscode:
-    name: Test an5OrmVScode
+    name: 🧪 an5OrmVScode
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout an5OrmVScode submodule only
+        run: git submodule update --init --depth=1 an5OrmVScode
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-      - name: Install dependencies
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: an5OrmVScode/package-lock.json
+      - run: npm ci
         working-directory: an5OrmVScode
-        run: npm install
-      - name: Compile
+      - run: npm run compile
         working-directory: an5OrmVScode
-        run: npm run compile
-      - name: Run tests
+      - run: npm test
         working-directory: an5OrmVScode
-        run: npm test
 
+  # ── an5Client ───────────────────────────────────────────────────────────────
   test-client:
-    name: Test an5Client
+    name: 🧪 an5Client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout an5Client submodule only
+        run: git submodule update --init --depth=1 an5Client
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ env.NODE_VERSION }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Run TypeScript check
+      - run: npm test
         working-directory: an5Client
-        run: npm test
-      - name: Run Python check
+      - run: npm run test:python
         working-directory: an5Client
-        run: npm run test:python
 
+  # ── an5Tasks ────────────────────────────────────────────────────────────────
   test-tasks:
-    name: Test an5Tasks
+    name: 🧪 an5Tasks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout an5Tasks submodule only
+        run: git submodule update --init --depth=1 an5Tasks
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-      - name: Install dependencies
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: an5Tasks/package-lock.json
+      - run: npm ci
         working-directory: an5Tasks
-        run: npm install
-      - name: Build
+      - run: npm run build
         working-directory: an5Tasks
-        run: npm run build
-      - name: Run tests
+      - run: npm test
         working-directory: an5Tasks
-        run: npm test
 
+  # ── Summary ─────────────────────────────────────────────────────────────────
+  ci-summary:
+    name: ✅ CI Summary
+    runs-on: ubuntu-latest
+    needs:
+      - test-orm
+      - test-adapters
+      - test-agent
+      - test-cli
+      - test-vscode
+      - test-client
+      - test-tasks
+    if: always()
+    steps:
+      - name: Check all jobs passed
+        run: |
+          results='${{ toJSON(needs) }}'
+          failed=$(echo "$results" | python3 -c "
+          import sys, json
+          d = json.load(sys.stdin)
+          failed = [k for k,v in d.items() if v['result'] not in ('success','skipped')]
+          print('\n'.join(failed))
+          ")
+          if [ -n "$failed" ]; then
+            echo "❌ Failed jobs:"
+            echo "$failed"
+            exit 1
+          fi
+          echo "✅ All CI jobs passed!"
