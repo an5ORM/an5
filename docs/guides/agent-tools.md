@@ -279,10 +279,8 @@ await agent.executeTool('task', {
 ```typescript
 import { An5Agent } from '@an5/agent';
 
-const agent = new An5Agent({
-  workspaceDir: process.cwd(),
-  llmProvider: 'openai'
-});
+// Registers the 7 default tools; optionally pass extra tools
+const agent = new An5Agent();
 
 // Ask questions in natural language
 const result = await agent.process({

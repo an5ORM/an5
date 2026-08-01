@@ -139,30 +139,8 @@ await db.$transaction(async (tx) => {
 await db.$transaction(async (tx) => {
   // Operations here
 }, {
-  maxWait: 5000,  // Maximum time to wait for transaction slot (ms)
   timeout: 10000  // Maximum time for transaction to complete (ms)
 });
-```
-
-## Interactive Transactions
-
-For longer-running operations:
-
-```typescript
-const tx = await db.$begin();
-
-try {
-  const user = await tx.user.create({
-    data: { email: 'john@example.com' }
-  });
-  
-  // Perform other operations...
-  
-  await tx.$commit();
-} catch (error) {
-  await tx.$rollback();
-  throw error;
-}
 ```
 
 ## Best Practices
@@ -175,4 +153,4 @@ try {
 ## Next Steps
 
 - [Vector Search]({{ '/guides/vector-search/' | relative_url }}) - AI-powered search
-- [Raw Queries]({{ '/guides/raw-queries/' | relative_url }}) - Execute raw SQL
+- [Raw Queries]({{ '/guides/queries/' | relative_url }}) - Execute raw SQL

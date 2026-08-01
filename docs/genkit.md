@@ -10,15 +10,16 @@ an5Agent (Genkit v1.39)
 │   ├── embedder.ts        — Custom embedding (OpenAI/Cohere/dummy fallback)
 │   ├── indexer.ts         — Schema + query sample indexing
 │   └── index.ts           — Genkit singleton with vector store
-├── Tools (13 total)
-│   ├── schema-tools.ts    — listModels, describeModel, getRelations
-│   ├── query-tools.ts     — generateQuery, explainQuery, validateQuery
-│   ├── database-tools.ts  — executeQuery, describeTable, healthCheck
-│   ├── codegen-tools.ts   — generateClientCode, analyzeSchema
-│   └── rag-tools.ts       — retrieveSchema, retrieveQuerySamples
+├── Tools (7 consolidated)
+│   ├── schema-tools.ts     — schema tool: list, describe, relations
+│   ├── query-tools.ts      — query tool: generate, explain, validate
+│   ├── database-tools.ts   — database tool: execute, describe, health
+│   ├── codegen-tools.ts    — generateClientCode, analyzeSchema
+│   ├── rag-tools.ts        — retrieve tool: schema, queries
+│   └── task-tools.ts       — task tool: create, list, update, delete
 └── RAG Data
     ├── __db_an5-schema.json   — Schema vector index
-    └── __db_mssql-queries.json  — Query sample vector index
+    └── __db_an5-queries.json  — Query sample vector index
 
 an5Tasks (Genkit v1.39)
 ├── Flows
@@ -27,7 +28,8 @@ an5Tasks (Genkit v1.39)
 └── Tools
     ├── createTaskTool   — Create tasks from review issues
     ├── listTasksTool    — List/filter tasks
-    └── updateTaskTool   — Update task status/priority
+    ├── updateTaskTool   — Update task status/priority
+    └── deleteTaskTool   — Delete a task
 ```
 
 ## Setup
@@ -40,12 +42,11 @@ LLM_PROVIDER=openai          # openai | gemini | custom
 LLM_API_KEY=sk-...
 LLM_MODEL=gpt-4o-mini
 LLM_ENDPOINT=                # Optional: custom endpoint
-
-# Embedding (for RAG pipeline)
-EMBEDDING_ENDPOINT=          # OpenAI/Cohere embedding endpoint
-EMBEDDING_API_KEY=           # API key for embedding
-EMBEDDING_MODEL=text-embedding-3-small  # Default model
 ```
+
+> Embedding settings for the RAG pipeline are **not** read from `EMBEDDING_*` env
+> vars. They are loaded from the `EmbeddingConfig` model/table via
+> `getEmbeddingConfig()` in `an5Agent/src/rag/embedder.ts`.
 
 ### Initialize RAG Index
 
@@ -54,7 +55,7 @@ cd an5Agent
 npm run rag:index
 ```
 
-This indexes `.mssql` schema files and `query-samples.json` into the local vector store.
+This indexes `.an5` schema files and `query-samples.json` into the local vector store.
 
 ## Usage
 

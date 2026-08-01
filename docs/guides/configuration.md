@@ -22,6 +22,7 @@ module.exports = {
     typescript: {
       outputDir: 'an5Client/typescript',
       metadataFile: 'an5Client/typescript/an5Metadata.ts',
+      ormMetadataFile: 'an5Orm/an5Metadata.ts',
     },
     python: {
       metadataFile: 'an5Client/python/an5_metadata.py',
@@ -36,12 +37,6 @@ module.exports = {
     exclude: ['^__', '^sys\\.'],  // Exclude system tables
     preserveRelations: true,
   },
-
-  // Code generation options
-  generation: {
-    generateComments: true,
-    generateMetadata: true,
-  },
 };
 ```
 
@@ -51,13 +46,15 @@ module.exports = {
 |--------|------|---------|-------------|
 | `schemaDir` | `string` | `'an5Schema'` | Path to schema files |
 | `outputs.typescript.outputDir` | `string` | `'an5Client/typescript'` | TypeScript output directory |
-| `outputs.typescript.metadataFile` | `string` | `'an5Client/typescript/an5Metadata.ts'` | Metadata file path |
+| `outputs.typescript.metadataFile` | `string` | `'an5Client/typescript/an5Metadata.ts'` | Metadata file path for the generated client |
+| `outputs.typescript.ormMetadataFile` | `string` | `'an5Orm/an5Metadata.ts'` | ORM-local metadata path (owned by `@an5/orm`, so the core never imports from the generated client) |
 | `outputs.python.metadataFile` | `string` | `'an5Client/python/an5_metadata.py'` | Python metadata path |
 | `outputs.dotnet.outputDir` | `string` | `'an5Client/dotnet'` | .NET output directory |
 | `pull.exclude` | `string[]` | `['^__', '^sys\\.']` | Tables to exclude from pull |
 | `pull.preserveRelations` | `boolean` | `true` | Keep relations in schema |
-| `generation.generateComments` | `boolean` | `true` | Generate JSDoc comments |
-| `generation.generateMetadata` | `boolean` | `true` | Generate metadata files |
+
+> `generation.*` keys are reserved in `an5Orm.config.js` but are **not read** by the
+> generator; all outputs are driven by `schemaDir` and `outputs.*`.
 
 ## Environment Variables
 
@@ -74,17 +71,17 @@ DATABASE_URL=sqlserver://localhost:1433;database=mydb;user=sa;password=yourpassw
 # Logging
 LOG_LEVEL=info  # debug, info, warn, error
 
-# LLM Configuration (for AI features)
+# LLM Configuration (for the an5-cli release-note generator and AI features)
+# Provider: "openai", "gemini", or "custom"
 LLM_PROVIDER=openai
 LLM_API_KEY=sk-your-api-key
 LLM_MODEL=gpt-4o-mini
-LLM_ENDPOINT=  # Custom endpoint URL
-
-# Embedding (for vector search)
-EMBEDDING_ENDPOINT=https://api.openai.com/v1
-EMBEDDING_API_KEY=sk-your-api-key
-EMBEDDING_MODEL=text-embedding-3-small
+LLM_ENDPOINT=  # Custom endpoint URL (only when LLM_PROVIDER=custom)
 ```
+
+> Embedding settings for RAG/vector features are **not** read from `EMBEDDING_*`
+> environment variables. They are stored in the `EmbeddingConfig` model/table and
+> read at runtime via `getEmbeddingConfig()`.
 
 ## Database Configuration
 
@@ -107,19 +104,13 @@ DATABASE_URL=sqlserver://your-server.database.windows.net:1433;database=mydb;use
 
 ### Connection Pooling
 
-Configure in your code:
+Pooling is handled by the database adapter. The ORM reads the `DATABASE_URL` environment variable:
 
 ```typescript
 import { An5ORM } from '@an5/orm';
 
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  pool: {
-    min: 5,
-    max: 20,
-    idleTimeoutMillis: 30000
-  }
-});
+// Uses DATABASE_URL from the environment; pool sizing is configured on the adapter
+const db = new An5ORM();
 ```
 
 ## ORM Configuration
@@ -129,41 +120,35 @@ const db = new An5ORM({
 ```typescript
 import { An5ORM } from '@an5/orm';
 
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  logging: true,           // Log queries
-  logQueries: true,        // Log individual queries
-  logSlowQueries: true,    // Log slow queries
-  slowQueryThreshold: 1000 // ms threshold
+// Uses DATABASE_URL from the environment; set LOG_LEVEL=debug for query logging
+const db = new An5ORM();
+```
+
+### Custom Executor
+
+Pass a custom query executor to bypass the default SQL Server adapter:
+
+```typescript
+import { An5ORM } from '@an5/orm';
+
+const db = new An5ORM(async (queryText, params) => {
+  // custom execution (e.g. test double, another database driver)
+  return [];
 });
 ```
 
-### Advanced Options
+### Schema Metadata
+
+Schema metadata (model→table mapping, relations, field types) is auto-loaded from the
+ORM's own generated metadata file `an5Metadata.ts` (written by `npm run generate`). The
+ORM owns this metadata locally and never imports from the generated client — the client
+is generated *from* the ORM. To pass metadata explicitly instead:
 
 ```typescript
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  
-  // Pool settings
-  pool: {
-    min: 5,
-    max: 20,
-    acquireTimeoutMillis: 30000,
-    idleTimeoutMillis: 30000
-  },
-  
-  // Query settings
-  queryTimeout: 30000,
-  maxRetries: 3,
-  
-  // Logging
-  logging: {
-    queries: true,
-    errors: true,
-    slow: true,
-    slowThreshold: 1000
-  }
-});
+import { An5ORM } from '@an5/orm';
+import { modelToTable, relationMap, modelFields } from './an5Metadata';
+
+const db = new An5ORM(undefined, { modelToTable, relationMap, modelFields });
 ```
 
 ## LLM Configuration
@@ -188,28 +173,21 @@ LLM_MODEL=gemini-2.5-flash
 
 ```ini
 LLM_PROVIDER=custom
-LLM_ENDPOINT=http://localhost:11434/api/generate
+LLM_ENDPOINT=http://localhost:11434/api/chat
 LLM_MODEL=llama3
 ```
 
 ### Azure OpenAI
 
-```ini
-LLM_PROVIDER=azure
-LLM_API_KEY=your-azure-api-key
-LLM_ENDPOINT=https://your-resource.openai.azure.com/
-LLM_MODEL=gpt-4o
-```
+`LLM_PROVIDER=azure` is **not supported**. Use the OpenAI-compatible `custom`
+provider with your Azure endpoint instead.
 
 ## Embedding Configuration
 
-For vector search features:
-
-```ini
-EMBEDDING_ENDPOINT=https://api.openai.com/v1
-EMBEDDING_API_KEY=sk-your-api-key
-EMBEDDING_MODEL=text-embedding-3-small
-```
+Embedding settings are stored in the `EmbeddingConfig` model/table (fields:
+`provider`, `apiKey`, `model`, `endpoint`, `isActive`) and read at runtime via
+`getEmbeddingConfig()`. The an5 agent's `rag/embedder` uses those values to call
+your embedding endpoint.
 
 ### Supported Embedding Models
 
@@ -235,11 +213,10 @@ an5Schema/
 
 ### Custom Schema Path
 
-```typescript
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  schemaPath: './my-schemas'
-});
+The schema path is a generator setting, not an ORM constructor option. Configure it in `an5Orm.config.js` (see [above](#an5ormconfigjs)), then generate:
+
+```bash
+npm run generate   # from an5Orm/
 ```
 
 ## CLI Configuration
@@ -256,30 +233,20 @@ npx an5-cli login
 npx an5-cli config
 ```
 
-### Interactive Setup
-
-```bash
-npx an5-cli config --interactive
-```
+The `config` command runs an interactive prompt to set API keys.
 
 ## VS Code Extension
 
-### Settings
+The `an5-orm-vscode` extension provides syntax highlighting, formatting and
+snippets for `.an5` schema files, plus these commands (no extension settings are
+exposed):
 
-```json
-{
-  "an5Orm.schemaPath": "an5Schema/",
-  "an5Orm.autoFormat": true,
-  "an5Orm.validateOnSave": true
-}
-```
-
-### Keyboard Shortcuts
-
-| Shortcut | Action |
-|----------|--------|
-| `Shift+Alt+F` | Format document |
-| `Ctrl+Space` | Trigger suggestions |
+| Command | Action |
+|---------|--------|
+| `AN5: Generate Client Code` | Run schema generation |
+| `AN5: Push Database Schema` | Push schema to the database |
+| `AN5: Pull Database Schema` | Pull schema from the database |
+| `AN5: Open an5Orm Configuration File` | Open `an5Orm.config.js` |
 
 ## Docker Configuration
 

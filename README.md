@@ -24,7 +24,7 @@
 | **Multi-Language** | Generate clients for TypeScript, Python, and .NET |
 | **AI Agent** | 7 intelligent tools for natural language database queries |
 | **Vector Search** | Built-in semantic search for AI/ML applications |
-| **Relations** | One-to-one, one-to-many, many-to-many with nested queries |
+| **Relations** | One-to-one and one-to-many with nested queries |
 | **Transactions** | Atomic operations with rollback support |
 | **VS Code Extension** | Syntax highlighting and formatting for `.an5` files |
 
@@ -79,9 +79,11 @@ model User {
 
 ### 4. Generate & Push
 
+Schema/database commands run as npm scripts from the `an5Orm/` repo (no standalone CLI binary is shipped):
+
 ```bash
-npx an5 generate    # Generate client code
-npx an5 db:push     # Push schema to database
+npm run generate    # Generate client code (in an5Orm/)
+npm run db:push     # Push schema to database (in an5Orm/)
 ```
 
 ### 5. Use in Code
@@ -89,9 +91,8 @@ npx an5 db:push     # Push schema to database
 ```typescript
 import { An5ORM } from '@an5/orm';
 
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL
-});
+// Uses DATABASE_URL from the environment; metadata auto-loads from the ORM's generated copy
+const db = new An5ORM();
 
 // Create
 const user = await db.user.create({
@@ -122,10 +123,10 @@ await db.user.delete({ where: { id: user.id } });
 
 | Package | Description | Key Features |
 |---------|-------------|--------------|
-| **[an5Orm](an5Orm/)** (`@an5/orm`) | Core ORM runtime and `an5` CLI | Proxy client, CRUD, vector search, middleware, transactions |
+| **[an5Orm](an5Orm/)** (`@an5/orm`) | Core ORM runtime | Proxy client, CRUD, vector search, middleware, transactions |
 | **[an5Client](an5Client/)** | Generated client code | Type-safe models for TypeScript, Python, .NET |
 | **[an5Adapters](an5Adapters/)** (`@an5/adapters`) | Database adapters | SQL Server/Postgres/MySQL/SQLite engines, Google Sheets, Python/.NET sources |
-| **[an5Agent](an5Agent/)** (`@an5/agent`) | AI Database Agent | 7 tools: schema, query, database, retrieve, task |
+| **[an5Agent](an5Agent/)** (`@an5/agent`) | AI Database Agent | 7 tools: schema, query, database, generateClientCode, analyzeSchema, retrieve, task |
 | **[an5Cli](an5Cli/)** | CLI & Local UI | Release automation, LLM commits, documentation |
 | **[an5Schema](an5Schema/)** | Schema definitions | `.an5` files with types, relations, indexes |
 | **[an5OrmVScode](an5OrmVScode/)** | VS Code extension | Syntax highlighting, snippets, formatting |
@@ -150,10 +151,8 @@ await db.user.delete({ where: { id: user.id } });
 ```typescript
 import { An5Agent } from '@an5/agent';
 
-const agent = new An5Agent({
-  workspaceDir: process.cwd(),
-  llmProvider: 'openai'
-});
+// Registers the 7 default tools
+const agent = new An5Agent();
 
 // Natural language query
 const result = await agent.process({
@@ -225,17 +224,19 @@ model Post {
 
 ---
 
-## CLI Commands
+## Schema & Database Commands
 
-### Schema Management
+These run as npm scripts from the `an5Orm/` repository (no standalone `an5` CLI binary is shipped):
 
 | Command | Description |
 |---------|-------------|
-| `npx an5 generate` | Generate client code from schema |
-| `npx an5 db:push` | Push schema to database |
-| `npx an5 db:pull` | Pull schema from database |
-| `npx an5 db:seed` | Seed database with sample data |
-| `npx an5 db:migrate diff` | Compare schema with database |
+| `npm run generate` | Generate client code from schema |
+| `npm run db:push` | Push schema to database |
+| `npm run db:pull` | Pull schema from database |
+| `npm run db:seed` | Seed database with sample data |
+| `npm run db:migrate diff` | Compare schema with database |
+| `npm run db:migrate:generate` | Generate migration SQL |
+| `npm run db:migrate:status` | Show migration status |
 
 ### Development
 
@@ -243,18 +244,9 @@ model Post {
 |---------|-------------|
 | `npm run build` | Build all packages |
 | `npm test` | Run all tests |
-| `npm run ui` | Start local UI on port 5070 |
-| `npm run ui:tunnel` | Start UI with tunnel for mobile |
-
-### Release
-
-| Command | Description |
-|---------|-------------|
-| `npm run status` | Check status across all packages |
-| `npm run dryrun` | Preview release changes |
-| `npm run release:all` | Release all packages |
-| `npm run version:bump:dry` | Preview npm version bumps |
-| `npm run version:bump` | Auto bump npm package versions |
+| `npm run generate` | Generate client code (`-w an5Orm`) |
+| `npm run dryrun` | Preview workspace release changes |
+| `npm run release` | Release across the workspace |
 
 ---
 
@@ -269,6 +261,7 @@ module.exports = {
     typescript: {
       outputDir: 'an5Client/typescript',
       metadataFile: 'an5Client/typescript/an5Metadata.ts',
+      ormMetadataFile: 'an5Orm/an5Metadata.ts',
     },
     python: {
       metadataFile: 'an5Client/python/an5_metadata.py',
@@ -286,16 +279,15 @@ module.exports = {
 # Database (required)
 DATABASE_URL=sqlserver://localhost:1433;database=mydb;user=sa;password=yourpassword
 
-# LLM (optional - for AI features)
+# LLM (optional - for an5-cli release notes / AI features)
 LLM_PROVIDER=openai
 LLM_API_KEY=sk-your-api-key
 LLM_MODEL=gpt-4o-mini
-
-# Embedding (optional - for vector search)
-EMBEDDING_ENDPOINT=https://api.openai.com/v1
-EMBEDDING_API_KEY=sk-your-api-key
-EMBEDDING_MODEL=text-embedding-3-small
 ```
+
+> Embedding settings for vector/RAG features are stored in the `EmbeddingConfig`
+> model/table (not environment variables) and read at runtime via
+> `getEmbeddingConfig()`.
 
 ---
 

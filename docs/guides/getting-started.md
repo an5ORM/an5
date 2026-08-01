@@ -22,7 +22,7 @@ For the current implementation and package maturity overview, see [Feature Statu
 npm install @an5/orm
 ```
 
-This installs the ORM runtime, the `an5` CLI, and the required `@an5/adapters` package.
+This installs the ORM runtime and the required `@an5/adapters` package.
 
 ## Configuration
 
@@ -62,8 +62,10 @@ model User {
 
 ### 3. Generate Client Code
 
+Run from the `an5Orm/` repository directory:
+
 ```bash
-npx an5 generate
+npm run generate
 ```
 
 This generates type-safe client code in `an5Client/`.
@@ -71,7 +73,7 @@ This generates type-safe client code in `an5Client/`.
 ### 4. Push Schema to Database
 
 ```bash
-npx an5 db:push
+npm run db:push
 ```
 
 This creates the tables in your database.
@@ -81,10 +83,9 @@ This creates the tables in your database.
 ```typescript
 import { An5ORM } from '@an5/orm';
 
-// Initialize the ORM
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL
-});
+// Initialize the ORM (uses DATABASE_URL from the environment;
+// schema metadata auto-loads from the ORM's generated an5Metadata.ts)
+const db = new An5ORM();
 
 async function main() {
   // Create a user
@@ -112,7 +113,7 @@ main()
 ```
 an5/
 ├── an5Schema/           # Schema definitions (.an5 files)
-├── node_modules/@an5/orm      # Core ORM runtime and CLI
+├── node_modules/@an5/orm      # Core ORM runtime
 ├── node_modules/@an5/adapters # Database adapters
 ├── an5Client/                # Generated client code
 └── .env                 # Configuration
@@ -120,13 +121,15 @@ an5/
 
 ## Available Commands
 
+Schema/database commands run from the `an5Orm/` repository directory (no standalone `an5` CLI binary is shipped):
+
 | Command | Description |
 |---------|-------------|
-| `npx an5 generate` | Generate client code from schema |
-| `npx an5 db:push` | Push schema to database |
-| `npx an5 db:pull` | Pull schema from database |
-| `npx an5 db:seed` | Seed database with sample data |
-| `npx an5 db:migrate diff` | Compare schema with database |
+| `npm run generate` | Generate client code from schema |
+| `npm run db:push` | Push schema to database |
+| `npm run db:pull` | Pull schema from database |
+| `npm run db:seed` | Seed database with sample data |
+| `npm run db:migrate diff` | Compare schema with database |
 | `npm run build` | Build all packages |
 | `npm test` | Run all tests |
 

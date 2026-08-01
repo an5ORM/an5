@@ -15,29 +15,37 @@ Complete API documentation for an5 ORM.
 ```typescript
 import { An5ORM } from '@an5/orm';
 
-const db = new An5ORM(options?: An5ORMOptions);
+const db = new An5ORM(customExecutor?, metadata?);
 ```
 
-### Options
+### Parameters
 
-| Option | Type | Default | Description |
+| Param | Type | Default | Description |
 |--------|------|---------|-------------|
-| `connectionString` | `string` | - | Database connection string |
-| `pool` | `PoolOptions` | `{ min: 5, max: 20 }` | Connection pool settings |
-| `logging` | `boolean \| LogOptions` | `false` | Enable query logging |
-| `queryTimeout` | `number` | `30000` | Query timeout in ms |
-| `schemaPath` | `string` | `./an5Schema` | Schema files location |
+| `customExecutor` | `(queryText: string, params?: Record<string, any>) => Promise<any[]>` | - | Custom query executor; defaults to a SQL Server adapter built from the `DATABASE_URL` environment variable |
+| `metadata` | `An5Metadata` | Auto-loaded from the ORM's generated `an5Metadata.ts` | Schema metadata: `{ modelToTable, relationMap, modelFields }`. Pass explicitly to provide schema models out of the box |
+
+```typescript
+// Auto-loaded metadata (from the ORM's generated an5Metadata.ts)
+const db = new An5ORM();
+
+// Explicit metadata
+import { modelToTable, relationMap, modelFields } from './an5Metadata';
+const db = new An5ORM(undefined, { modelToTable, relationMap, modelFields });
+```
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `$connect()` | `Promise<void>` | Establish connection |
+| `$connect()` | `Promise<void>` | Establish connection (no-op for default adapter; connection is lazy) |
 | `$disconnect()` | `Promise<void>` | Close connection |
-| `$transaction(fn)` | `Promise<T>` | Execute transaction |
-| `$queryRaw` | `TemplateTag` | Raw SQL query |
-| `$executeRaw` | `TemplateTag` | Raw SQL execute |
-| `$begin()` | `Promise<Transaction>` | Begin interactive transaction |
+| `$transaction(fn, options?)` | `Promise<T>` | Execute callback-style transaction |
+| `$queryRaw(template)` | `Promise<any[]>` | Raw SQL query (template tag or string) |
+| `$queryRawUnsafe(query, ...values)` | `Promise<any[]>` | Raw SQL query with positional params |
+| `$executeRaw(template)` | `Promise<number>` | Raw SQL execute, returns rows affected |
+| `$executeRawUnsafe(query, ...values)` | `Promise<number>` | Raw SQL execute with positional params |
+| `$use(middleware)` | `void` | Register a middleware hook |
 
 ## Model Methods
 
@@ -84,8 +92,7 @@ db.model.findMany(params: FindManyArgs): Promise<Model[]>
   include?: IncludeInput,
   select?: SelectInput,
   skip?: number,
-  take?: number,
-  cursor?: CursorInput
+  take?: number
 }
 ```
 
@@ -228,15 +235,18 @@ db.model.vectorSearch(params: VectorSearchArgs): Promise<Model[]>
 ```typescript
 {
   vector: number[],
-  field: string,
-  threshold?: number,
-  distanceMetric?: 'cosine' | 'euclidean' | 'dotproduct',
+  vectorField?: string,
+  take?: number,
+  distanceMetric?: 'cosine' | 'euclidean' | 'dot',
+  vectorElementType?: 'float32' | 'float16' | 'uint8',
   where?: WhereInput,
-  include?: IncludeInput,
-  select?: SelectInput,
-  take?: number
+  include?: IncludeInput
 }
 ```
+
+Returns `(Model & { distance: number })[]`. Native `VECTOR_DISTANCE` is used when
+supported by the SQL Server instance; otherwise a cosine-distance fallback runs
+in memory.
 
 ## Where Input
 
@@ -246,7 +256,6 @@ db.model.vectorSearch(params: VectorSearchArgs): Promise<Model[]>
 {
   // Equality
   field: 'value',
-  field: { equals: 'value' },
   field: { not: 'value' },
   
   // Comparison
@@ -293,11 +302,10 @@ db.model.vectorSearch(params: VectorSearchArgs): Promise<Model[]>
   // Simple include
   posts: true,
   
-  // With filtering
+  // With ordering / projection
   posts: {
-    where: { published: true },
-    orderBy: { createdAt: 'desc' },
-    take: 5
+    select: { id: true, title: true },
+    orderBy: { createdAt: 'desc' }
   },
   
   // Nested
@@ -342,10 +350,9 @@ db.model.vectorSearch(params: VectorSearchArgs): Promise<Model[]>
   { role: 'asc' },
   { createdAt: 'desc' }
 ]
-
-// Relation field
-{ posts: { _count: 'desc' } }
 ```
+
+Only scalar columns are supported in `orderBy` (relations/aggregates are not).
 
 ## Transaction
 
@@ -359,19 +366,8 @@ await db.$transaction(async (tx) => {
 });
 ```
 
-### $begin (Interactive)
-
-```typescript
-const tx = await db.$begin();
-
-try {
-  const user = await tx.user.create({...});
-  await tx.$commit();
-} catch (error) {
-  await tx.$rollback();
-  throw error;
-}
-```
+`$transaction` is callback-based only; interactive `$begin()` / `tx.$commit()` /
+`tx.$rollback()` are not implemented.
 
 ## Raw Queries
 
@@ -382,11 +378,6 @@ try {
 const users = await db.$queryRaw`
   SELECT * FROM users 
   WHERE email LIKE ${'%@example.com'}
-`;
-
-// Typed
-const users = await db.$queryRaw<User[]`
-  SELECT * FROM users
 `;
 ```
 
@@ -410,32 +401,29 @@ const result = await db.$executeRaw`
 ## Error Handling
 
 ```typescript
-import { An5ORMError } from '@an5/orm';
+import { An5ClientKnownRequestError } from '@an5/orm';
 
 try {
   await db.user.create({
     data: { email: 'john@example.com' }
   });
 } catch (error) {
-  if (error instanceof An5ORMError) {
+  if (error instanceof An5ClientKnownRequestError) {
     console.log('Code:', error.code);
     console.log('Message:', error.message);
   }
 }
 ```
 
-## Common Error Codes
+## Known Error Codes
 
 | Code | Description |
 |------|-------------|
-| P2000 | Bad request |
-| P2001 | Record not found |
 | P2002 | Unique constraint violation |
 | P2003 | Foreign key constraint |
-| P2004 | Database error |
-| P2005 | Connection error |
-| P2006 | Transaction error |
-| P2007 | Timeout error |
+
+Other failures surface as the underlying driver error (or a plain `Error` for
+records not found).
 
 ---
 
@@ -446,23 +434,17 @@ try {
 ```typescript
 import { An5Agent } from '@an5/agent';
 
-const agent = new An5Agent(options?: An5AgentOptions);
+const agent = new An5Agent(tools?: Tool[]);
 ```
 
-### Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `workspaceDir` | `string` | `process.cwd()` | Workspace root directory |
-| `llmProvider` | `'openai' \| 'gemini' \| 'custom'` | `'openai'` | LLM provider |
-| `llmModel` | `string` | `'gpt-4o-mini'` | LLM model name |
+Registers the 7 default tools unless overridden; custom tools can be appended.
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `process(query)` | `Promise<AgentResult>` | Process natural language query |
-| `executeTool(name, params)` | `Promise<any>` | Execute a specific tool |
+| `process(context)` | `Promise<AgentResponse>` | Process `AgentContext` (`{ userQuestion, database?, toolContext? }`) |
+| `executeTool(name, input, context?)` | `Promise<unknown>` | Execute a specific tool |
 | `getTools()` | `Tool[]` | Get all registered tools |
 | `getTool(name)` | `Tool \| undefined` | Get tool by name |
 | `addTool(tool)` | `void` | Register a new tool |
@@ -485,15 +467,17 @@ For detailed tool documentation, see [AI Agent Tools]({{ '/guides/agent-tools/' 
 
 ## CLI Commands
 
+Schema/database commands run as npm scripts from the `an5Orm/` repository directory (no standalone `an5` CLI binary is shipped).
+
 ### Schema Management
 
 | Command | Description |
 |---------|-------------|
-| `npx an5 generate` | Generate client code from schema |
-| `npx an5 db:push` | Push schema to database |
-| `npx an5 db:pull` | Pull schema from database |
-| `npx an5 db:seed` | Seed database with sample data |
-| `npx an5 db:migrate diff` | Compare schema with database |
+| `npm run generate` | Generate client code from schema |
+| `npm run db:push` | Push schema to database |
+| `npm run db:pull` | Pull schema from database |
+| `npm run db:seed` | Seed database with sample data |
+| `npm run db:migrate diff` | Compare schema with database |
 
 ### Development
 
@@ -507,8 +491,7 @@ For detailed tool documentation, see [AI Agent Tools]({{ '/guides/agent-tools/' 
 
 | Command | Description |
 |---------|-------------|
-| `npm run status` | Check status across all submodules |
 | `npm run dryrun` | Preview release changes |
-| `npm run release:all` | Release all submodules |
+| `npm run release` | Release across the workspace |
 
 For more CLI commands, see [CLI Commands]({{ '/guides/cli/' | relative_url }}).

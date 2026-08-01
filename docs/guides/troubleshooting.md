@@ -34,14 +34,8 @@ DATABASE_URL=sqlserver://server.database.windows.net:1433;database=mydb;user=adm
 
 **Solution:**
 ```typescript
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  pool: {
-    min: 5,
-    max: 20,
-    acquireTimeoutMillis: 60000  // Increase timeout
-  }
-});
+// Uses DATABASE_URL from the environment; timeouts are configured via the adapter
+const db = new An5ORM();
 ```
 
 ### Too Many Connections
@@ -50,13 +44,8 @@ const db = new An5ORM({
 
 **Solution:**
 ```typescript
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  pool: {
-    max: 10,  // Reduce pool size
-    idleTimeoutMillis: 30000
-  }
-});
+// Uses DATABASE_URL from the environment; pool sizing is handled by the adapter
+const db = new An5ORM();
 ```
 
 ## Schema Issues
@@ -174,14 +163,8 @@ console.log(user.posts);  // Now available
 
 **Solution:**
 ```typescript
-// Enable slow query logging
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  logging: {
-    slow: true,
-    slowThreshold: 1000  // Log queries > 1 second
-  }
-});
+// Uses DATABASE_URL from the environment; set LOG_LEVEL=debug for slow-query logging
+const db = new An5ORM();
 
 // Add indexes
 await db.$executeRaw`CREATE INDEX idx_email ON users(email)`;
@@ -193,7 +176,7 @@ await db.$executeRaw`CREATE INDEX idx_email ON users(email)`;
 ```typescript
 // Always disconnect when done
 async function main() {
-  const db = new An5ORM({...});
+  const db = new An5ORM();  // Uses DATABASE_URL from the environment
   
   try {
     // Use db
@@ -232,8 +215,8 @@ const users = await db.user.findMany({
 # Install the published ORM package
 npm install @an5/orm
 
-# Verify the CLI is available
-npx an5 --help
+# Verify the package resolves
+node -e "require('@an5/orm')"
 ```
 
 ### Generation Fails
@@ -247,7 +230,7 @@ npx an5 --help
 
 ```bash
 npx an5-cli format schema/
-npx an5 generate
+npm run generate   # from an5Orm/
 ```
 
 ## Environment Issues
@@ -294,14 +277,8 @@ LOG_LEVEL=debug
 ```
 
 ```typescript
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  logging: {
-    queries: true,
-    errors: true,
-    parameters: true
-  }
-});
+// Uses DATABASE_URL from the environment; set LOG_LEVEL=debug for verbose query logging
+const db = new An5ORM();
 ```
 
 ## Getting Help
@@ -311,12 +288,12 @@ const db = new An5ORM({
 3. **Community** - Discord/Slack
 4. **Documentation** - This site
 
-## Common Error Codes
+## Known Error Codes
 
 | Code | Description | Solution |
 |------|-------------|----------|
-| P2000 | Unique constraint violation | Check for duplicate values |
-| P2001 | Record not found | Verify record exists |
-| P2002 | Foreign key constraint | Check related records |
-| P2003 | Invalid input | Verify data types |
-| P2004 | Database error | Check connection/logs |
+| P2002 | Unique constraint violation | Check for duplicate values |
+| P2003 | Foreign key constraint | Check related records |
+
+These are raised as `An5ClientKnownRequestError` from `@an5/orm`. Other failures
+surface as the underlying driver error (or a plain `Error` for records not found).

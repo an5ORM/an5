@@ -12,7 +12,7 @@ This page summarizes what is currently implemented, published, and still maturin
 
 | Package | Registry | Latest | Status | Notes |
 |---------|----------|--------|--------|-------|
-| `@an5/orm` | npm | `1.0.7` | Published | Core ORM runtime plus `an5` / `an5-orm` CLI bins |
+| `@an5/orm` | npm | `1.0.7` | Published | Core ORM runtime (no CLI binary) |
 | `@an5/adapters` | npm | `0.2.3` | Published | Runtime database adapters for TypeScript apps |
 | `@an5/agent` | npm | `0.1.1` | Published | AI database agent with 7 consolidated tools |
 | `an5-adapters` | PyPI | `0.2.3` target | Build-ready | Wheel/sdist pass `twine check`; PyPI token / trusted publisher setup |
@@ -34,20 +34,21 @@ PyPI does not use npm-style scopes like `@an5/orm`. The Python package names are
 | Middleware | Implemented | `$use` pipeline for cross-cutting behavior |
 | Error normalization | Implemented | Prisma-style error code mapping for common failures |
 
-## CLI and Schema Workflow
+## Schema Workflow
+
+Schema/database commands run as npm scripts from the `an5Orm/` repository directory (no standalone `an5` CLI binary is shipped).
 
 | Command | Status | Purpose |
 |---------|--------|---------|
-| `npx an5 generate` | Implemented | Generate TypeScript, Python, and .NET client artifacts from `an5Schema/` |
-| `npx an5 db:generate` | Implemented | Alias for `generate` |
-| `npx an5 db:push` | Implemented | Safe additive push: create tables and add missing columns from schema |
-| `npx an5 db:pull` | Implemented | Introspect database tables into `.an5` files |
-| `npx an5 db:migrate diff` | Implemented, evolving | Compare schema with database |
-| `npx an5 db:migrate generate` | Implemented, evolving | Generate SQL migration file |
-| `npx an5 db:seed` | Implemented | Seed default app/config data |
-| `npx an5 db:cleanup` | Implemented, destructive | Detect/drop tables not represented in schema |
+| `npm run generate` | Implemented | Generate TypeScript, Python, and .NET client artifacts from `an5Schema/` |
+| `npm run db:push` | Implemented | Safe additive push: create tables and add missing columns from schema |
+| `npm run db:pull` | Implemented | Introspect database tables into `.an5` files |
+| `npm run db:migrate diff` | Implemented, evolving | Compare schema with database |
+| `npm run db:migrate:generate` | Implemented, evolving | Generate SQL migration file |
+| `npm run db:seed` | Implemented | Seed default app/config data |
+| `npm run db:cleanup` | Implemented, destructive | Detect/drop tables not represented in schema |
 
-The `an5` CLI runs from the consumer project root (`process.cwd()`), so projects should use `npx an5 ...` instead of calling files inside `node_modules/@an5/orm`.
+These commands run from the `an5Orm/` repository root, so use `npm run <command>` there instead of calling files inside `node_modules/@an5/orm`.
 
 ## Adapters
 
@@ -85,10 +86,9 @@ The `an5` CLI runs from the consumer project root (`process.cwd()`), so projects
 
 | Workflow | Status | Command |
 |----------|--------|---------|
-| Auto bump npm versions | Implemented | `npm run version:bump` |
-| Preview version bump | Implemented | `npm run version:bump:dry` |
+| Auto bump npm versions | Implemented | `node scripts/auto-bump-version.js` |
 | Workspace dry run | Implemented | `npm run dryrun` |
-| Workspace release | Implemented | `npm run release:all` |
+| Workspace release | Implemented | `npm run release` / `npx an5-cli ws . --push` |
 | GitHub Pages deploy | Implemented | `.github/workflows/pages.yml` |
 
 The default auto-bump package set is `@an5/adapters` and `@an5/orm`. The script reads npm latest versions and bumps local versions only when needed.
@@ -98,7 +98,7 @@ The default auto-bump package set is `@an5/adapters` and `@an5/orm`. The script 
 | Area | Current Gap | Recommended Next Step |
 |------|-------------|-----------------------|
 | PyPI organization | PyPI orgs are managed through PyPI web UI, not CLI | Create `an5` organization manually and add package owner/manager |
-| PyPI upload | Build artifacts are ready, credentials are not configured | Set `TWINE_USERNAME=__token__` and `TWINE_PASSWORD=<pypi-token>`, then run `python -m twine upload dist/*` |
+| PyPI upload | Build artifacts are ready, credentials are not configured | Set `TWINE_USERNAME=__token__` and `TWINE_PASSWORD=<pypi-token>`, then run `python -m twine upload dist-py/*` |
 | Migration diff | Basic table/column/index diff exists, but full rollback/up/down workflow is not complete | Add migration apply/rollback tracking table |
 | Test coverage | Smoke/unit tests exist, but DB integration coverage is limited | Add containerized SQL Server integration tests |
 | Relation edge cases | Common relation flows exist, deeper nested writes need more verification | Add relation integration tests and examples |
@@ -110,8 +110,8 @@ For a normal application project:
 
 ```bash
 npm install @an5/orm
-npx an5 generate
-npx an5 db:push
+npm run generate   # from an5Orm/
+npm run db:push    # from an5Orm/
 ```
 
 For adapter-only TypeScript usage:

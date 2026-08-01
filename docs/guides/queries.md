@@ -95,16 +95,8 @@ const users = await db.user.findMany({
 });
 ```
 
-### Cursor-based
-
-```typescript
-const users = await db.user.findMany({
-  take: 10,
-  cursor: {
-    id: 'last-user-id'
-  }
-});
-```
+When `skip` is used, an `ORDER BY (SELECT NULL)` + `OFFSET/FETCH` pagination is
+generated (SQL Server requires an `ORDER BY` for `OFFSET`).
 
 ## Aggregations
 
@@ -134,15 +126,12 @@ console.log({
 const ordersByUser = await db.order.groupBy({
   by: ['userId'],
   _count: true,
-  _sum: { total: true },
-  having: {
-    total: { _sum: { gt: 1000 } }
-  },
-  orderBy: {
-    _sum: { total: 'desc' }
-  }
+  _sum: { total: true }
 });
 ```
+
+`groupBy` supports `by`, `where`, `_count`, `_sum`, `_avg`, `_min`, `_max`.
+`having` and `orderBy` are not supported.
 
 ## Select Specific Fields
 
@@ -159,19 +148,10 @@ const users = await db.user.findMany({
 });
 ```
 
-## Distinct Records
-
-```typescript
-const roles = await db.user.findMany({
-  distinct: ['role'],
-  select: { role: true }
-});
-```
-
 ## Complex Query Example
 
 ```typescript
-// Find active users with published posts, ordered by post count
+// Find active users with published posts, ordered by join date
 const users = await db.user.findMany({
   where: {
     isActive: true,
@@ -181,22 +161,18 @@ const users = await db.user.findMany({
   },
   include: {
     posts: {
-      where: { published: true },
       select: {
         id: true,
         title: true,
         createdAt: true
       },
-      orderBy: { createdAt: 'desc' },
-      take: 5
+      orderBy: { createdAt: 'desc' }
     },
     _count: {
       select: { posts: true }
     }
   },
-  orderBy: {
-    posts: { _count: 'desc' }
-  },
+  orderBy: { createdAt: 'desc' },
   take: 10
 });
 ```
@@ -206,8 +182,8 @@ const users = await db.user.findMany({
 For complex queries that are hard to express with the ORM:
 
 ```typescript
-// Typed raw query
-const users = await db.$queryRaw<User[]>`
+// Raw query (results are untyped)
+const users = await db.$queryRaw`
   SELECT u.*, COUNT(p.id) as post_count
   FROM users u
   LEFT JOIN posts p ON u.id = p.author_id

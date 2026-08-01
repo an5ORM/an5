@@ -28,14 +28,14 @@ an5Orm/ ──► an5Client/ ──metadata──► an5Adapters/ ◄── an5A
 | **an5Adapters** | Runtime adapters | Provider-based SQL and Google Sheets adapters, CRUD table clients, vector search, transactions |
 | **an5Agent** | AI agent library | 7 tools: schema, query, database, codegen, retrieve, task (consolidated) |
 | **an5Cli** | Release orchestrator | Changelog gen, LLM-powered commits, docs helpers, `ws` command, simplified local UI |
-| **an5OrmVScode** | Editor extension | Syntax highlighting, formatter, snippets for `.mssql` files |
-| **an5Schema** | Schema source | Sample `.mssql` model definitions |
+| **an5OrmVScode** | Editor extension | Syntax highlighting, formatter, snippets for `.an5` files |
+| **an5Schema** | Schema source | Sample `.an5` model definitions |
 | **an5Tasks** | Task manager | Genkit v1.39 flows, LLM review parsing, task CRUD, tools for agent integration |
 
 ## Data Flow
 
 ```
-Developer writes .mssql ──► an5Orm/generator ──► an5Client/ (TS/Python/C#)
+Developer writes .an5 ──► an5Orm/generator ──► an5Client/ (TS/Python/C#)
                                                           │
                                                           v
                                                an5Adapters/ (optional metadata injection)
@@ -53,12 +53,12 @@ Developer writes .mssql ──► an5Orm/generator ──► an5Client/ (TS/Pyth
 | `an5Agent` | `an5Adapters` | Dynamic `require()` via relative path |
 | `an5Agent` | `an5Tasks` | Dynamic `require()` — bridges Genkit tools into agent Tool interface |
 | `an5Agent` | `an5Client` | Metadata file read for model info |
-| `an5Agent` | `an5Schema` | Directory scan for `.mssql` files |
+| `an5Agent` | `an5Schema` | Directory scan for `.an5` files |
 | generated clients | `an5Adapters` | Optional metadata injection for model/table mapping |
-| `an5Orm` | `an5Client/typescript` | Source import |
-| `an5Orm` | `an5Adapters` | `MssqlAdapter` for DB operations |
+| `an5Orm` | own `an5Metadata.ts` | Local metadata require — the core never imports the generated client (the client is generated *from* the ORM) |
+| `an5Orm` | `an5Adapters` | `An5Adapter` (via `createAn5Adapter`) for DB operations |
 | `an5Orm/generator` | `an5Client/*` | **Writes** generated files |
-| `an5Orm/generator` | `an5Schema/` | **Reads** .mssql definitions |
+| `an5Orm/generator` | `an5Schema/` | **Reads** .an5 definitions |
 | `an5Cli` | `an5Tasks` | Dynamic `require()` for task operations |
 
 ## Agent Tools Architecture (7 Consolidated)
@@ -133,7 +133,7 @@ an5Tasks/src/index.ts                    an5Agent/src/tools/task-tools.ts
 - **Database**: SQL Server (primary), PostgreSQL, MySQL, SQLite
 - **AI Framework**: Google Genkit v1.39
 - **Build Tool**: npm workspaces
-- **Testing**: Jest
+- **Testing**: Node built-in test runner (`node test/*.test.js`)
 - **Documentation**: Jekyll (GitHub Pages)
 
 ## Related

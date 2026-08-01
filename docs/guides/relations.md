@@ -49,21 +49,24 @@ model Profile {
 
 ### Many-to-Many
 
-```an5
-model Post {
-  id    NVARCHAR(1000) @id @default(uuid())
-  title NVARCHAR(255)
-  
-  tags  Tag[]
-}
+Implicit many-to-many join tables are **not** generated automatically. Model
+many-to-many as an explicit join model with two foreign keys:
 
-model Tag {
-  id   NVARCHAR(1000) @id @default(uuid())
-  name NVARCHAR(100)  @unique
-  
-  posts Post[]
+```an5
+model PostTag {
+  id     NVARCHAR(1000) @id @default(uuid())
+  postId NVARCHAR(1000)
+  tagId  NVARCHAR(1000)
+
+  post   Post @relation(fields: [postId], references: [id])
+  tag    Tag  @relation(fields: [tagId], references: [id])
+
+  @@map("post_tags")
 }
 ```
+
+Relations are inferred from foreign-key fields (and their opposite FK) in the
+schema parser.
 
 ## Querying Relations
 
@@ -76,18 +79,19 @@ const user = await db.user.findUnique({
   include: { posts: true }
 });
 
-// Include with filtering
+// Include with ordering / projection
 const user = await db.user.findUnique({
   where: { id: 'user-id' },
   include: {
     posts: {
-      where: { published: true },
-      orderBy: { createdAt: 'desc' },
-      take: 5
+      select: { id: true, title: true },
+      orderBy: { createdAt: 'desc' }
     }
   }
 });
 ```
+
+Note: relation-level `where` and `take` inside `include` are not supported.
 
 ### Nested Relations
 
@@ -165,39 +169,6 @@ const post = await db.post.create({
     title: 'New Post',
     author: {
       connect: { id: 'user-id' }
-    },
-    tags: {
-      connect: [
-        { id: 'tag-id-1' },
-        { id: 'tag-id-2' }
-      ]
-    }
-  }
-});
-```
-
-### Disconnect Relations
-
-```typescript
-// Disconnect a single relation
-await db.user.update({
-  where: { id: 'user-id' },
-  data: {
-    profile: {
-      disconnect: true
-    }
-  }
-});
-
-// Disconnect multiple relations
-await db.post.update({
-  where: { id: 'post-id' },
-  data: {
-    tags: {
-      disconnect: [
-        { id: 'tag-id-1' },
-        { id: 'tag-id-2' }
-      ]
     }
   }
 });

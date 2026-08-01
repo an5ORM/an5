@@ -6,35 +6,36 @@ description: Command-line interface for schema management and development
 
 # CLI Commands
 
-an5 ORM provides two CLIs: `an5` for project-level ORM/database work, and `an5-cli` for monorepo release/workspace automation.
+`an5-cli` is a workspace/release automation tool for the monorepo. ORM and database operations are run as npm scripts from the `an5Orm/` repository (no standalone `an5` ORM CLI binary is shipped).
 
 Use [Feature Status]({{ '/guides/feature-status/' | relative_url }}) to see which commands are stable and which migration workflows are still evolving.
 
 ## Installation
 
-For application projects, install the published ORM package:
+The workspace/release CLI lives in the `an5Cli/` repository:
 
 ```bash
-npm install @an5/orm
+cd an5Cli
+npm install
+npm run build
 ```
 
-This exposes two equivalent binaries:
+This exposes the `an5-cli` binary:
 
 ```bash
-npx an5 --help
-npx an5-orm --help
+npx an5-cli --help
 ```
 
-For this monorepo workspace, npm scripts are also available:
+ORM schema/database commands (generate, db:push, …) are npm scripts in `an5Orm/`:
 
 ```bash
+cd an5Orm
 npm run <command>
-
-# Workspace/release CLI
-npx an5-cli <command>
 ```
 
 ## Schema Commands
+
+Run from the `an5Orm/` repository directory.
 
 ### Generate Client Code
 
@@ -42,10 +43,7 @@ Generate type-safe client code from your schema files.
 
 ```bash
 # Generate all clients (TypeScript, Python, .NET)
-npx an5 generate
-
-# Alias
-npx an5 db:generate
+npm run generate
 ```
 
 **Output:**
@@ -62,7 +60,7 @@ Create or update database tables based on your schema.
 
 ```bash
 # Push schema to database
-npx an5 db:push
+npm run db:push
 ```
 
 **What it does:**
@@ -77,7 +75,7 @@ Reverse-engineer schema from existing database.
 
 ```bash
 # Pull schema from database
-npx an5 db:pull
+npm run db:pull
 ```
 
 **Output:** Creates `.an5` files in `an5Schema/` directory.
@@ -88,20 +86,20 @@ Populate database with sample data.
 
 ```bash
 # Run seed script
-npx an5 db:seed
+npm run db:seed
 ```
 
 ### Migrations
 
 ```bash
 # Compare schema with database
-npx an5 db:migrate diff
+npm run db:migrate diff
 
 # Generate migration SQL
-npx an5 db:migrate generate
+npm run db:migrate:generate
 
 # Show migration status
-npx an5 db:migrate status
+npm run db:migrate:status
 ```
 
 ## Development Commands
@@ -130,9 +128,6 @@ Launch the local development UI.
 ```bash
 # Start UI on port 5070
 npm run ui
-
-# Start with tunnel for mobile access
-npm run ui:tunnel
 ```
 
 **Features:**
@@ -144,13 +139,6 @@ npm run ui:tunnel
 
 ## Release Commands
 
-### Check Status
-
-```bash
-# Check status across all submodules
-npm run status
-```
-
 ### Dry Run Release
 
 Preview release changes without committing.
@@ -159,12 +147,18 @@ Preview release changes without committing.
 npm run dryrun
 ```
 
-### Release All
+### Release Workspace
 
-Compile, test, tag, commit, and push all submodules.
+Compile, test, tag, commit, and push submodules.
 
 ```bash
-npm run release:all
+npm run release
+```
+
+Or invoke the workspace automation CLI directly:
+
+```bash
+npx an5-cli ws . --push
 ```
 
 ## an5-cli Commands
@@ -248,13 +242,12 @@ npm install @an5/orm
 
 # 2. Configure database
 # Create .env and set DATABASE_URL
-# Edit .env with your DATABASE_URL
 
-# 3. Generate code
-npx an5 generate
+# 3. Generate code (from the an5Orm/ repository)
+npm run generate
 
-# 4. Push schema
-npx an5 db:push
+# 4. Push schema (from the an5Orm/ repository)
+npm run db:push
 ```
 
 ### Daily Development
@@ -276,14 +269,11 @@ npm run ui
 ### Release Process
 
 ```bash
-# 1. Check status
-npm run status
-
-# 2. Dry run
+# 1. Dry run
 npm run dryrun
 
-# 3. Release
-npm run release:all
+# 2. Release
+npm run release
 ```
 
 ### Auto Version Bump
@@ -291,11 +281,8 @@ npm run release:all
 For maintainers publishing npm packages under the `@an5` organization:
 
 ```bash
-# Preview next versions
-npm run version:bump:dry
-
 # Apply patch bumps based on latest npm versions
-npm run version:bump
+node scripts/auto-bump-version.js
 
 # Bump minor or major
 node scripts/auto-bump-version.js minor
@@ -307,7 +294,6 @@ The default package set is `@an5/adapters` and `@an5/orm`. The script also updat
 ## Tips
 
 - Use `npm run ui` for visual feedback during development
-- Run `npm run status` before commits to check everything
-- Use `npx an5-cli format` to keep schema files consistent
-- Use `npx an5 generate` in application projects instead of calling files under `node_modules/@an5/orm`
+- Run `npx an5-cli format` to keep schema files consistent
+- Use `npm run generate` (in the `an5Orm/` repo) instead of calling files under `node_modules/@an5/orm`
 - Check `npm run dryrun` before releases

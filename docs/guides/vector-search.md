@@ -21,7 +21,8 @@ Vector search allows you to find similar items based on semantic meaning rather 
 
 ### 1. Enable Vector Search
 
-Ensure your SQL Server instance supports vector operations (SQL Server 2022+).
+Requires **SQL Server 2025** for native `VECTOR_DISTANCE`. On earlier instances the
+ORM automatically falls back to an in-memory cosine-distance search.
 
 ### 2. Create Vector Fields
 
@@ -38,11 +39,12 @@ model Document {
 
 ### 3. Generate Embeddings
 
-```typescript
-import { generateEmbedding } from '@an5/agent';
+Embeddings are generated with your own embedding provider (e.g. OpenAI), typically
+configured through the `EmbeddingConfig` model:
 
-// Generate embedding for a document
-const embedding = await generateEmbedding(document.content);
+```typescript
+// Generate embedding with your provider, e.g. OpenAI text-embedding-3-small
+const embedding: number[] = await myEmbeddingProvider.embed(document.content);
 
 // Store with the document
 await db.document.create({
@@ -60,13 +62,13 @@ await db.document.create({
 // Search for similar documents
 const results = await db.document.vectorSearch({
   vector: queryEmbedding,
-  field: 'embedding',
+  vectorField: 'embedding',
   take: 10,
   distanceMetric: 'cosine'
 });
 
 console.log(results);
-// [{ id: "...", title: "...", content: "...", _distance: 0.85 }, ...]
+// [{ id: "...", title: "...", content: "...", distance: 0.85 }, ...]
 ```
 
 ## Advanced Vector Search
@@ -76,15 +78,10 @@ console.log(results);
 ```typescript
 const results = await db.document.vectorSearch({
   vector: queryEmbedding,
-  field: 'embedding',
+  vectorField: 'embedding',
   where: {
     category: 'technical',
     published: true
-  },
-  select: {
-    id: true,
-    title: true,
-    excerpt: true
   },
   take: 5,
   distanceMetric: 'cosine'
@@ -96,7 +93,7 @@ const results = await db.document.vectorSearch({
 ```typescript
 const results = await db.document.vectorSearch({
   vector: queryEmbedding,
-  field: 'embedding',
+  vectorField: 'embedding',
   include: {
     author: {
       select: { name: true }
@@ -107,24 +104,13 @@ const results = await db.document.vectorSearch({
 });
 ```
 
-### Threshold Filtering
-
-```typescript
-const results = await db.document.vectorSearch({
-  vector: queryEmbedding,
-  field: 'embedding',
-  threshold: 0.7,  // Only return results with similarity > 0.7
-  take: 10
-});
-```
-
 ## Distance Metrics
 
 | Metric | Description | Use Case |
 |--------|-------------|----------|
-| `cosine` | Cosine similarity | General purpose, recommended |
+| `cosine` | Cosine distance | General purpose, recommended |
 | `euclidean` | Euclidean distance | When magnitude matters |
-| `dotproduct` | Dot product | When vectors are normalized |
+| `dot` | Dot product | When vectors are normalized |
 
 ## Hybrid Search
 
@@ -133,7 +119,7 @@ Combine vector search with traditional filters:
 ```typescript
 const results = await db.document.vectorSearch({
   vector: queryEmbedding,
-  field: 'embedding',
+  vectorField: 'embedding',
   where: {
     AND: [
       { category: { in: ['tech', 'science'] } },
@@ -141,80 +127,60 @@ const results = await db.document.vectorSearch({
       { views: { gte: 100 } }
     ]
   },
-  orderBy: [
-    { _distance: 'desc' },  // Prioritize similarity
-    { views: 'desc' }       // Then by popularity
-  ],
   take: 20
 });
 ```
 
+Results are always returned ordered by `distance` ascending (closest first).
+
 ## In-Memory Fallback
 
-For development or when SQL Server vector support is unavailable:
+For development or when SQL Server vector support is unavailable, `vectorSearch`
+automatically falls back to an in-memory cosine-distance search. No separate store
+class is needed — pass the same arguments and the ORM handles the fallback:
 
 ```typescript
-import { InMemoryVectorStore } from '@an5/orm';
-
-const store = new InMemoryVectorStore();
-
-// Add vectors
-await store.add({
-  id: 'doc-1',
-  vector: [0.1, 0.2, 0.3],
-  metadata: { title: 'Document 1' }
-});
-
-// Search
-const results = await store.search({
-  vector: [0.1, 0.2, 0.3],
-  topK: 5,
-  threshold: 0.5
+const results = await db.document.vectorSearch({
+  vector: queryEmbedding,
+  take: 5
 });
 ```
 
 ## Use Case: RAG Pipeline
 
 ```typescript
-import { generateEmbedding, generateText } from '@an5/agent';
+// 1. Generate the query embedding with your own provider
+const queryEmbedding = await myEmbeddingProvider.embed(question);
 
-async function ragQuery(question: string) {
-  // 1. Generate query embedding
-  const queryEmbedding = await generateEmbedding(question);
-  
-  // 2. Retrieve relevant documents
-  const relevantDocs = await db.document.vectorSearch({
-    vector: queryEmbedding,
-    field: 'embedding',
-    take: 5,
-    threshold: 0.7
-  });
-  
-  // 3. Build context
-  const context = relevantDocs
-    .map(doc => `Title: ${doc.title}\nContent: ${doc.content}`)
-    .join('\n\n');
-  
-  // 4. Generate answer
-  const answer = await generateText({
-    prompt: `Based on the following context, answer the question: ${question}\n\nContext:\n${context}`
-  });
-  
-  return {
-    answer,
-    sources: relevantDocs
-  };
-}
+// 2. Retrieve relevant documents
+const relevantDocs = await db.document.vectorSearch({
+  vector: queryEmbedding,
+  take: 5
+});
+
+// 3. Build context and answer with your LLM of choice
+const context = relevantDocs
+  .map(doc => `Title: ${doc.title}\nContent: ${doc.content}`)
+  .join('\n\n');
+
+const answer = await myLlmProvider.complete({
+  prompt: `Based on the following context, answer the question: ${question}\n\nContext:\n${context}`
+});
+
+return {
+  answer,
+  sources: relevantDocs
+};
 ```
 
 ## Performance Tips
 
 1. **Index your vector columns** for faster similarity search
 2. **Limit results** with `take` to reduce computation
-3. **Use thresholds** to filter low-quality matches
+3. **Filter early** with `where` to narrow candidates
 4. **Cache embeddings** to avoid regenerating them
 
 ## Next Steps
 
-- [AI Agent]({{ '/guides/ai-agent/' | relative_url }}) - Natural language database queries
-- [Raw Queries]({{ '/guides/raw-queries/' | relative_url }}) - Execute raw SQL
+- [AI Agent]({{ '/guides/agent-tools/' | relative_url }}) - Natural language database queries
+- [Raw Queries]({{ '/guides/queries/' | relative_url }}) - Execute raw SQL

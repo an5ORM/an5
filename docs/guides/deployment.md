@@ -37,15 +37,8 @@ NODE_ENV=production
 ### Connection Pooling
 
 ```typescript
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  pool: {
-    min: 10,
-    max: 50,
-    idleTimeoutMillis: 30000,
-    acquireTimeoutMillis: 30000
-  }
-});
+// Uses DATABASE_URL from the environment; pool sizing is handled by the database adapter
+const db = new An5ORM();
 ```
 
 ## Deployment Options
@@ -178,13 +171,13 @@ The current migration commands support schema/database comparison and SQL genera
 ### Push Schema
 
 ```bash
-npx an5 db:push
+npm run db:push   # from an5Orm/
 ```
 
 ### Pull Schema (Reverse)
 
 ```bash
-npx an5 db:pull
+npm run db:pull   # from an5Orm/
 ```
 
 ### Manual Migration
@@ -193,9 +186,7 @@ npx an5 db:pull
 import { An5ORM } from '@an5/orm';
 
 async function migrate() {
-  const db = new An5ORM({
-    connectionString: process.env.DATABASE_URL
-  });
+  const db = new An5ORM();  // Uses DATABASE_URL from the environment
   
   // Run migrations
   await db.$executeRaw`CREATE TABLE IF NOT EXISTS users (...)`;
@@ -224,14 +215,8 @@ app.get('/health', async (req, res) => {
 ### Query Logging
 
 ```typescript
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  logging: {
-    queries: process.env.NODE_ENV === 'development',
-    slow: true,
-    slowThreshold: 1000
-  }
-});
+// Uses DATABASE_URL from the environment; set LOG_LEVEL=debug for query logging
+const db = new An5ORM();
 ```
 
 ### Metrics
@@ -270,36 +255,20 @@ DATABASE_URL=sqlserver://server:1433;database=db;encrypt=true;trustServerCertifi
 
 **Connection Timeout:**
 ```typescript
-// Increase timeout
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  pool: {
-    acquireTimeoutMillis: 60000
-  }
-});
+// Uses DATABASE_URL from the environment; timeouts are configured via the adapter
+const db = new An5ORM();
 ```
 
 **Memory Issues:**
 ```typescript
-// Limit pool size
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  pool: {
-    max: 10
-  }
-});
+// Uses DATABASE_URL from the environment; pool sizing is handled by the adapter
+const db = new An5ORM();
 ```
 
 **Slow Queries:**
 ```typescript
-// Enable slow query logging
-const db = new An5ORM({
-  connectionString: process.env.DATABASE_URL,
-  logging: {
-    slow: true,
-    slowThreshold: 500
-  }
-});
+// Uses DATABASE_URL from the environment; set LOG_LEVEL=debug for slow-query logging
+const db = new An5ORM();
 ```
 
 ## Best Practices

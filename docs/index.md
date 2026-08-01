@@ -49,7 +49,7 @@ const user = await db.user.create({
 
 ## Why an5 ORM?
 
-Install the published package with `npm install @an5/orm`, then use the built-in `an5` CLI for schema generation and database commands.
+Install the published package with `npm install @an5/orm`, then use the npm scripts in the `an5Orm` repository (`npm run generate`, `npm run db:push`, …) for schema generation and database commands.
 
 <div class="features-grid">
   <div class="feature-card">
@@ -65,7 +65,7 @@ Install the published package with `npm install @an5/orm`, then use the built-in
   <div class="feature-card">
     <div class="feature-icon">🔗</div>
     <h3>Relations</h3>
-    <p>Define and query relations with nested includes and implicit joins.</p>
+    <p>Define and query relations with nested includes and explicit joins.</p>
   </div>
   <div class="feature-card">
     <div class="feature-icon">🔍</div>
@@ -114,17 +114,14 @@ model Order {
   </div>
   <div class="tab-content" id="query">
     <pre><code class="language-typescript">const users = await db.user.findMany({
-  where: {
-    orders: {
-      some: { total: { gt: 100 } }
-    }
-  },
+  where: { email: { contains: '@example.com' } },
   include: {
     orders: {
       select: { total: true },
       orderBy: { total: 'desc' }
     }
-  }
+  },
+  take: 10
 });</code></pre>
   </div>
   <div class="tab-content" id="result">
