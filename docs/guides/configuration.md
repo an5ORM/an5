@@ -102,6 +102,44 @@ DATABASE_URL=sqlserver://localhost:1433;database=mydb;user=sa;password=yourpassw
 DATABASE_URL=sqlserver://your-server.database.windows.net:1433;database=mydb;user=admin@server;password=yourpassword;encrypt=true
 ```
 
+**Google Sheets:**
+
+Spreadsheet-backed connections are auto-detected from the `googlesheets://` scheme. The
+first segment is the spreadsheet id; remaining segments are semicolon-separated options.
+Use URL-encoded values (`encodeURIComponent`) for keys containing special characters.
+
+```ini
+# OAuth service account
+DATABASE_URL=googlesheets://spreadsheetId;clientEmail=sa@project.iam.gserviceaccount.com;privateKey=your-url-encoded-private-key
+
+# API key
+DATABASE_URL=googlesheets://spreadsheetId;apiKey=your-api-key
+
+# Sheet mapping (model:sheetName pairs, comma-separated)
+DATABASE_URL=googlesheets://spreadsheetId;clientEmail=sa@project.iam.gserviceaccount.com;privateKey=...;sheetMapping=users:Users,orders:Orders
+```
+
+The same connection string can also be passed programmatically:
+
+```typescript
+import { createAn5Adapter } from '@an5/adapters';
+
+// Auto-detects googlesheets:// and returns a Sheets-backed adapter
+const db = createAn5Adapter({
+  connectionString: 'googlesheets://spreadsheetId;clientEmail=...;privateKey=...',
+});
+
+// Or configure directly via the Sheets adapter
+import { createAn5SheetsAdapter } from '@an5/adapters';
+
+const sheets = createAn5SheetsAdapter({
+  spreadsheetId: 'spreadsheetId',
+  clientEmail: 'sa@project.iam.gserviceaccount.com',
+  privateKey: 'your-private-key',
+  sheetMapping: { users: 'Users', orders: 'Orders' },
+});
+```
+
 ### Connection Pooling
 
 Pooling is handled by the database adapter. The ORM reads the `DATABASE_URL` environment variable:
@@ -153,6 +191,20 @@ const db = new An5ORM(undefined, { modelToTable, relationMap, modelFields });
 
 ## LLM Configuration
 
+LLM settings are read from `LLM_*` environment variables by default. At runtime you can
+read and update the active config (persisted to the `LlmConfig` model/table) through the
+config API exported from `@an5/adapters`:
+
+```typescript
+import { getLlmConfig, setLlmConfig, getEmbeddingConfig, setEmbeddingConfig } from '@an5/adapters';
+import { resetAdapter } from '@an5/adapters';
+
+const current = getLlmConfig();          // read active LLM config
+setLlmConfig({ provider: 'openai', model: 'gpt-4o-mini', apiKey: '...' });
+setEmbeddingConfig({ provider: 'openai', model: 'text-embedding-3-small', apiKey: '...' });
+resetAdapter();                          // clear cached adapter/config state
+```
+
 ### OpenAI
 
 ```ini
@@ -186,7 +238,8 @@ provider with your Azure endpoint instead.
 
 Embedding settings are stored in the `EmbeddingConfig` model/table (fields:
 `provider`, `apiKey`, `model`, `endpoint`, `isActive`) and read at runtime via
-`getEmbeddingConfig()`. The an5 agent's `rag/embedder` uses those values to call
+`getEmbeddingConfig()` / updated via `setEmbeddingConfig()` (both exported from
+`@an5/adapters`). The an5 agent's `rag/embedder` uses those values to call
 your embedding endpoint.
 
 ### Supported Embedding Models

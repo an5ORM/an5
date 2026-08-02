@@ -104,6 +104,10 @@ npm run db:migrate:status
 
 ## Development Commands
 
+The development commands below are **workspace-root** scripts — run them from the
+monorepo root (where the root `package.json` lives), not from `an5Orm/`. Only the
+schema/database commands earlier in this page run inside `an5Orm/`.
+
 ### Build All Packages
 
 ```bash
@@ -113,10 +117,10 @@ npm run build
 ### Run Tests
 
 ```bash
-# Run all tests
+# Run the full workspace test suite
 npm test
 
-# Run specific module tests
+# Run a specific workspace package
 npm run test -w an5Orm
 npm run test -w an5Agent
 ```

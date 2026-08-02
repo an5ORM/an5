@@ -34,6 +34,16 @@ LOG_LEVEL=warn
 NODE_ENV=production
 ```
 
+For spreadsheet-backed apps, point `DATABASE_URL` at a `googlesheets://` connection
+string instead (the adapter auto-detects the scheme):
+
+```ini
+DATABASE_URL=googlesheets://spreadsheetId;clientEmail=sa@project.iam.gserviceaccount.com;privateKey=url-encoded-key;sheetMapping=users:Users,orders:Orders
+```
+
+When using a service account, deploy its private key as a secret (e.g. an App Service
+environment variable, Secret Manager, or Vault) rather than committing it to source.
+
 ### Connection Pooling
 
 ```typescript

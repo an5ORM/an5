@@ -22,7 +22,7 @@ const db = new An5ORM(customExecutor?, metadata?);
 
 | Param | Type | Default | Description |
 |--------|------|---------|-------------|
-| `customExecutor` | `(queryText: string, params?: Record<string, any>) => Promise<any[]>` | - | Custom query executor; defaults to a SQL Server adapter built from the `DATABASE_URL` environment variable |
+| `customExecutor` | `(queryText: string, params?: Record<string, any>) => Promise<any[]>` | - | Custom query executor; defaults to a database adapter built from the `DATABASE_URL` environment variable. The scheme is auto-detected — `sqlserver://` yields SQL Server, `googlesheets://` yields a Google Sheets adapter, and so on |
 | `metadata` | `An5Metadata` | Auto-loaded from the ORM's generated `an5Metadata.ts` | Schema metadata: `{ modelToTable, relationMap, modelFields }`. Pass explicitly to provide schema models out of the box |
 
 ```typescript
@@ -421,9 +421,92 @@ try {
 |------|-------------|
 | P2002 | Unique constraint violation |
 | P2003 | Foreign key constraint |
+| P2025 | Record not found |
 
-Other failures surface as the underlying driver error (or a plain `Error` for
-records not found).
+Other failures surface as the underlying driver error.
+
+---
+
+## @an5/adapters
+
+The `@an5/adapters` package provides database and spreadsheet execution for the ORM
+and can also be used standalone. The full public API is exported from the package root.
+
+### Factory functions
+
+| Function | Description |
+|----------|-------------|
+| `createAn5Adapter(config)` | Create an adapter from `An5AdapterConfig`. Detects the dialect from the config `type` or from a `connectionString` scheme (`sqlserver://`, `postgres://`, `mysql://`, `sqlite://`, `googlesheets://`) |
+| `createAn5SheetsAdapter(config)` | Create a Google Sheets adapter from `An5SheetsAdapterConfig` |
+| `parseSheetsConnectionString(url)` | Parse a `googlesheets://` connection string into `An5SheetsAdapterConfig` |
+
+```typescript
+import {
+  createAn5Adapter,
+  createAn5SheetsAdapter,
+  parseSheetsConnectionString,
+} from '@an5/adapters';
+
+// Dialect auto-detection from connection string
+const db = createAn5Adapter({
+  connectionString: 'googlesheets://spreadsheetId;clientEmail=...;privateKey=...',
+});
+
+// Direct Sheets configuration
+const sheets = createAn5SheetsAdapter({
+  spreadsheetId: 'spreadsheetId',
+  clientEmail: 'sa@project.iam.gserviceaccount.com',
+  privateKey: '...',
+  sheetMapping: { users: 'Users' },
+});
+
+// Parse a connection string
+const cfg = parseSheetsConnectionString('googlesheets://spreadsheetId;apiKey=...');
+```
+
+### Adapter classes
+
+| Class | Description |
+|-------|-------------|
+| `An5Adapter` | Dialect-agnostic adapter (`exec`, `executeRaw`, `table`, `$transaction`, `$connect`, `$disconnect`) |
+| `An5SheetsAdapter` | Spreadsheet adapter. Adds `readRange`, `writeRange`, `appendRange`, `listSheets`, `deleteSheet` |
+| `SheetsTableClient<T>` | Typed table client over a sheet (`findMany`, `findFirst`, `create`, `update`, `delete`, `clear`, `deleteAll`, …) |
+
+### Config functions
+
+| Function | Description |
+|----------|-------------|
+| `getLlmConfig()` / `setLlmConfig(config)` | Read/update the active LLM configuration |
+| `getEmbeddingConfig()` / `setEmbeddingConfig(config)` | Read/update the active embedding configuration |
+| `resetAdapter()` | Clear cached adapter/config state |
+| `setAdapterMetadata(metadata)` | Pass schema metadata explicitly to the adapter |
+
+### Subpaths
+
+The package also exposes scoped entry points:
+
+| Subpath | Contents |
+|---------|----------|
+| `@an5/adapters/browser` | Browser-safe bundle (Sheets via fetch + metadata helpers, no SQL engines) |
+| `@an5/adapters/googlesheets` | Google Sheets adapter only |
+| `@an5/adapters/config` | `LlmConfigData` / `EmbeddingConfigData` types and helpers |
+| `@an5/adapters/mssql` | SQL Server engine |
+| `@an5/adapters/postgres` | PostgreSQL engine |
+| `@an5/adapters/mysql` | MySQL engine |
+| `@an5/adapters/sqlite` | SQLite engine |
+| `@an5/adapters/base` | Base types and metadata helpers |
+
+### Sheets config (`An5SheetsAdapterConfig`)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `spreadsheetId` | `string` | Google Sheets spreadsheet id |
+| `clientEmail?` | `string` | OAuth service-account email (use with `privateKey`) |
+| `privateKey?` | `string` | Service-account private key |
+| `credentials?` | `object` | Alternative: full service-account JSON credentials |
+| `accessToken?` | `string` | OAuth access token (browser mode) |
+| `apiKey?` | `string` | Google API key (browser mode) |
+| `sheetMapping?` | `Record<string, string>` | Model → sheet name mapping (defaults to model name) |
 
 ---
 
@@ -481,11 +564,13 @@ Schema/database commands run as npm scripts from the `an5Orm/` repository direct
 
 ### Development
 
-| Command | Description |
-|---------|-------------|
-| `npm run build` | Build all packages |
-| `npm test` | Run all tests |
-| `npm run ui` | Start local UI |
+The following are workspace-root scripts (run from the repository root, not from `an5Orm/`):
+
+| Command | Where | Description |
+|---------|-------|-------------|
+| `npm run build` | workspace root | Build all workspace packages |
+| `npm test` | `an5Orm/` or workspace root | Run tests (an5Orm) or the full workspace suite |
+| `npm run ui` | workspace root | Start local UI |
 
 ### Release
 

@@ -15,9 +15,13 @@ an5Schema/     an5OrmVScode/     an5Cli/
 (schema src)     (editor tooling)    (automation)
       │                                  │
       ▼                                  ▼
-an5Orm/ ──► an5Client/ ──metadata──► an5Adapters/ ◄── an5Agent/ ◄── an5Tasks/
+an5Orm/ ──► an5Client/ ──(optional metadata)──► an5Adapters/ ◄── an5Agent/ ◄── an5Tasks/
 (generator)   (generated)              (runtimes)          (AI tools)       (Genkit flows)
 ```
+
+> The ORM owns its metadata locally (generated `an5Metadata.ts`) and never imports from
+> the generated client. The client is generated *from* the ORM, and adapters receive
+> metadata only when it is passed explicitly.
 
 ## Repository Roles
 
@@ -25,7 +29,7 @@ an5Orm/ ──► an5Client/ ──metadata──► an5Adapters/ ◄── an5A
 |------------|------|------------------|
 | **an5Orm** | Core engine | Schema parser, multi-language code generator, proxy-based ORM client, CRUD, vector search, middleware, push/pull/seed scripts |
 | **an5Client** | Generated artifacts | TypeScript model interfaces + metadata, Python dataclasses + metadata, .NET entity classes |
-| **an5Adapters** | Runtime adapters | Provider-based SQL and Google Sheets adapters, CRUD table clients, vector search, transactions |
+| **an5Adapters** | Runtime adapters | Provider-based SQL and Google Sheets adapters, CRUD table clients, vector search, transactions. Connection strings are auto-detected by scheme (`sqlserver://`, `googlesheets://`, …); the full API is exported from the package root plus scoped subpaths (`/browser`, `/googlesheets`, `/config`, `/mssql`, …) |
 | **an5Agent** | AI agent library | 7 tools: schema, query, database, codegen, retrieve, task (consolidated) |
 | **an5Cli** | Release orchestrator | Changelog gen, LLM-powered commits, docs helpers, `ws` command, simplified local UI |
 | **an5OrmVScode** | Editor extension | Syntax highlighting, formatter, snippets for `.an5` files |
@@ -56,7 +60,7 @@ Developer writes .an5 ──► an5Orm/generator ──► an5Client/ (TS/Python
 | `an5Agent` | `an5Schema` | Directory scan for `.an5` files |
 | generated clients | `an5Adapters` | Optional metadata injection for model/table mapping |
 | `an5Orm` | own `an5Metadata.ts` | Local metadata require — the core never imports the generated client (the client is generated *from* the ORM) |
-| `an5Orm` | `an5Adapters` | `An5Adapter` (via `createAn5Adapter`) for DB operations |
+| `an5Orm` | `an5Adapters` | `An5Adapter` (constructed directly from the `DATABASE_URL`-derived config) for DB operations |
 | `an5Orm/generator` | `an5Client/*` | **Writes** generated files |
 | `an5Orm/generator` | `an5Schema/` | **Reads** .an5 definitions |
 | `an5Cli` | `an5Tasks` | Dynamic `require()` for task operations |
@@ -125,6 +129,10 @@ an5Tasks/src/index.ts                    an5Agent/src/tools/task-tools.ts
 | OpenAI | `OPENAI_API_KEY` / `LLM_API_KEY` | `gpt-4o-mini` |
 | Gemini | `GEMINI_API_KEY` / `LLM_API_KEY` | `gemini-2.5-flash` |
 | Custom | `LLM_ENDPOINT` | `llama3` |
+
+At runtime the active LLM/embedding config can be read and updated through the
+`@an5/adapters` config API (`getLlmConfig`/`setLlmConfig`,
+`getEmbeddingConfig`/`setEmbeddingConfig`).
 
 ## Technology Stack
 

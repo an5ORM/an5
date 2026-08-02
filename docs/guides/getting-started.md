@@ -22,7 +22,11 @@ For the current implementation and package maturity overview, see [Feature Statu
 npm install @an5/orm
 ```
 
-This installs the ORM runtime and the required `@an5/adapters` package.
+This installs the ORM runtime and the required `@an5/adapters` package. The
+adapters package is what actually talks to your database (SQL Server, PostgreSQL,
+MySQL, SQLite, or Google Sheets). You can also use it standalone — see
+[`@an5/adapters`](/guides/api-reference/#an5-adapters) for `createAn5Adapter`,
+`An5SheetsAdapter`, and `SheetsTableClient`.
 
 ## Configuration
 
@@ -35,7 +39,8 @@ cp .env.example .env
 Edit `.env` and configure your database connection:
 
 ```ini
-# Database connection string
+# Database connection string (SQL Server shown; the adapter also auto-detects
+# googlesheets:// for spreadsheet-backed connections)
 DATABASE_URL=sqlserver://localhost:1433;database=mydb;user=sa;password=yourpassword
 
 # Optional: LLM configuration for AI features
@@ -123,15 +128,15 @@ an5/
 
 Schema/database commands run from the `an5Orm/` repository directory (no standalone `an5` CLI binary is shipped):
 
-| Command | Description |
-|---------|-------------|
-| `npm run generate` | Generate client code from schema |
-| `npm run db:push` | Push schema to database |
-| `npm run db:pull` | Pull schema from database |
-| `npm run db:seed` | Seed database with sample data |
-| `npm run db:migrate diff` | Compare schema with database |
-| `npm run build` | Build all packages |
-| `npm test` | Run all tests |
+| Command | Where | Description |
+|---------|-------|-------------|
+| `npm run generate` | `an5Orm/` | Generate client code from schema |
+| `npm run db:push` | `an5Orm/` | Push schema to database |
+| `npm run db:pull` | `an5Orm/` | Pull schema from database |
+| `npm run db:seed` | `an5Orm/` | Seed database with sample data |
+| `npm run db:migrate diff` | `an5Orm/` | Compare schema with database |
+| `npm run build` | workspace root | Build all workspace packages |
+| `npm test` | `an5Orm/` or workspace root | Run tests (an5Orm) or the full workspace suite |
 
 ## Next Steps
 
