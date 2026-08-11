@@ -28,8 +28,6 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Sync submodules
-        run: git submodule update --init --recursive
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -42,7 +40,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
-      - name: Install dependencies
+      - name: Install workspace dependencies
         run: npm install
       - name: Build all workspaces
         run: npm run build
@@ -81,7 +79,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-      - name: Install dependencies
+      - name: Install workspace dependencies
         run: npm install
       - name: Build live integration packages
         run: npm run build -w an5Adapters && npm run build -w an5Orm
@@ -99,25 +97,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: false
+          submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Checkout ORM-related submodules
-        run: git submodule update --init --depth=1 an5Orm an5Adapters an5Schema an5Client
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm install
-        working-directory: an5Adapters
-      - run: npm run build
-        working-directory: an5Adapters
-      - run: npm install
-        working-directory: an5Orm
-      - run: node test/unit.test.js
-        working-directory: an5Orm
-      - run: npm run generate && node test/generator.test.js
-        working-directory: an5Orm
-      - run: npm test
-        working-directory: an5Orm
+      - run: npm run build -w an5Adapters
+      - run: npm test -w an5Orm
 
   # ── an5Adapters ─────────────────────────────────────────────────────────────
   test-adapters:
@@ -126,10 +113,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: false
+          submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Checkout an5Adapters submodule only
-        run: git submodule update --init --depth=1 an5Adapters
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -143,19 +128,12 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - run: npm install
-        working-directory: an5Adapters
-      - run: npm run build
-        working-directory: an5Adapters
-      - run: npm test
-        working-directory: an5Adapters
-      - run: npm run test:package:smoke
-        working-directory: an5Adapters
-      - run: npm run test:python
-        working-directory: an5Adapters
-      - run: npm run test:dotnet
-        working-directory: an5Adapters
-      - run: npm run test:go
-        working-directory: an5Adapters
+      - run: npm run build -w an5Adapters
+      - run: npm test -w an5Adapters
+      - run: npm run test:package:smoke -w an5Adapters
+      - run: npm run test:python -w an5Adapters
+      - run: npm run test:dotnet -w an5Adapters
+      - run: npm run test:go -w an5Adapters
 
   # ── an5Agent ────────────────────────────────────────────────────────────────
   test-agent:
@@ -164,21 +142,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: false
+          submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Checkout an5Agent and dependencies
-        run: git submodule update --init --depth=1 an5Agent an5Adapters
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm install
-        working-directory: an5Adapters
-      - run: npm run build
-        working-directory: an5Adapters
-      - run: npm install
-        working-directory: an5Agent
-      - run: node test/unit.test.js
-        working-directory: an5Agent
+      - run: npm test -w an5Agent
 
   # ── an5Cli ──────────────────────────────────────────────────────────────────
   test-cli:
@@ -187,25 +157,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: false
+          submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Checkout an5Cli and dependencies
-        run: git submodule update --init --depth=1 an5Cli an5Adapters
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm install
-        working-directory: an5Adapters
-      - run: npm run build
-        working-directory: an5Adapters
-      - run: npm install
-        working-directory: an5Cli
-      - run: npm install
-        working-directory: an5Cli/ui
-      - run: npm run build
-        working-directory: an5Cli
-      - run: npm test
-        working-directory: an5Cli
+      - run: npm run build -w an5Cli
+      - run: npm test -w an5Cli
 
   # ── an5OrmVScode ────────────────────────────────────────────────────────────
   test-vscode:
@@ -214,19 +173,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: false
+          submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Checkout an5OrmVScode submodule only
-        run: git submodule update --init --depth=1 an5OrmVScode
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm install
-        working-directory: an5OrmVScode
-      - run: npm run compile
-        working-directory: an5OrmVScode
-      - run: npm test
-        working-directory: an5OrmVScode
+      - run: npm test -w an5OrmVScode
 
   # ── an5Client ───────────────────────────────────────────────────────────────
   test-client:
@@ -235,10 +188,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: false
+          submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Checkout an5Client submodule only
-        run: git submodule update --init --depth=1 an5Client
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -252,17 +203,11 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - run: npm install
-        working-directory: an5Client
-      - run: npm test
-        working-directory: an5Client
-      - run: npm run test:package:smoke
-        working-directory: an5Client
-      - run: npm run test:python
-        working-directory: an5Client
-      - run: npm run test:dotnet
-        working-directory: an5Client
-      - run: npm run test:go
-        working-directory: an5Client
+      - run: npm test -w an5Client
+      - run: npm run test:package:smoke -w an5Client
+      - run: npm run test:python -w an5Client
+      - run: npm run test:dotnet -w an5Client
+      - run: npm run test:go -w an5Client
 
   # ── an5Tasks ────────────────────────────────────────────────────────────────
   test-tasks:
@@ -271,19 +216,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: false
+          submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Checkout an5Tasks submodule only
-        run: git submodule update --init --depth=1 an5Tasks
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm install
-        working-directory: an5Tasks
-      - run: npm run build
-        working-directory: an5Tasks
-      - run: npm test
-        working-directory: an5Tasks
+      - run: npm test -w an5Tasks
 
   # ── Summary ─────────────────────────────────────────────────────────────────
   ci-summary:
