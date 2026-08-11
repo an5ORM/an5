@@ -126,6 +126,10 @@ console.log({
 const ordersByUser = await db.order.groupBy({
   by: ['userId'],
   where: { total: { gte: 10 } },
+  having: {
+    _count: { _all: { gt: 1 } },
+    _sum: { total: { gte: 100 } }
+  },
   orderBy: { userId: 'asc' },
   skip: 0,
   take: 10,
@@ -135,7 +139,7 @@ const ordersByUser = await db.order.groupBy({
 ```
 
 `groupBy` supports `by`, `where`, `orderBy`, `skip`, `take`, `_count`, `_sum`,
-`_avg`, `_min`, `_max`. `having` is not supported.
+`_avg`, `_min`, `_max`, and aggregate `having` filters.
 
 ## Select Specific Fields
 
