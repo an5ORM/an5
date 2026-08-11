@@ -28,8 +28,8 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Sync submodules to latest main
-        run: git submodule update --init --recursive --remote || true
+      - name: Sync submodules
+        run: git submodule update --init --recursive
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -101,11 +101,15 @@ jobs:
         with:
           submodules: false
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Checkout generator-related submodules
-        run: git submodule update --init --depth=1 an5Orm an5Schema an5Client
+      - name: Checkout ORM-related submodules
+        run: git submodule update --init --depth=1 an5Orm an5Adapters an5Schema an5Client
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+      - run: npm install
+        working-directory: an5Adapters
+      - run: npm run build
+        working-directory: an5Adapters
       - run: npm install
         working-directory: an5Orm
       - run: node test/unit.test.js
@@ -162,14 +166,16 @@ jobs:
         with:
           submodules: false
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Checkout an5Agent submodule only
-        run: git submodule update --init --depth=1 an5Agent
+      - name: Checkout an5Agent and dependencies
+        run: git submodule update --init --depth=1 an5Agent an5Adapters
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: an5Agent/package-lock.json
-      - run: npm ci
+      - run: npm install
+        working-directory: an5Adapters
+      - run: npm run build
+        working-directory: an5Adapters
+      - run: npm install
         working-directory: an5Agent
       - run: node test/unit.test.js
         working-directory: an5Agent
@@ -183,16 +189,18 @@ jobs:
         with:
           submodules: false
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Checkout an5Cli submodule only
-        run: git submodule update --init --depth=1 an5Cli
+      - name: Checkout an5Cli and dependencies
+        run: git submodule update --init --depth=1 an5Cli an5Adapters
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: an5Cli/package-lock.json
-      - run: npm ci
+      - run: npm install
+        working-directory: an5Adapters
+      - run: npm run build
+        working-directory: an5Adapters
+      - run: npm install
         working-directory: an5Cli
-      - run: npm ci
+      - run: npm install
         working-directory: an5Cli/ui
       - run: npm run build
         working-directory: an5Cli
@@ -213,9 +221,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: an5OrmVScode/package-lock.json
-      - run: npm ci
+      - run: npm install
         working-directory: an5OrmVScode
       - run: npm run compile
         working-directory: an5OrmVScode
