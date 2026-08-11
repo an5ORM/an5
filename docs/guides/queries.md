@@ -171,7 +171,8 @@ const users = await db.user.findMany({
         title: true,
         createdAt: true
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
+      take: 5
     },
     _count: {
       select: { posts: true }

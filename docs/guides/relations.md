@@ -79,19 +79,21 @@ const user = await db.user.findUnique({
   include: { posts: true }
 });
 
-// Include with ordering / projection
+// Include with filtering, ordering, pagination, and projection
 const user = await db.user.findUnique({
   where: { id: 'user-id' },
   include: {
     posts: {
       select: { id: true, title: true },
-      orderBy: { createdAt: 'desc' }
+      where: { published: true },
+      orderBy: { createdAt: 'desc' },
+      take: 5
     }
   }
 });
 ```
 
-Note: relation-level `where` and `take` inside `include` are not supported.
+For many-side relations, `skip` and `take` inside `include` are applied per parent row.
 
 ### Nested Relations
 
