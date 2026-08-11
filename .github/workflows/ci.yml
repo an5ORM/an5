@@ -79,10 +79,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
+      - name: Wait for database containers
+        run: sleep 10
       - name: Install workspace dependencies
         run: npm install
       - name: Build live integration packages
-        run: npm run build -w an5Adapters && npm run build -w an5Orm
+        run: npm run build
       - name: Run live database integration
         run: npm run test:integration:live
         env:
@@ -103,7 +105,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm install
-      - run: npm run build -w an5Adapters && npm run build -w an5Client
+      - run: npm run build
       - run: npm test -w an5Orm
 
   # ── an5Adapters ─────────────────────────────────────────────────────────────
@@ -128,7 +130,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - run: npm install
-      - run: npm run build -w an5Adapters
+      - run: npm run build
       - run: npm test -w an5Adapters
       - run: npm run test:package:smoke -w an5Adapters
       - run: npm run test:python -w an5Adapters
@@ -148,7 +150,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm install
-      - run: npm run build -w an5Adapters
+      - run: npm run build
       - run: npm test -w an5Agent
 
   # ── an5Cli ──────────────────────────────────────────────────────────────────
@@ -164,8 +166,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm install
-      - run: npm run build -w an5Adapters
-      - run: npm run build -w an5Cli
+      - run: npm run build
       - run: npm test -w an5Cli
 
   # ── an5OrmVScode ────────────────────────────────────────────────────────────
@@ -181,6 +182,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm install
+      - run: npm run build
       - run: npm test -w an5OrmVScode
 
   # ── an5Client ───────────────────────────────────────────────────────────────
@@ -205,7 +207,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - run: npm install
-      - run: npm run build -w an5Adapters
+      - run: npm run build
       - run: npm test -w an5Client
       - run: npm run test:package:smoke -w an5Client
       - run: npm run test:python -w an5Client
@@ -225,6 +227,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm install
+      - run: npm run build
       - run: npm test -w an5Tasks
 
   # ── Summary ─────────────────────────────────────────────────────────────────
