@@ -454,7 +454,9 @@ await db.$transaction(async (tx) => {
 });
 ```
 
-`$transaction` is callback-based only; interactive `$begin()` / `tx.$commit()` /
+`$transaction` is callback-based. Calling `tx.$transaction()` inside an active
+transaction reuses the same transactional executor when the adapter does not
+provide native nested transactions. Interactive `$begin()` / `tx.$commit()` /
 `tx.$rollback()` are not implemented.
 
 ## Raw Queries
