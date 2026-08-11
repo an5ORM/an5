@@ -30,6 +30,9 @@ module.exports = {
     dotnet: {
       outputDir: 'an5Client/dotnet',
     },
+    golang: {
+      outputDir: 'an5Client/golang',
+    },
   },
 
   // Database pull options
@@ -50,6 +53,7 @@ module.exports = {
 | `outputs.typescript.ormMetadataFile` | `string` | `'an5Orm/an5Metadata.ts'` | ORM-local metadata path (owned by `@an5/orm`, so the core never imports from the generated client) |
 | `outputs.python.metadataFile` | `string` | `'an5Client/python/an5_metadata.py'` | Python metadata path |
 | `outputs.dotnet.outputDir` | `string` | `'an5Client/dotnet'` | .NET output directory |
+| `outputs.golang.outputDir` | `string` | `'an5Client/golang'` | Go output directory |
 | `pull.exclude` | `string[]` | `['^__', '^sys\\.']` | Tables to exclude from pull |
 | `pull.preserveRelations` | `boolean` | `true` | Keep relations in schema |
 

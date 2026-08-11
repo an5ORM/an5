@@ -13,7 +13,7 @@ This page summarizes what is currently implemented, published, and still maturin
 | Package | Registry | Latest | Status | Notes |
 |---------|----------|--------|--------|-------|
 | `@an5/orm` | npm | `1.0.8` | Published | Core ORM runtime (no CLI binary) |
-| `@an5/adapters` | npm | `0.2.5` | Published | Runtime database adapters for TypeScript apps |
+| `@an5/adapters` | npm | `0.2.5` | Published | Runtime database adapters for TypeScript plus packaged Python/.NET/Go sources |
 | `@an5/agent` | npm | `0.1.1` | Published | AI database agent with 7 consolidated tools |
 | `an5-adapters` | PyPI | `0.2.5` target | Build-ready | Wheel/sdist pass `twine check`; PyPI token / trusted publisher setup |
 | `an5-orm` | PyPI | `1.0.8` target | Build-ready | Wheel/sdist pass `twine check`; PyPI token / trusted publisher setup |
@@ -26,13 +26,13 @@ PyPI does not use npm-style scopes like `@an5/orm`. The Python package names are
 |------|--------|---------|
 | Proxy model client | Implemented | `db.user.findMany()`, `db.user.create()`, dynamic model access |
 | CRUD operations | Implemented | `findMany`, `findFirst`, `findUnique`, `count`, `create`, `createMany`, `update`, `updateMany`, `delete`, `deleteMany`, `upsert` |
-| Query filters | Implemented | Equality, null, `in`, `notIn`, string filters, comparison filters, `AND`, `OR` |
-| Relations | Implemented, evolving | Relation includes and relation-aware query helpers exist; complex nested relation coverage is still expanding |
+| Query filters | Implemented | Equality, null, `in`, `notIn`, string filters, comparison filters, nested `not`, `AND`, `OR`, `NOT` |
+| Relations | Implemented, evolving | Relation includes with nested `where`/`orderBy`, relation `some`/`none`/`every`, relation selects, `_count`, and common nested writes exist; deeper DB integration coverage is still expanding |
 | Transactions | Implemented | `$transaction` with commit/rollback support |
 | Raw SQL | Implemented | `$queryRaw`, `$queryRawUnsafe`, `$executeRaw`, `$executeRawUnsafe` |
 | Vector search | Implemented, environment-dependent | SQL Server vector support when available, in-memory fallback for development |
 | Middleware | Implemented | `$use` pipeline for cross-cutting behavior |
-| Error normalization | Implemented | Prisma-style error code mapping for common failures |
+| Error normalization | Implemented | Standardized error code mapping for common failures |
 
 ## Schema Workflow
 
@@ -40,11 +40,14 @@ Schema/database commands run as npm scripts from the `an5Orm/` repository direct
 
 | Command | Status | Purpose |
 |---------|--------|---------|
-| `npm run generate` | Implemented | Generate TypeScript, Python, and .NET client artifacts from `an5Schema/` |
+| `npm run generate` | Implemented | Generate TypeScript, Python, .NET (C#), and Golang client artifacts from `an5Schema/` |
 | `npm run db:push` | Implemented | Safe additive push: create tables and add missing columns from schema |
 | `npm run db:pull` | Implemented | Introspect database tables into `.an5` files |
-| `npm run db:migrate diff` | Implemented, evolving | Compare schema with database |
-| `npm run db:migrate:generate` | Implemented, evolving | Generate SQL migration file |
+| `npm run db:migrate diff` | Implemented, evolving | Compare schema with database for tables, columns, indexes, and compound unique constraints |
+| `npm run db:migrate:generate` | Implemented, evolving | Generate SQL migration file with `-- migrate:up` plus generated rollback SQL for additive operations |
+| `npm run db:migrate:apply` | Implemented, evolving | Apply pending SQL files, record checksums in `_an5_migrations`, or preview with `--dry-run` |
+| `npm run db:migrate:rollback` | Implemented, evolving | Roll back latest, N steps, or through a named applied migration; supports `--dry-run` SQL preview |
+| `npm run db:migrate:status` | Implemented | Show schema/database/migration status |
 | `npm run db:seed` | Implemented | Seed default app/config data |
 | `npm run db:cleanup` | Implemented, destructive | Detect/drop tables not represented in schema |
 
@@ -59,18 +62,20 @@ These commands run from the `an5Orm/` repository root, so use `npm run <command>
 | MySQL | Implemented | Dialect engine exists in TypeScript adapter package |
 | SQLite | Implemented | Dialect engine exists in TypeScript adapter package |
 | Google Sheets | Implemented | Spreadsheet-backed CRUD API with sheet auto-create and retry helpers; auto-detected via `googlesheets://` connection strings |
-| Python adapter | Build-ready | Source included and PyPI package configured |
-| .NET adapter | Source included | C# adapter/entity sources included for generated clients and manual use |
+| Python adapter | Implemented, packaged source | Source included in `@an5/adapters`; `npm run test:python -w an5Adapters` compile-checks it |
+| .NET adapter | Implemented, packaged source | C# source included; `npm run test:dotnet -w an5Adapters` compile-checks SQL Server/Postgres providers with `Microsoft.Data.SqlClient`/Npgsql |
+| Go adapter | Implemented, packaged source | Go source included under `golang/`; `npm run test:go -w an5Adapters` runs `go test ./...` |
 
-The `@an5/adapters` package exposes the full public API from the package root (`createAn5Adapter`, `An5SheetsAdapter`, `SheetsTableClient`, `createAn5SheetsAdapter`, `parseSheetsConnectionString`) as well as through subpaths (`/browser`, `/googlesheets`, `/config`, `/mssql`, `/postgres`, `/mysql`, `/sqlite`, `/base`). The runtime config API (`getLlmConfig`/`setLlmConfig`, `getEmbeddingConfig`/`setEmbeddingConfig`, `resetAdapter`) is also exported from the package root.
+The `@an5/adapters` package exposes the full public API from the package root (`createAn5Adapter`, `An5SheetsAdapter`, `SheetsTableClient`, `createAn5SheetsAdapter`, `parseSheetsConnectionString`) as well as through subpaths (`/browser`, `/googlesheets`, `/config`, `/mssql`, `/postgres`, `/mysql`, `/sqlite`, `/base`, `/python`, `/dotnet`, `/golang`). The runtime config API (`getLlmConfig`/`setLlmConfig`, `getEmbeddingConfig`/`setEmbeddingConfig`, `resetAdapter`) is also exported from the package root.
 
 ## Generated Clients
 
 | Language | Status | Output |
 |----------|--------|--------|
-| TypeScript | Implemented | Model files, metadata, base types |
-| Python | Implemented | Metadata module for model/table mapping |
-| .NET | Implemented | Entity classes, config, DB context/table client sources |
+| TypeScript | Implemented | Model files, metadata, base types, flexible model property casing (`db.User`, `db.user`, `db.Users`, `db.users`) |
+| Python | Implemented | Metadata module, `@dataclass` models (`an5_models.py`), typed `An5Client` (`an5_client.py`) |
+| .NET (C#) | Implemented | Entity classes, config, `An5DbContext` with complete CRUD (`Count`, `CreateMany`, `UpdateMany`, `DeleteMany`, `Upsert`, `ExecuteRaw`, `QueryRaw`); `npm run test:dotnet -w an5Client` compile-checks generated sources |
+| Golang | Implemented | Go structs with tags (`models.go`), generic `TableClient[T]` and `An5DbContext` (`client.go`); `npm run test:go -w an5Client` compile-checks generated sources |
 
 ## AI Agent
 
@@ -101,10 +106,10 @@ The default auto-bump package set is `@an5/adapters` and `@an5/orm`. The script 
 |------|-------------|-----------------------|
 | PyPI organization | PyPI orgs are managed through PyPI web UI, not CLI | Create `an5` organization manually and add package owner/manager |
 | PyPI upload | Build artifacts are ready, credentials are not configured | Set `TWINE_USERNAME=__token__` and `TWINE_PASSWORD=<pypi-token>`, then run `python -m twine upload dist-py/*` |
-| Migration diff | Basic table/column/index diff exists, but full rollback/up/down workflow is not complete | Add migration apply/rollback tracking table |
-| Test coverage | Smoke/unit tests exist, but DB integration coverage is limited | Add containerized SQL Server integration tests |
-| Relation edge cases | Common relation flows exist, deeper nested writes need more verification | Add relation integration tests and examples |
-| Package build pipeline | Published packages include build artifacts; full monorepo `tsc` still has areas to tighten | Split build configs per package and enforce CI builds |
+| Migration workflow | Diff/generate/apply/rollback tracking exists for SQL files; dry-run previews and generated preflight checks are available for risky column changes, required additive columns, new unique columns, and compound unique constraints; generated rollback covers additive operations and column type/nullability reversal | Broaden preflight coverage for index/data-shape edge cases |
+| Test coverage | Smoke/unit/compile/package-smoke tests exist; live DB integration covers adapter Postgres/SQL Server CRUD/filter/update/groupBy/transaction/vector fallback plus ORM SQL Server nested relation/select/include/count/aggregate/groupBy/transaction/vector fallback and migration apply/rollback flows in CI | Add broader generated migration apply/rollback scenarios |
+| Relation edge cases | Common relation flows and nested writes exist, deeper combinations need more verification | Add relation integration tests and examples |
+| Package build pipeline | Published packages include build artifacts and language sources; `npm run test:full` runs cross-language compile/package-smoke gates, and CI also runs containerized live DB integration | Extend publish gates if live DB checks are desired before release |
 
 ## Recommended Install
 

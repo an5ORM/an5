@@ -18,8 +18,8 @@ an5Orm/ ──► an5Client/ ──metadata──► an5Adapters/ ◄── an5A
 | Repo | Role | Key Capabilities |
 |------|------|------------------|
 | **an5Orm** | Core engine | Schema parser, multi-language code generator, proxy-based ORM client, CRUD, vector search, middleware, push/pull/seed scripts |
-| **an5Client** | Generated artifacts | TypeScript model interfaces + metadata, Python dataclasses + metadata, .NET entity classes |
-| **an5Adapters** | Runtime adapters | Provider-based SQL and Google Sheets adapters, CRUD table clients, vector search, transactions - in TS, Python, C# |
+| **an5Client** | Generated artifacts | TypeScript model interfaces + metadata, Python dataclasses + metadata, .NET entity classes, Go structs/client |
+| **an5Adapters** | Runtime adapters | Provider-based SQL and Google Sheets adapters, CRUD table clients, vector search, transactions - in TS plus packaged Python, C#, and Go sources |
 | **an5Agent** | AI agent library | 7 tools: schema, query, database, codegen, retrieve, task (consolidated) |
 | **an5Cli** | Release orchestrator | Changelog gen, LLM-powered commits, docs helpers, `ws` command, simplified local UI |
 | **an5OrmVScode** | Editor extension | Syntax highlighting, formatter, snippets for `.an5` files |
@@ -29,7 +29,7 @@ an5Orm/ ──► an5Client/ ──metadata──► an5Adapters/ ◄── an5A
 ## Data Flow
 
 ```
-Developer writes .an5 ──► an5Orm/generator ──► an5Client/ (TS/Python/C#)
+Developer writes .an5 ──► an5Orm/generator ──► an5Client/ (TS/Python/C#/Go)
                                                           │
                                                           v
                                                an5Adapters/ (optional metadata injection)
@@ -75,7 +75,7 @@ Developer writes .an5 ──► an5Orm/generator ──► an5Client/ (TS/Python
 ### Code Generation (2 tools)
 | Tool | Description |
 |------|-------------|
-| `generateClientCode` | Generate TS/Python/.NET client code |
+| `generateClientCode` | Generate TS/Python/.NET/Go client code |
 | `analyzeSchema` | Analyze schema for design issues |
 
 ### RAG (1 tool with 2 actions)

@@ -25,6 +25,10 @@ const db = new An5ORM(customExecutor?, metadata?);
 | `customExecutor` | `(queryText: string, params?: Record<string, any>) => Promise<any[]>` | - | Custom query executor; defaults to a database adapter built from the `DATABASE_URL` environment variable. The scheme is auto-detected — `sqlserver://` yields SQL Server, `googlesheets://` yields a Google Sheets adapter, and so on |
 | `metadata` | `An5Metadata` | Auto-loaded from the ORM's generated `an5Metadata.ts` | Schema metadata: `{ modelToTable, relationMap, modelFields }`. Pass explicitly to provide schema models out of the box |
 
+`customExecutor` may also expose `executeRaw(queryText, params)` and
+`transaction(fn, options?)`. The ORM uses those hooks for writes, raw execute,
+and `$transaction`; otherwise it falls back to the default adapter contract.
+
 ```typescript
 // Auto-loaded metadata (from the ORM's generated an5Metadata.ts)
 const db = new An5ORM();
@@ -74,7 +78,9 @@ db.model.findFirst(params: FindFirstArgs): Promise<Model | null>
   where?: WhereInput,
   orderBy?: OrderByInput,
   include?: IncludeInput,
-  select?: SelectInput
+  select?: SelectInput,
+  skip?: number,
+  take?: number
 }
 ```
 
@@ -211,6 +217,7 @@ db.model.aggregate(params: AggregateArgs): Promise<AggregateResult>
 **Params:**
 ```typescript
 {
+  where?: WhereInput,
   _count?: boolean,
   _sum?: { field: boolean },
   _avg?: { field: boolean },
@@ -223,6 +230,22 @@ db.model.aggregate(params: AggregateArgs): Promise<AggregateResult>
 
 ```typescript
 db.model.groupBy(params: GroupByArgs): Promise<GroupByResult[]>
+```
+
+**Params:**
+```typescript
+{
+  by: ScalarFieldEnum | ScalarFieldEnum[],
+  where?: WhereInput,
+  orderBy?: OrderByInput | OrderByInput[],
+  skip?: number,
+  take?: number,
+  _count?: true | { _all?: true; field?: true },
+  _sum?: { numericField?: true },
+  _avg?: { numericField?: true },
+  _min?: { field?: true },
+  _max?: { field?: true }
+}
 ```
 
 ### vectorSearch
@@ -256,22 +279,27 @@ in memory.
 {
   // Equality
   field: 'value',
-  field: { not: 'value' },
+  status: { equals: 'active' },
+  deletedAt: null,
+  archivedAt: { equals: null },
+  role: { not: 'banned' },
+  email: { not: null },
+  name: { not: { contains: 'legacy' } },
   
   // Comparison
-  field: { gt: 10 },
-  field: { gte: 10 },
-  field: { lt: 10 },
-  field: { lte: 10 },
+  score: { gt: 10 },
+  age: { gte: 18 },
+  views: { lt: 1000 },
+  orderCount: { lte: 10 },
   
   // String
-  field: { contains: 'text' },
-  field: { startsWith: 'text' },
-  field: { endsWith: 'text' },
+  title: { contains: 'text' },
+  firstName: { startsWith: 'Jo' },
+  lastName: { endsWith: 'son' },
   
   // List
-  field: { in: ['a', 'b'] },
-  field: { notIn: ['a', 'b'] }
+  team: { in: ['a', 'b'] },
+  tag: { notIn: ['archived', 'deleted'] }
 }
 ```
 
@@ -281,9 +309,11 @@ in memory.
 {
   AND: [{ field: 'value' }, { field2: 'value' }],
   OR: [{ field: 'value' }, { field2: 'value' }],
-  NOT: { field: 'value' }
+  NOT: [{ field: 'value' }, { field2: { startsWith: 'tmp' } }]
 }
 ```
+
+`AND` and `NOT` accept either a single object or an array of objects.
 
 ### Relation Filters
 
@@ -292,6 +322,46 @@ in memory.
   posts: { some: { title: 'Hello' } },
   posts: { none: {} },
   posts: { every: { published: true } }
+}
+```
+
+Empty relation filters are meaningful: `some: {}` checks that at least one
+related row exists, `none: {}` checks that no related rows exist, and
+`every: {}` is treated as true.
+
+## Update Input
+
+Scalar fields accept direct replacement values. Numeric fields also accept
+field operations:
+
+```typescript
+{
+  name: 'Updated',
+  score: { increment: 1 },
+  total: { decrement: 10 },
+  multiplier: { multiply: 2 },
+  ratio: { divide: 4 },
+  count: { set: 0 }
+}
+```
+
+Common nested writes are supported on relation fields:
+
+```typescript
+{
+  posts: {
+    create: [{ title: 'New' }],
+    connect: [{ id: 'post-1' }],
+    set: [{ id: 'post-2' }],
+    disconnect: [{ id: 'post-3' }],
+    delete: [{ id: 'post-4' }],
+    update: [{ where: { id: 'post-5' }, data: { title: 'Updated' } }],
+    upsert: [{
+      where: { id: 'post-6' },
+      create: { title: 'Created' },
+      update: { title: 'Updated' }
+    }]
+  }
 }
 ```
 
@@ -335,6 +405,23 @@ in memory.
       id: true,
       title: true
     }
+  },
+  _count: true
+}
+```
+
+Relation fields inside `select` behave as implicit includes. Helper keys needed
+to resolve selected relations are fetched internally and removed from the final
+projection when not explicitly selected.
+
+```typescript
+{
+  name: true,
+  orders: {
+    select: { id: true }
+  },
+  _count: {
+    select: { orders: true }
   }
 }
 ```
@@ -352,7 +439,8 @@ in memory.
 ]
 ```
 
-Only scalar columns are supported in `orderBy` (relations/aggregates are not).
+For regular `find*` queries, only scalar columns are supported in `orderBy`.
+`groupBy` can also order grouped rows through its `orderBy` argument.
 
 ## Transaction
 
@@ -495,6 +583,9 @@ The package also exposes scoped entry points:
 | `@an5/adapters/mysql` | MySQL engine |
 | `@an5/adapters/sqlite` | SQLite engine |
 | `@an5/adapters/base` | Base types and metadata helpers |
+| `@an5/adapters/python` | Packaged Python adapter facade source |
+| `@an5/adapters/dotnet` | Packaged .NET adapter facade source |
+| `@an5/adapters/golang` | Packaged Go adapter facade source |
 
 ### Sheets config (`An5SheetsAdapterConfig`)
 
@@ -561,6 +652,10 @@ Schema/database commands run as npm scripts from the `an5Orm/` repository direct
 | `npm run db:pull` | Pull schema from database |
 | `npm run db:seed` | Seed database with sample data |
 | `npm run db:migrate diff` | Compare schema with database |
+| `npm run db:migrate:generate` | Generate migration SQL |
+| `npm run db:migrate:apply` | Apply pending migration files; pass `-- --dry-run` to preview SQL |
+| `npm run db:migrate:rollback` | Roll back the latest applied migration; pass `-- --dry-run`, `-- 3`, or `-- --to <file>` |
+| `npm run db:migrate:status` | Show migration status |
 
 ### Development
 
@@ -570,6 +665,8 @@ The following are workspace-root scripts (run from the repository root, not from
 |---------|-------|-------------|
 | `npm run build` | workspace root | Build all workspace packages |
 | `npm test` | `an5Orm/` or workspace root | Run tests (an5Orm) or the full workspace suite |
+| `npm run test:full` | workspace root | Run workspace tests plus generator, package smoke, and Python/.NET/Go compile gates |
+| `npm run test:integration:live` | workspace root | Run live adapter Postgres/SQL Server checks plus ORM SQL Server relation/transaction/vector fallback checks when database URLs are configured |
 | `npm run ui` | workspace root | Start local UI |
 
 ### Release

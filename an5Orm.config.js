@@ -45,6 +45,14 @@ module.exports = {
       /** Output directory for generated .NET files */
       outputDir: 'an5Client/dotnet',
     },
+
+    /**
+     * Golang output configuration
+     */
+    golang: {
+      /** Output directory for generated Golang files */
+      outputDir: 'an5Client/golang',
+    },
   },
 
   /**

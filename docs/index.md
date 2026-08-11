@@ -16,6 +16,7 @@ description: A modern, type-safe ORM for SQL Server
       <a href="{{ '/guides/getting-started/' | relative_url }}" class="btn btn-primary">Get Started</a>
       <a href="{{ '/guides/feature-status/' | relative_url }}" class="btn btn-secondary">Feature Status</a>
       <a href="{{ '/guides/schema/' | relative_url }}" class="btn btn-secondary">Documentation</a>
+      <a href="https://an5orm.github.io/" class="btn btn-secondary">Ecosystem Site</a>
       <a href="https://github.com/an5ORM/an5" class="btn btn-outline">
         <i class="fab fa-github"></i> GitHub
       </a>
@@ -80,7 +81,7 @@ Install the published package with `npm install @an5/orm`, then use the npm scri
   <div class="feature-card">
     <div class="feature-icon">🔄</div>
     <h3>Multi-Language</h3>
-    <p>Generate type-safe clients for TypeScript, Python, and .NET.</p>
+    <p>Generate type-safe clients for TypeScript, Python, .NET, and Go.</p>
   </div>
 </div>
 
@@ -149,7 +150,7 @@ model Order {
 | SQL Server | ✅ Native | ✅ | ✅ | ✅ |
 | Vector Search | ✅ Built-in | ❌ | ❌ | ❌ |
 | AI Agent | ✅ 7 tools | ❌ | ❌ | ❌ |
-| Multi-language | ✅ TS/Py/.NET | ⚠️ TS only | ⚠️ TS only | ⚠️ TS only |
+| Multi-language | ✅ TS/Py/.NET/Go | ⚠️ TS only | ⚠️ TS only | ⚠️ TS only |
 
 ## Trusted By
 

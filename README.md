@@ -8,7 +8,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-blue.svg)](https://www.typescriptlang.org/)
 
-> A modern, type-safe ORM for SQL Server with AI-agent database capabilities, multi-language code generation, and Prisma-like API.
+> A modern, type-safe ORM for SQL Server with AI-agent database capabilities and multi-language code generation.
 
 **[Documentation](https://an5orm.github.io/an5/)** | **[GitHub](https://github.com/an5ORM/an5)** | **[NPM](https://www.npmjs.com/package/@an5/orm)**
 
@@ -18,10 +18,10 @@
 
 | Feature | Description |
 |---------|-------------|
-| **Type-Safe Queries** | Full TypeScript support with autocompletion and type checking |
-| **Prisma-like API** | Intuitive syntax: `db.user.findMany()`, `db.user.create()` |
+| **Type-Safe Queries** | Full TypeScript, Python, .NET, and Golang support with autocompletion and type checking |
+| **Intuitive API** | Flexible property access: `db.User`, `db.user`, `db.Users`, `db.users` |
 | **Schema-First** | Define models in `.an5` files, generate type-safe clients |
-| **Multi-Language** | Generate clients for TypeScript, Python, and .NET |
+| **Multi-Language** | Generate client code for TypeScript, Python, .NET (C#), and Golang |
 | **AI Agent** | 7 intelligent tools for natural language database queries |
 | **Vector Search** | Built-in semantic search for AI/ML applications |
 | **Relations** | One-to-one and one-to-many with nested queries |
@@ -124,8 +124,8 @@ await db.user.delete({ where: { id: user.id } });
 | Package | Description | Key Features |
 |---------|-------------|--------------|
 | **[an5Orm](an5Orm/)** (`@an5/orm`) | Core ORM runtime | Proxy client, CRUD, vector search, middleware, transactions |
-| **[an5Client](an5Client/)** | Generated client code | Type-safe models for TypeScript, Python, .NET |
-| **[an5Adapters](an5Adapters/)** (`@an5/adapters`) | Database adapters | SQL Server/Postgres/MySQL/SQLite engines, Google Sheets, Python/.NET sources |
+| **[an5Client](an5Client/)** | Generated client code | Type-safe models for TypeScript, Python, .NET (C#), and Golang |
+| **[an5Adapters](an5Adapters/)** (`@an5/adapters`) | Database adapters | SQL Server/Postgres/MySQL/SQLite engines, Google Sheets, Python/.NET/Go sources |
 | **[an5Agent](an5Agent/)** (`@an5/agent`) | AI Database Agent | 7 tools: schema, query, database, generateClientCode, analyzeSchema, retrieve, task |
 | **[an5Cli](an5Cli/)** | CLI & Local UI | Release automation, LLM commits, documentation |
 | **[an5Schema](an5Schema/)** | Schema definitions | `.an5` files with types, relations, indexes |
@@ -236,6 +236,8 @@ These run as npm scripts from the `an5Orm/` repository (no standalone `an5` CLI 
 | `npm run db:seed` | Seed database with sample data |
 | `npm run db:migrate diff` | Compare schema with database |
 | `npm run db:migrate:generate` | Generate migration SQL |
+| `npm run db:migrate:apply` | Apply pending migration files; pass `-- --dry-run` to preview SQL |
+| `npm run db:migrate:rollback` | Roll back the latest applied migration; pass `-- --dry-run`, `-- 3`, or `-- --to <file>` |
 | `npm run db:migrate:status` | Show migration status |
 
 ### Development
@@ -244,6 +246,8 @@ These run as npm scripts from the `an5Orm/` repository (no standalone `an5` CLI 
 |---------|-------------|
 | `npm run build` | Build all packages |
 | `npm test` | Run all tests |
+| `npm run test:full` | Run workspace tests plus generator, package smoke, and Python/.NET/Go compile gates |
+| `npm run test:integration:live` | Run live adapter Postgres/SQL Server checks plus ORM SQL Server relation/transaction/vector fallback checks when DB URLs are configured |
 | `npm run generate` | Generate client code (`-w an5Orm`) |
 | `npm run dryrun` | Preview workspace release changes |
 | `npm run release` | Release across the workspace |
@@ -268,6 +272,9 @@ module.exports = {
     },
     dotnet: {
       outputDir: 'an5Client/dotnet',
+    },
+    golang: {
+      outputDir: 'an5Client/golang',
     },
   },
 };
@@ -319,7 +326,7 @@ LLM_MODEL=gpt-4o-mini
 │                                                              │
 │  ┌──────────┐    ┌──────────┐    ┌──────────┐               │
 │  │an5Schema │───▶│an5Orm    │───▶│an5Client │               │
-│  │(.an5)    │    │Generator │    │(TS/Py/.NET)│              │
+│  │(.an5)    │    │Generator │    │(TS/Py/.NET/Go)│           │
 │  └──────────┘    └──────────┘    └──────────┘               │
 │       │                                    │                  │
 │       │                                    ▼                  │
@@ -348,7 +355,7 @@ LLM_MODEL=gpt-4o-mini
 | SQL Server | ✅ Native | ✅ | ✅ | ✅ |
 | Vector Search | ✅ Built-in | ❌ | ❌ | ❌ |
 | AI Agent | ✅ 7 tools | ❌ | ❌ | ❌ |
-| Multi-language | ✅ TS/Py/.NET | ⚠️ TS only | ⚠️ TS only | ⚠️ TS only |
+| Multi-language | ✅ TS/Py/.NET/Go | ⚠️ TS only | ⚠️ TS only | ⚠️ TS only |
 | Transactions | ✅ | ✅ | ✅ | ✅ |
 | Raw Queries | ✅ | ✅ | ✅ | ✅ |
 

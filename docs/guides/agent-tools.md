@@ -161,7 +161,7 @@ Generate type-safe client code from schema.
 ```typescript
 await agent.executeTool('generateClientCode', {
   schemaPath: 'an5Schema',
-  language: 'typescript'  // or 'python' | 'dotnet'
+  language: 'typescript'  // or 'python' | 'dotnet' | 'golang'
 });
 // Returns: { success: true, files: [...], message: '...' }
 ```

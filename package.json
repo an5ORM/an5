@@ -2,7 +2,7 @@
   "name": "an5-workspace",
   "version": "1.0.0",
   "private": true,
-  "description": "AN5 ORM monorepo workspace — lightweight, type-safe ORM for TypeScript, Python & .NET",
+  "description": "AN5 ORM monorepo workspace — lightweight, type-safe ORM for TypeScript, Python, .NET, and Go",
   "author": "an5ORM",
   "homepage": "https://an5orm.github.io",
   "repository": {
@@ -24,6 +24,8 @@
   "scripts": {
     "build":        "npm run build --workspaces --if-present",
     "test":         "npm run test --workspaces --if-present",
+    "test:full":    "npm test && npm run test:generator -w an5Orm && npm run test:package:smoke -w an5Adapters && npm run test:package:smoke -w an5Client && npm run test:python -w an5Adapters && npm run test:dotnet -w an5Adapters && npm run test:go -w an5Adapters && npm run test:python -w an5Client && npm run test:dotnet -w an5Client && npm run test:go -w an5Client",
+    "test:integration:live": "npm run test:integration:live -w an5Adapters && npm run test:integration:live -w an5Orm",
     "sync":         "git submodule update --init --recursive --remote",
     "generate":     "npm run generate -w an5Orm",
     "release":      "node an5Cli/dist/index.js ws . --push",

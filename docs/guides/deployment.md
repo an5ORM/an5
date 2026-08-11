@@ -176,12 +176,14 @@ spec:
 
 ## Database Migrations
 
-The current migration commands support schema/database comparison and SQL generation. Full apply/rollback tracking is still evolving; see [Feature Status]({{ '/guides/feature-status/' | relative_url }}).
+The migration commands support schema/database comparison, SQL generation, dry-run SQL previews, pending-file apply tracking, latest-migration rollback, multi-step rollback, and rollback through a named applied file when each file contains a `-- migrate:down` section. See [Feature Status]({{ '/guides/feature-status/' | relative_url }}) for current gaps.
 
 ### Push Schema
 
 ```bash
 npm run db:push   # from an5Orm/
+npm run db:migrate:apply
+npm run db:migrate:rollback
 ```
 
 ### Pull Schema (Reverse)

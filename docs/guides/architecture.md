@@ -28,8 +28,8 @@ an5Orm/ ──► an5Client/ ──(optional metadata)──► an5Adapters/ ◄
 | Repository | Role | Key Capabilities |
 |------------|------|------------------|
 | **an5Orm** | Core engine | Schema parser, multi-language code generator, proxy-based ORM client, CRUD, vector search, middleware, push/pull/seed scripts |
-| **an5Client** | Generated artifacts | TypeScript model interfaces + metadata, Python dataclasses + metadata, .NET entity classes |
-| **an5Adapters** | Runtime adapters | Provider-based SQL and Google Sheets adapters, CRUD table clients, vector search, transactions. Connection strings are auto-detected by scheme (`sqlserver://`, `googlesheets://`, …); the full API is exported from the package root plus scoped subpaths (`/browser`, `/googlesheets`, `/config`, `/mssql`, …) |
+| **an5Client** | Generated artifacts | TypeScript model interfaces + metadata, Python dataclasses + metadata, .NET entity classes, Go structs/client |
+| **an5Adapters** | Runtime adapters | Provider-based SQL and Google Sheets adapters, CRUD table clients, vector search, transactions; TypeScript runtime plus packaged Python/.NET/Go sources. Connection strings are auto-detected by scheme (`sqlserver://`, `googlesheets://`, …); the full API is exported from the package root plus scoped subpaths (`/browser`, `/googlesheets`, `/config`, `/mssql`, …, `/python`, `/dotnet`, `/golang`) |
 | **an5Agent** | AI agent library | 7 tools: schema, query, database, codegen, retrieve, task (consolidated) |
 | **an5Cli** | Release orchestrator | Changelog gen, LLM-powered commits, docs helpers, `ws` command, simplified local UI |
 | **an5OrmVScode** | Editor extension | Syntax highlighting, formatter, snippets for `.an5` files |
@@ -39,7 +39,7 @@ an5Orm/ ──► an5Client/ ──(optional metadata)──► an5Adapters/ ◄
 ## Data Flow
 
 ```
-Developer writes .an5 ──► an5Orm/generator ──► an5Client/ (TS/Python/C#)
+Developer writes .an5 ──► an5Orm/generator ──► an5Client/ (TS/Python/C#/Go)
                                                           │
                                                           v
                                                an5Adapters/ (optional metadata injection)
@@ -89,7 +89,7 @@ Developer writes .an5 ──► an5Orm/generator ──► an5Client/ (TS/Python
 
 | Tool | Description |
 |------|-------------|
-| `generateClientCode` | Generate TS/Python/.NET client code |
+| `generateClientCode` | Generate TS/Python/.NET/Go client code |
 | `analyzeSchema` | Analyze schema for design issues |
 
 ### RAG (1 tool with 2 actions)

@@ -42,7 +42,7 @@ Run from the `an5Orm/` repository directory.
 Generate type-safe client code from your schema files.
 
 ```bash
-# Generate all clients (TypeScript, Python, .NET)
+# Generate all clients (TypeScript, Python, .NET, Go)
 npm run generate
 ```
 
@@ -51,7 +51,8 @@ npm run generate
 an5Client/
 ├── typescript/     # TypeScript interfaces and metadata
 ├── python/         # Python dataclasses
-└── dotnet/         # .NET entity classes
+├── dotnet/         # .NET entity classes
+└── golang/         # Go structs and client
 ```
 
 ### Push Schema to Database
@@ -97,6 +98,18 @@ npm run db:migrate diff
 
 # Generate migration SQL
 npm run db:migrate:generate
+
+# Apply pending migration files and record them in _an5_migrations
+npm run db:migrate:apply
+npm run db:migrate:apply -- --dry-run
+
+# Roll back the latest applied migration with a -- migrate:down section
+npm run db:migrate:rollback
+npm run db:migrate:rollback -- --dry-run
+
+# Roll back multiple steps, or through a named applied file
+npm run db:migrate:rollback -- 3
+npm run db:migrate:rollback -- --to 2026-08-11T10-00-00_migration.sql
 
 # Show migration status
 npm run db:migrate:status

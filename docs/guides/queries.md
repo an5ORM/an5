@@ -125,13 +125,17 @@ console.log({
 ```typescript
 const ordersByUser = await db.order.groupBy({
   by: ['userId'],
+  where: { total: { gte: 10 } },
+  orderBy: { userId: 'asc' },
+  skip: 0,
+  take: 10,
   _count: true,
   _sum: { total: true }
 });
 ```
 
-`groupBy` supports `by`, `where`, `_count`, `_sum`, `_avg`, `_min`, `_max`.
-`having` and `orderBy` are not supported.
+`groupBy` supports `by`, `where`, `orderBy`, `skip`, `take`, `_count`, `_sum`,
+`_avg`, `_min`, `_max`. `having` is not supported.
 
 ## Select Specific Fields
 
@@ -161,6 +165,7 @@ const users = await db.user.findMany({
   },
   include: {
     posts: {
+      where: { published: true },
       select: {
         id: true,
         title: true,

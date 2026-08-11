@@ -135,8 +135,14 @@ Schema/database commands run from the `an5Orm/` repository directory (no standal
 | `npm run db:pull` | `an5Orm/` | Pull schema from database |
 | `npm run db:seed` | `an5Orm/` | Seed database with sample data |
 | `npm run db:migrate diff` | `an5Orm/` | Compare schema with database |
+| `npm run db:migrate:generate` | `an5Orm/` | Generate migration SQL |
+| `npm run db:migrate:apply` | `an5Orm/` | Apply pending migration files; pass `-- --dry-run` to preview SQL |
+| `npm run db:migrate:rollback` | `an5Orm/` | Roll back migrations; pass `-- --dry-run`, `-- 3`, or `-- --to <file>` |
+| `npm run db:migrate:status` | `an5Orm/` | Show migration status |
 | `npm run build` | workspace root | Build all workspace packages |
 | `npm test` | `an5Orm/` or workspace root | Run tests (an5Orm) or the full workspace suite |
+| `npm run test:full` | workspace root | Run workspace tests plus generator, package smoke, and Python/.NET/Go compile gates |
+| `npm run test:integration:live` | workspace root | Run live adapter Postgres/SQL Server checks plus ORM SQL Server relation/transaction/vector fallback checks when DB URLs are configured |
 
 ## Next Steps
 
