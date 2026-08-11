@@ -27,7 +27,7 @@ PyPI does not use npm-style scopes like `@an5/orm`. The Python package names are
 | Proxy model client | Implemented | `db.user.findMany()`, `db.user.create()`, dynamic model access |
 | CRUD operations | Implemented | `findMany`, `findFirst`, `findUnique`, `count`, `create`, `createMany`, `update`, `updateMany`, `delete`, `deleteMany`, `upsert` |
 | Query filters | Implemented | Equality, null, `in`, `notIn`, string filters, comparison filters, nested `not`, `AND`, `OR`, `NOT`, and aggregate `having` filters for `groupBy` |
-| Relations | Implemented, evolving | Relation includes with nested `where`/`orderBy` and per-parent `skip`/`take`, relation `some`/`none`/`every`, relation selects, `_count`, and common nested writes exist; deeper DB integration coverage is still expanding |
+| Relations | Implemented, evolving | Relation includes with nested `where`/`orderBy` and per-parent `skip`/`take`, relation `some`/`none`/`every`, multi-level relation selects, `_count`, and common nested writes exist; deeper DB integration coverage is still expanding |
 | Transactions | Implemented | `$transaction` with automatic commit/rollback, nested callback reuse, and interactive `$begin()` / `tx.$commit()` / `tx.$rollback()` for supported adapters |
 | Raw SQL | Implemented | `$queryRaw`, `$queryRawUnsafe`, `$executeRaw`, `$executeRawUnsafe` |
 | Vector search | Implemented, environment-dependent | SQL Server vector support when available, in-memory fallback for development |
@@ -108,7 +108,7 @@ The default auto-bump package set is `@an5/adapters` and `@an5/orm`. The script 
 | PyPI upload | Build artifacts are ready, credentials are not configured | Set `TWINE_USERNAME=__token__` and `TWINE_PASSWORD=<pypi-token>`, then run `python -m twine upload dist-py/*` |
 | Migration workflow | Diff/generate/apply/rollback tracking exists for SQL files; dry-run previews and generated preflight checks are available for risky column changes, required additive columns, field-level unique constraints, new unique columns, and compound unique constraints; stale an5-managed indexes/unique constraints are surfaced as commented drops; generated rollback covers additive operations and column type/nullability reversal | Broaden diff/preflight coverage for advanced index metadata such as filters/includes/options |
 | Test coverage | Smoke/unit/compile/package-smoke tests exist; live DB integration covers adapter Postgres/SQL Server CRUD/filter/update/groupBy/transaction/vector fallback plus ORM SQL Server nested relation/select/include/count/aggregate/groupBy/transaction/vector fallback and migration apply/rollback flows in CI | Add broader generated migration apply/rollback scenarios |
-| Relation edge cases | Common relation flows and nested writes exist, deeper combinations need more verification | Add relation integration tests and examples |
+| Relation edge cases | Common relation flows, multi-level relation selects, and nested writes exist, deeper live-DB combinations need more verification | Add broader relation integration tests and examples |
 | Package build pipeline | Published packages include build artifacts and language sources; `npm run test:full` runs cross-language compile/package-smoke gates, and CI also runs containerized live DB integration | Extend publish gates if live DB checks are desired before release |
 
 ## Recommended Install
