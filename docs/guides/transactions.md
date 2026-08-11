@@ -70,6 +70,35 @@ await db.$transaction(async (tx) => {
 });
 ```
 
+## Interactive Transactions
+
+Use `$begin()` when you need explicit control over the transaction lifetime.
+The returned `tx` client uses the same model API as `db`.
+
+```typescript
+const tx = await db.$begin();
+
+try {
+  await tx.account.update({
+    where: { id: senderId },
+    data: { balance: { decrement: amount } }
+  });
+
+  await tx.account.update({
+    where: { id: receiverId },
+    data: { balance: { increment: amount } }
+  });
+
+  await tx.$commit();
+} catch (error) {
+  await tx.$rollback();
+  throw error;
+}
+```
+
+Interactive transaction clients are single-use: after `tx.$commit()` or
+`tx.$rollback()`, use a new `db.$begin()` call for the next transaction.
+
 ## Common Use Cases
 
 ### Transfer Funds
@@ -149,6 +178,7 @@ await db.$transaction(async (tx) => {
 2. **Handle errors properly** - Always catch and handle transaction errors
 3. **Use appropriate isolation levels** - For concurrent scenarios
 4. **Avoid deadlocks** - Access resources in a consistent order
+5. **Prefer `$transaction` for scoped work** - Use `$begin()` only when manual lifetime control is needed
 
 ## Next Steps
 

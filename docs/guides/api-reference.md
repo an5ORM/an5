@@ -25,9 +25,10 @@ const db = new An5ORM(customExecutor?, metadata?);
 | `customExecutor` | `(queryText: string, params?: Record<string, any>) => Promise<any[]>` | - | Custom query executor; defaults to a database adapter built from the `DATABASE_URL` environment variable. The scheme is auto-detected — `sqlserver://` yields SQL Server, `googlesheets://` yields a Google Sheets adapter, and so on |
 | `metadata` | `An5Metadata` | Auto-loaded from the ORM's generated `an5Metadata.ts` | Schema metadata: `{ modelToTable, relationMap, modelFields }`. Pass explicitly to provide schema models out of the box |
 
-`customExecutor` may also expose `executeRaw(queryText, params)` and
-`transaction(fn, options?)`. The ORM uses those hooks for writes, raw execute,
-and `$transaction`; otherwise it falls back to the default adapter contract.
+`customExecutor` may also expose `executeRaw(queryText, params)`,
+`transaction(fn, options?)`, and `beginTransaction()`. The ORM uses those hooks
+for writes, raw execute, callback transactions, and interactive transactions;
+otherwise it falls back to the default adapter contract.
 
 ```typescript
 // Auto-loaded metadata (from the ORM's generated an5Metadata.ts)
@@ -45,6 +46,9 @@ const db = new An5ORM(undefined, { modelToTable, relationMap, modelFields });
 | `$connect()` | `Promise<void>` | Establish connection (no-op for default adapter; connection is lazy) |
 | `$disconnect()` | `Promise<void>` | Close connection |
 | `$transaction(fn, options?)` | `Promise<T>` | Execute callback-style transaction |
+| `$begin()` | `Promise<An5ORM>` | Start an interactive transaction and return a transaction-scoped client |
+| `tx.$commit()` | `Promise<void>` | Commit an interactive transaction client |
+| `tx.$rollback()` | `Promise<void>` | Roll back an interactive transaction client |
 | `$queryRaw(template)` | `Promise<any[]>` | Raw SQL query (template tag or string) |
 | `$queryRawUnsafe(query, ...values)` | `Promise<any[]>` | Raw SQL query with positional params |
 | `$executeRaw(template)` | `Promise<number>` | Raw SQL execute, returns rows affected |
@@ -454,10 +458,28 @@ await db.$transaction(async (tx) => {
 });
 ```
 
-`$transaction` is callback-based. Calling `tx.$transaction()` inside an active
-transaction reuses the same transactional executor when the adapter does not
-provide native nested transactions. Interactive `$begin()` / `tx.$commit()` /
-`tx.$rollback()` are not implemented.
+`$transaction` is callback-based and automatically commits or rolls back.
+Calling `tx.$transaction()` inside an active transaction reuses the same
+transactional executor when the adapter does not provide native nested
+transactions.
+
+### Interactive Transactions
+
+```typescript
+const tx = await db.$begin();
+
+try {
+  await tx.user.update({ where: { id: userId }, data: { active: true } });
+  await tx.$commit();
+} catch (error) {
+  await tx.$rollback();
+  throw error;
+}
+```
+
+`$begin()` requires the underlying adapter or custom executor to expose
+interactive transaction support. Google Sheets does not support interactive
+transactions.
 
 ## Raw Queries
 

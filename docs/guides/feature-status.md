@@ -28,7 +28,7 @@ PyPI does not use npm-style scopes like `@an5/orm`. The Python package names are
 | CRUD operations | Implemented | `findMany`, `findFirst`, `findUnique`, `count`, `create`, `createMany`, `update`, `updateMany`, `delete`, `deleteMany`, `upsert` |
 | Query filters | Implemented | Equality, null, `in`, `notIn`, string filters, comparison filters, nested `not`, `AND`, `OR`, `NOT`, and aggregate `having` filters for `groupBy` |
 | Relations | Implemented, evolving | Relation includes with nested `where`/`orderBy` and per-parent `skip`/`take`, relation `some`/`none`/`every`, relation selects, `_count`, and common nested writes exist; deeper DB integration coverage is still expanding |
-| Transactions | Implemented | `$transaction` with commit/rollback support |
+| Transactions | Implemented | `$transaction` with automatic commit/rollback, nested callback reuse, and interactive `$begin()` / `tx.$commit()` / `tx.$rollback()` for supported adapters |
 | Raw SQL | Implemented | `$queryRaw`, `$queryRawUnsafe`, `$executeRaw`, `$executeRawUnsafe` |
 | Vector search | Implemented, environment-dependent | SQL Server vector support when available, in-memory fallback for development |
 | Middleware | Implemented | `$use` pipeline for cross-cutting behavior |
