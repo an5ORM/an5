@@ -103,5 +103,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+  <script>
+    document.querySelectorAll('.site-nav .page-link').forEach(link => {
+      link.addEventListener('click', () => {
+        const trigger = document.getElementById('nav-trigger');
+        if (trigger) trigger.checked = false;
+      });
+    });
+  </script>
 </body>
 </html>
