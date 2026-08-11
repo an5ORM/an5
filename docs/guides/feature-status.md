@@ -47,7 +47,7 @@ Schema/database commands run as npm scripts from the `an5Orm/` repository direct
 | `npm run db:migrate:generate` | Implemented, evolving | Generate SQL migration file with `-- migrate:up` plus generated rollback SQL for additive operations |
 | `npm run db:migrate:apply` | Implemented, evolving | Apply pending SQL files, record checksums in `_an5_migrations`, or preview with `--dry-run` |
 | `npm run db:migrate:rollback` | Implemented, evolving | Roll back latest, N steps, or through a named applied migration; supports `--dry-run` SQL preview |
-| `npm run db:migrate:status` | Implemented | Show schema/database/migration status |
+| `npm run db:migrate:status` | Implemented | Show schema/database/migration status with the same default `dbo.` table-name normalization used by migration diff |
 | `npm run db:seed` | Implemented | Seed default app/config data |
 | `npm run db:cleanup` | Implemented, destructive | Detect/drop tables not represented in schema |
 
@@ -106,7 +106,7 @@ The default auto-bump package set is `@an5/adapters` and `@an5/orm`. The script 
 |------|-------------|-----------------------|
 | PyPI organization | PyPI orgs are managed through PyPI web UI, not CLI | Create `an5` organization manually and add package owner/manager |
 | PyPI upload | Build artifacts are ready, credentials are not configured | Set `TWINE_USERNAME=__token__` and `TWINE_PASSWORD=<pypi-token>`, then run `python -m twine upload dist-py/*` |
-| Migration workflow | Diff/generate/apply/rollback tracking exists for SQL files; dry-run previews and generated preflight checks are available for risky column changes, required additive columns, field-level unique constraints, new unique columns, and compound unique constraints; default `dbo.` schema table names are normalized during diff; stale an5-managed indexes/unique constraints are surfaced as commented drops; generated rollback covers additive operations and column type/nullability reversal | Broaden diff/preflight coverage for advanced index metadata such as filters/includes/options |
+| Migration workflow | Diff/generate/apply/rollback tracking exists for SQL files; dry-run previews and generated preflight checks are available for risky column changes, required additive columns, field-level unique constraints, new unique columns, and compound unique constraints; default `dbo.` schema table names are normalized during diff/status; stale an5-managed indexes/unique constraints are surfaced as commented drops; generated rollback covers additive operations and column type/nullability reversal | Broaden diff/preflight coverage for advanced index metadata such as filters/includes/options |
 | Test coverage | Smoke/unit/compile/package-smoke tests exist; live DB integration covers adapter Postgres/SQL Server CRUD/filter/update/groupBy/transaction/vector fallback plus ORM SQL Server nested relation/select/include/count/aggregate/groupBy/transaction/vector fallback and migration apply/rollback flows in CI | Add broader generated migration apply/rollback scenarios |
 | Relation edge cases | Common relation flows, multi-level relation selects, and nested writes exist, deeper live-DB combinations need more verification | Add broader relation integration tests and examples |
 | Package build pipeline | Published packages include build artifacts and language sources; `npm run test:full` runs cross-language compile/package-smoke gates, and CI also runs containerized live DB integration | Extend publish gates if live DB checks are desired before release |
