@@ -88,6 +88,8 @@ npm run db:push     # Push schema to database (in an5Orm/)
 
 ### 5. Use in Code
 
+**TypeScript**
+
 ```typescript
 import { An5ORM } from '@an5/orm';
 
@@ -115,6 +117,57 @@ await db.user.update({
 
 // Delete
 await db.user.delete({ where: { id: user.id } });
+```
+
+**Golang**
+
+```go
+package main
+
+import (
+	"context"
+	"database/sql"
+	"log"
+
+	an5 "an5client"
+	_ "github.com/denisenkom/go-mssqldb"
+)
+
+func main() {
+	connStr := an5.GetDefaultConnectionString() // reads DATABASE_URL
+	db, err := sql.Open("sqlserver", connStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	ctx := context.Background()
+	orm := an5.NewAn5DbContext(db)
+
+	// Create
+	user, err := orm.User.Create(ctx, &an5.User{
+		Email: "john@example.com",
+		Name:  an5.StringPtr("John"),
+	})
+
+	// Read
+	users, err := orm.User.FindMany(ctx, &an5.UserFindManyArgs{
+		Where: &an5.UserWhereInput{
+			Email: &an5.StringFilter{Contains: an5.StringPtr("@example.com")},
+		},
+		OrderBy: &an5.UserOrderByInput{
+			CreatedAt: an5.SortOrderPtr(an5.SortOrderDesc),
+		},
+		Take: an5.IntPtr(10),
+	})
+
+	// Update
+	user.Name = an5.StringPtr("John Updated")
+	orm.User.Update(ctx, user)
+
+	// Delete
+	orm.User.Delete(ctx, user.ID)
+}
 ```
 
 ---

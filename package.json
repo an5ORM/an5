@@ -22,11 +22,11 @@
     "an5Tasks"
   ],
   "scripts": {
-    "build":        "npm run build --workspaces --if-present",
-    "test":         "npm run test --workspaces --if-present",
-    "test:full":    "npm test && npm run test:generator -w an5Orm && npm run test:package:smoke -w an5Adapters && npm run test:package:smoke -w an5Client && npm run test:python -w an5Adapters && npm run test:dotnet -w an5Adapters && npm run test:go -w an5Adapters && npm run test:python -w an5Client && npm run test:dotnet -w an5Client && npm run test:go -w an5Client",
+    "build":        "npm run build -w an5Adapters && npm run build -w an5Client && npm run build --workspaces --if-present",
+    "test":         "npm run build -w an5Adapters && npm run build -w an5Client && npm run test --workspaces --if-present",
+    "test:full":    "npm run build && npm test && npm run test:generator -w an5Orm && npm run test:package:smoke -w an5Adapters && npm run test:package:smoke -w an5Client && npm run test:python -w an5Adapters && npm run test:dotnet -w an5Adapters && npm run test:go -w an5Adapters && npm run test:python -w an5Client && npm run test:dotnet -w an5Client && npm run test:go -w an5Client",
     "test:integration:live": "npm run test:integration:live -w an5Adapters && npm run test:integration:live -w an5Orm",
-    "sync":         "git submodule update --init --recursive --remote",
+    "sync":         "git submodule update --init --recursive",
     "generate":     "npm run generate -w an5Orm",
     "release":      "node an5Cli/dist/index.js ws . --push",
     "dryrun":       "node an5Cli/dist/index.js ws . --dry-run",
