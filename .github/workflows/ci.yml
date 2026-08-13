@@ -83,7 +83,7 @@ jobs:
         run: |
           echo "Waiting for database containers (MSSQL & Postgres)..."
           for i in {1..30}; do
-            if nc -z localhost 1433 && nc -z localhost 5432; then
+            if node -e "const net = require('net'); const c = (p) => new Promise(r => { const s = new net.Socket(); s.setTimeout(500); s.once('connect', () => { s.destroy(); r(true); }); s.once('error', () => { s.destroy(); r(false); }); s.once('timeout', () => { s.destroy(); r(false); }); s.connect(p, '127.0.0.1'); }); Promise.all([c(1433), c(5432)]).then(res => process.exit(res.every(Boolean) ? 0 : 1));"; then
               echo "Databases are ready on ports 1433 and 5432!"
               sleep 2
               exit 0
