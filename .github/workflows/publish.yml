@@ -137,7 +137,7 @@ jobs:
           submodules: recursive
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Install & package extension
         working-directory: an5OrmVScode
         run: |
@@ -145,11 +145,21 @@ jobs:
           npm run package
       - name: Publish to Open VSX Registry
         working-directory: an5OrmVScode
-        run: npx ovsx publish *.vsix -p ${{ secrets.OVSX_PAT }} || echo "Open VSX publish skipped"
+        run: |
+          if [ -n "$OVSX_PAT" ]; then
+            npx ovsx publish *.vsix -p "$OVSX_PAT" || echo "Open VSX publish skipped or failed"
+          else
+            echo "OVSX_PAT not provided, skipping Open VSX publish"
+          fi
         env:
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
       - name: Publish to VS Code Marketplace
         working-directory: an5OrmVScode
-        run: npx @vscode/vsce publish -p ${{ secrets.VSCE_PAT }} || echo "Marketplace publish skipped"
+        run: |
+          if [ -n "$VSCE_PAT" ]; then
+            npx @vscode/vsce publish -p "$VSCE_PAT" || echo "Marketplace publish skipped or failed"
+          else
+            echo "VSCE_PAT not provided, skipping Marketplace publish"
+          fi
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
