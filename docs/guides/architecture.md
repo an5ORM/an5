@@ -27,20 +27,19 @@ an5Orm/ ──► an5Client/ ──(optional metadata)──► an5Adapters/ ◄
 
 | Repository | Role | Key Capabilities |
 |------------|------|------------------|
-| **an5Orm** | Core engine | Schema parser, multi-language code generator, proxy-based ORM client, CRUD, vector search, middleware, push/pull/seed scripts |
-| **an5Client** | Generated artifacts | TypeScript model interfaces + metadata, Python dataclasses + metadata, .NET entity classes, Go structs/client |
-| **an5Adapters** | Runtime adapters | Provider-based SQL and Google Sheets adapters, CRUD table clients, vector search, transactions; TypeScript runtime plus packaged Python/.NET/Go sources. Connection strings are auto-detected by scheme (`sqlserver://`, `googlesheets://`, …); the full API is exported from the package root plus scoped subpaths (`/browser`, `/googlesheets`, `/config`, `/mssql`, …, `/python`, `/dotnet`, `/golang`) |
-| **an5Agent** | AI agent library | 7 tools: schema, query, database, codegen, retrieve, task (consolidated) |
-| **an5Cli** | Release orchestrator | Changelog gen, LLM-powered commits, docs helpers, `ws` command, simplified local UI |
-| **an5OrmVScode** | Editor extension | Syntax highlighting, formatter, snippets for `.an5` files |
-| **an5Schema** | Schema source | Sample `.an5` model definitions |
-| **an5Tasks** | Task manager | Genkit v1.39 flows, LLM review parsing, task CRUD, tools for agent integration |
+| **an5Adapters** | Runtime Execution Engine & Query Builder | Provider-based SQL (MSSQL, Postgres, MySQL, SQLite) and Google Sheets execution, Query Builder (`parseWhere`, `buildOrderBy`, `quote`), `executorFromAdapter` bridge, connection pooling, and multi-language sources (TS, Python, .NET, Go). |
+| **an5Orm** | Core Engine, Introspection & Migrations | Schema parser, multi-language code generator (`generator/`), database introspection (`pull.ts`), schema drift & migrations (`migrate.ts`, `migration-core.ts`), schema push (`push.ts`), generic seeder runner (`seed.ts`), `An5ORM` proxy client, views & procedures, and telemetry events (`$on`). |
+| **an5Client** | Generated Artifacts | TypeScript model interfaces + metadata, Python dataclasses + metadata, .NET entity classes, Go structs/client |
+| **an5Agent** | AI Agent Library | 7 schema-driven tools: schema, query, database, codegen, retrieve, task, analyzeSchema |
+| **an5Cli** | Workspace Automation & Release | Workspace release (`ws`), changelog generation, LLM-powered commits, local management UI |
+| **an5OrmVScode** | Editor Extension | Syntax highlighting, formatter, snippets for `.an5` files |
+| **an5Schema** | Schema Source | Sample `.an5` model definitions |
+| **an5Tasks** | Task Manager | Genkit v1.39 flows, LLM review parsing, task CRUD, tools for agent integration |
 
 ## Data Flow
 
 ```
 Developer writes .an5 ──► an5Orm/generator ──► an5Client/ (TS/Python/C#/Go)
-                                                          │
                                                           v
                                                an5Adapters/ (optional metadata injection)
                                                           │
