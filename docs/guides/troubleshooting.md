@@ -34,8 +34,12 @@ DATABASE_URL=sqlserver://server.database.windows.net:1433;database=mydb;user=adm
 
 **Solution:**
 ```typescript
-// Uses DATABASE_URL from the environment; timeouts are configured via the adapter
-const db = new An5ORM();
+import { createAn5Adapter } from '@an5/adapters';
+
+const db = createAn5Adapter({
+  connectionString: process.env.DATABASE_URL!,
+});
+await db.$connect();
 ```
 
 ### Too Many Connections
@@ -44,8 +48,11 @@ const db = new An5ORM();
 
 **Solution:**
 ```typescript
-// Uses DATABASE_URL from the environment; pool sizing is handled by the adapter
-const db = new An5ORM();
+import { createAn5Adapter } from '@an5/adapters';
+
+const db = createAn5Adapter({
+  connectionString: process.env.DATABASE_URL!,
+});
 ```
 
 ## Schema Issues
@@ -163,20 +170,28 @@ console.log(user.posts);  // Now available
 
 **Solution:**
 ```typescript
-// Uses DATABASE_URL from the environment; set LOG_LEVEL=debug for slow-query logging
-const db = new An5ORM();
+import { createAn5Adapter } from '@an5/adapters';
+
+const db = createAn5Adapter({
+  connectionString: process.env.DATABASE_URL!,
+});
 
 // Add indexes
-await db.$executeRaw`CREATE INDEX idx_email ON users(email)`;
+await db.$executeRaw('CREATE INDEX idx_email ON users(email)');
 ```
 
 ### Memory Leaks
 
 **Solution:**
 ```typescript
+import { createAn5Adapter } from '@an5/adapters';
+
 // Always disconnect when done
 async function main() {
-  const db = new An5ORM();  // Uses DATABASE_URL from the environment
+  const db = createAn5Adapter({
+    connectionString: process.env.DATABASE_URL!,
+  });
+  await db.$connect();
   
   try {
     // Use db

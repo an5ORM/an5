@@ -2,7 +2,7 @@
 
 ## [1.0.1] - 2026-08-14
 
-- chore: update misc
+- chore: update docs, misc
 
 ## [1.1.0] - 2026-07-05
 

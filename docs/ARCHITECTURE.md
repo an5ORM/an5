@@ -11,21 +11,27 @@ an5Schema/     an5OrmVScode/     an5Cli/
       ▼                                  ▼
 an5Orm/ ──► an5Client/ ──metadata──► an5Adapters/ ◄── an5Agent/ ◄── an5Tasks/
 (generator)   (generated)              (runtimes)          (AI tools)       (Genkit flows)
+# MSSQL ORM Ecosystem — Architecture
+
+## Overview
+
+Multi-repository monorepo providing a SQL Server schema-driven development platform with multi-language code generation, provider-based runtime adapters, and AI-powered agent assistance.
+
+```
+an5Schema/     an5OrmVScode/     an5Cli/
+(schema src)     (editor tooling)    (automation)
+      │                                  │
+      ▼                                  ▼
+an5Orm/ ──► an5Client/ ──metadata──► an5Adapters/ ◄── an5Agent/ ◄── an5Tasks/
+(generator)   (generated)              (runtimes)          (AI tools)       (Genkit flows)
 ```
 
 ## Repository Roles
 
 | Repo | Role | Key Capabilities |
 |------|------|------------------|
-| **an5Orm** | Core engine | Schema parser, multi-language code generator, proxy-based ORM client, CRUD, vector search, middleware, push/pull/seed scripts |
+| **an5Orm** | Schema, Generator & Migrations | Schema parser, multi-language code generator, database introspection (`pull.ts`), schema push (`push.ts`), migrations (`migrate.ts`), and seeder runner |
 | **an5Client** | Generated artifacts | TypeScript model interfaces + metadata, Python dataclasses + metadata, .NET entity classes, Go structs/client |
-| **an5Adapters** | Runtime adapters | Provider-based SQL and Google Sheets adapters, CRUD table clients, vector search, transactions - in TS plus packaged Python, C#, and Go sources |
-| **an5Agent** | AI agent library | 7 tools: schema, query, database, codegen, retrieve, task (consolidated) |
-| **an5Cli** | Release orchestrator | Changelog gen, LLM-powered commits, docs helpers, `ws` command, simplified local UI |
-| **an5OrmVScode** | Editor extension | Syntax highlighting, formatter, snippets for `.an5` files |
-| **an5Schema** | Schema source | Sample `.an5` model definitions |
-| **an5Tasks** | Task manager | Genkit v1.39 flows, LLM review parsing, task CRUD, tools for agent integration |
-
 ## Data Flow
 
 ```

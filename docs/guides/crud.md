@@ -6,7 +6,17 @@ description: Create, Read, Update, and Delete data with an5 ORM
 
 # CRUD Operations
 
-an5 ORM provides a simple, type-safe API for all CRUD operations.
+`@an5/adapters` provides a clean, type-safe API for all CRUD operations.
+
+## Setup
+
+```typescript
+import { createAn5Adapter } from '@an5/adapters';
+
+const db = createAn5Adapter({
+  connectionString: process.env.DATABASE_URL!,
+});
+```
 
 ## Create
 

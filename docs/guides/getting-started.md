@@ -1,32 +1,29 @@
 ---
 layout: page
 title: Getting Started
-description: Install and set up an5 ORM in your project
+description: Install and set up an5 in your project
 ---
 
 # Getting Started
 
-This guide will help you set up an5 ORM in your project in under 5 minutes.
+This guide will help you set up an5 in your project in under 5 minutes.
 
 For the current implementation and package maturity overview, see [Feature Status]({{ '/guides/feature-status/' | relative_url }}).
 
 ## Prerequisites
 
 - Node.js 18+ (Node 24 recommended)
-- SQL Server instance (local or remote)
+- SQL Server, PostgreSQL, MySQL, SQLite, or Google Sheets connection
 - npm or yarn package manager
 
 ## Installation
 
 ```bash
-npm install @an5/orm
+npm install @an5/adapters @an5/orm
 ```
 
-This installs the ORM runtime and the required `@an5/adapters` package. The
-adapters package is what actually talks to your database (SQL Server, PostgreSQL,
-MySQL, SQLite, or Google Sheets). You can also use it standalone — see
-[`@an5/adapters`](/guides/api-reference/#an5-adapters) for `createAn5Adapter`,
-`An5SheetsAdapter`, and `SheetsTableClient`.
+- `@an5/adapters`: Database runtime, connection handling, dynamic table clients, transactions.
+- `@an5/orm`: Schema parser, multi-language generator, migrations (`db:push`, `db:pull`, `db:migrate`, `db:seed`).
 
 ## Configuration
 
@@ -39,14 +36,8 @@ cp .env.example .env
 Edit `.env` and configure your database connection:
 
 ```ini
-# Database connection string (SQL Server shown; the adapter also auto-detects
-# googlesheets:// for spreadsheet-backed connections)
+# Database connection string (SQL Server, PostgreSQL, MySQL, SQLite, or Google Sheets)
 DATABASE_URL=sqlserver://localhost:1433;database=mydb;user=sa;password=yourpassword
-
-# Optional: LLM configuration for AI features
-LLM_PROVIDER=openai
-LLM_API_KEY=sk-your-api-key
-LLM_MODEL=gpt-4o-mini
 ```
 
 ### 2. Define Your Schema
@@ -86,15 +77,18 @@ This creates the tables in your database.
 ## Your First Query
 
 ```typescript
-import { An5ORM } from '@an5/orm';
+import { createAn5Adapter } from '@an5/adapters';
 
-// Initialize the ORM (uses DATABASE_URL from the environment;
-// schema metadata auto-loads from the ORM's generated an5Metadata.ts)
-const db = new An5ORM();
+// Initialize connection
+const db = createAn5Adapter({
+  connectionString: process.env.DATABASE_URL!,
+});
 
 async function main() {
+  await db.$connect();
+
   // Create a user
-  const user = await db.user.create({
+  const user = await db.table('User').create({
     data: {
       email: 'john@example.com',
       name: 'John Doe'
@@ -104,7 +98,7 @@ async function main() {
   console.log('Created user:', user);
   
   // Find all users
-  const users = await db.user.findMany();
+  const users = await db.table('User').findMany();
   console.log('All users:', users);
 }
 
@@ -118,15 +112,15 @@ main()
 ```
 an5/
 ├── an5Schema/           # Schema definitions (.an5 files)
-├── node_modules/@an5/orm      # Core ORM runtime
-├── node_modules/@an5/adapters # Database adapters
+├── node_modules/@an5/adapters # Database runtime & adapters
+├── node_modules/@an5/orm      # Schema & migrations engine
 ├── an5Client/                # Generated client code
 └── .env                 # Configuration
 ```
 
 ## Available Commands
 
-Schema/database commands run from the `an5Orm/` repository directory (no standalone `an5` CLI binary is shipped):
+Schema/database commands run from the `an5Orm/` repository directory:
 
 | Command | Where | Description |
 |---------|-------|-------------|
@@ -140,12 +134,10 @@ Schema/database commands run from the `an5Orm/` repository directory (no standal
 | `npm run db:migrate:rollback` | `an5Orm/` | Roll back migrations; pass `-- --dry-run`, `-- 3`, or `-- --to <file>` |
 | `npm run db:migrate:status` | `an5Orm/` | Show migration status |
 | `npm run build` | workspace root | Build all workspace packages |
-| `npm test` | `an5Orm/` or workspace root | Run tests (an5Orm) or the full workspace suite |
-| `npm run test:full` | workspace root | Run workspace tests plus generator, package smoke, and Python/.NET/Go compile gates |
-| `npm run test:integration:live` | workspace root | Run live adapter Postgres/SQL Server checks plus ORM SQL Server relation/transaction/vector fallback checks when DB URLs are configured |
+| `npm test` | workspace root | Run tests across the workspace |
 
 ## Next Steps
 
 - [Schema Definition]({{ '/guides/schema/' | relative_url }}) - Learn how to define your data models
 - [CRUD Operations]({{ '/guides/crud/' | relative_url }}) - Create, read, update, and delete data
-- [Relations]({{ '/guides/relations/' | relative_url }}) - Define relationships between models
+- [Transactions]({{ '/guides/transactions/' | relative_url }}) - Atomic transactions and rollback

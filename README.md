@@ -8,7 +8,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-blue.svg)](https://www.typescriptlang.org/)
 
-> A modern, type-safe ORM for SQL Server with AI-agent database capabilities and multi-language code generation.
+> A modern, type-safe ORM ecosystem with multi-database adapters, schema code generation, and AI-agent database capabilities.
 
 **[Documentation](https://an5orm.github.io/an5/)** | **[GitHub](https://github.com/an5ORM/an5)** | **[NPM](https://www.npmjs.com/package/@an5/orm)**
 
@@ -18,10 +18,11 @@
 
 | Feature | Description |
 |---------|-------------|
+| **Multi-Database Runtime** | Native support for MSSQL, PostgreSQL, MySQL, SQLite, and Google Sheets via `@an5/adapters` |
 | **Type-Safe Queries** | Full TypeScript, Python, .NET, and Golang support with autocompletion and type checking |
-| **Intuitive API** | Flexible property access: `db.User`, `db.user`, `db.Users`, `db.users` |
-| **Schema-First** | Define models in `.an5` files, generate type-safe clients |
-| **Multi-Language** | Generate client code for TypeScript, Python, .NET (C#), and Golang |
+| **Dynamic Table Access** | `adapter.table('User')` for fluent CRUD, aggregates, groupBy, and vector search |
+| **Schema-First** | Define models in `.an5` files, generate multi-language clients |
+| **Automated Migrations** | Diff schema against database, generate up/down SQL, apply and rollback migrations |
 | **AI Agent** | 7 intelligent tools for natural language database queries |
 | **Vector Search** | Built-in semantic search for AI/ML applications |
 | **Relations** | One-to-one and one-to-many with nested queries |
@@ -30,13 +31,13 @@
 
 ## Published Packages
 
-| Registry | Package | Status | Install |
-|----------|---------|--------|---------|
-| npm | [`@an5/orm`](https://www.npmjs.com/package/@an5/orm) | Published | `npm install @an5/orm` |
-| npm | [`@an5/adapters`](https://www.npmjs.com/package/@an5/adapters) | Published | `npm install @an5/adapters` |
-| npm | [`@an5/agent`](https://www.npmjs.com/package/@an5/agent) | Published | `npm install @an5/agent` |
-| PyPI | `an5-adapters` | Package configured; PyPI token / trusted publisher setup | `pip install an5-adapters` |
-| PyPI | `an5-orm` | Package configured; PyPI token / trusted publisher setup | `pip install an5-orm` |
+| Registry | Package | Description | Install |
+|----------|---------|-------------|---------|
+| npm | [`@an5/adapters`](https://www.npmjs.com/package/@an5/adapters) | Multi-database runtime & query engine | `npm install @an5/adapters` |
+| npm | [`@an5/orm`](https://www.npmjs.com/package/@an5/orm) | Schema parser, code generator & migrations | `npm install @an5/orm` |
+| npm | [`@an5/agent`](https://www.npmjs.com/package/@an5/agent) | AI database tools & agent | `npm install @an5/agent` |
+| PyPI | `an5-adapters` | Python multi-database adapter runtime | `pip install an5-adapters` |
+| PyPI | `an5-orm` | Python ORM & schema utilities | `pip install an5-orm` |
 
 See [Feature Status](https://an5orm.github.io/an5/guides/feature-status/) for the current maturity level of each module.
 
@@ -47,7 +48,7 @@ See [Feature Status](https://an5orm.github.io/an5/guides/feature-status/) for th
 ### 1. Install
 
 ```bash
-npm install @an5/orm
+npm install @an5/adapters @an5/orm
 ```
 
 ### 2. Configure Database
@@ -79,7 +80,7 @@ model User {
 
 ### 4. Generate & Push
 
-Schema/database commands run as npm scripts from the `an5Orm/` repo (no standalone CLI binary is shipped):
+Schema/database commands run as npm scripts from the `an5Orm/` repo:
 
 ```bash
 npm run generate    # Generate client code (in an5Orm/)
@@ -88,35 +89,53 @@ npm run db:push     # Push schema to database (in an5Orm/)
 
 ### 5. Use in Code
 
-**TypeScript**
+**TypeScript (via `@an5/adapters`)**
 
 ```typescript
-import { An5ORM } from '@an5/orm';
+import { createAn5Adapter } from '@an5/adapters';
 
-// Uses DATABASE_URL from the environment; metadata auto-loads from the ORM's generated copy
-const db = new An5ORM();
+// Connect using DATABASE_URL
+const db = createAn5Adapter({
+  connectionString: process.env.DATABASE_URL!,
+});
+await db.$connect();
 
 // Create
-const user = await db.user.create({
+const user = await db.table('User').create({
   data: { email: 'john@example.com', name: 'John' }
 });
 
 // Read
-const users = await db.user.findMany({
+const users = await db.table('User').findMany({
   where: { email: { contains: '@example.com' } },
-  include: { orders: true },
   orderBy: { createdAt: 'desc' },
   take: 10
 });
 
 // Update
-await db.user.update({
+await db.table('User').update({
   where: { id: user.id },
   data: { name: 'John Updated' }
 });
 
 // Delete
-await db.user.delete({ where: { id: user.id } });
+await db.table('User').delete({ where: { id: user.id } });
+
+// Disconnect
+await db.$disconnect();
+```
+
+**Python (via `an5-adapters`)**
+
+```python
+import os
+from an5_adapters import create_an5_adapter
+
+adapter = create_an5_adapter({'connectionString': os.environ['DATABASE_URL']})
+await adapter.connect()
+
+users = await adapter.table('User').find_many({'where': {'active': True}})
+print(users)
 ```
 
 **Golang**
@@ -176,9 +195,9 @@ func main() {
 
 | Package | Description | Key Features |
 |---------|-------------|--------------|
-| **[an5Orm](an5Orm/)** (`@an5/orm`) | Core ORM runtime | Proxy client, CRUD, vector search, middleware, transactions |
+| **[an5Adapters](an5Adapters/)** (`@an5/adapters`) | Runtime Query Engine & Adapters | MSSQL, PostgreSQL, MySQL, SQLite, Google Sheets, Dynamic Table Client, Query Builder, Transactions |
+| **[an5Orm](an5Orm/)** (`@an5/orm`) | Schema, Generator & Migrations | Multi-language code generator, `db:push`, `db:pull`, `db:migrate`, `db:seed`, `db:cleanup` |
 | **[an5Client](an5Client/)** | Generated client code | Type-safe models for TypeScript, Python, .NET (C#), and Golang |
-| **[an5Adapters](an5Adapters/)** (`@an5/adapters`) | Database adapters | SQL Server/Postgres/MySQL/SQLite engines, Google Sheets, Python/.NET/Go sources |
 | **[an5Agent](an5Agent/)** (`@an5/agent`) | AI Database Agent | 7 tools: schema, query, database, generateClientCode, analyzeSchema, retrieve, task |
 | **[an5Cli](an5Cli/)** | CLI & Local UI | Release automation, LLM commits, documentation |
 | **[an5Schema](an5Schema/)** | Schema definitions | `.an5` files with types, relations, indexes |
@@ -281,7 +300,7 @@ model Post {
 
 ## Schema & Database Commands
 
-These run as npm scripts from the `an5Orm/` repository (no standalone `an5` CLI binary is shipped):
+These run as npm scripts from the `an5Orm/` repository:
 
 | Command | Description |
 |---------|-------------|
@@ -302,7 +321,7 @@ These run as npm scripts from the `an5Orm/` repository (no standalone `an5` CLI 
 | `npm run build` | Build all packages |
 | `npm test` | Run all tests |
 | `npm run test:full` | Run workspace tests plus generator, package smoke, and Python/.NET/Go compile gates |
-| `npm run test:integration:live` | Run live adapter Postgres/SQL Server checks plus ORM SQL Server relation/transaction/vector fallback checks when DB URLs are configured |
+| `npm run test:integration:live` | Run live adapter Postgres/SQL Server checks |
 | `npm run generate` | Generate client code (`-w an5Orm`) |
 | `npm run dryrun` | Preview workspace release changes |
 | `npm run release` | Release across the workspace |
@@ -320,7 +339,6 @@ module.exports = {
     typescript: {
       outputDir: 'an5Client/typescript',
       metadataFile: 'an5Client/typescript/an5Metadata.ts',
-      ormMetadataFile: 'an5Orm/an5Metadata.ts',
     },
     python: {
       metadataFile: 'an5Client/python/an5_metadata.py',
@@ -346,10 +364,6 @@ LLM_PROVIDER=openai
 LLM_API_KEY=sk-your-api-key
 LLM_MODEL=gpt-4o-mini
 ```
-
-> Embedding settings for vector/RAG features are stored in the `EmbeddingConfig`
-> model/table (not environment variables) and read at runtime via
-> `getEmbeddingConfig()`.
 
 ---
 
@@ -408,6 +422,7 @@ LLM_MODEL=gpt-4o-mini
 | Type Safety | ✅ Full | ✅ Full | ⚠️ Partial | ⚠️ Partial |
 | Schema-first | ✅ | ✅ | ❌ | ❌ |
 | SQL Server | ✅ Native | ✅ | ✅ | ✅ |
+| Multi-Database | ✅ MSSQL, PG, MySQL, SQLite, Sheets | ✅ | ✅ | ✅ |
 | Vector Search | ✅ Built-in | ❌ | ❌ | ❌ |
 | AI Agent | ✅ 7 tools | ❌ | ❌ | ❌ |
 | Multi-language | ✅ TS/Py/.NET/Go | ⚠️ TS only | ⚠️ TS only | ⚠️ TS only |
@@ -416,24 +431,6 @@ LLM_MODEL=gpt-4o-mini
 
 ---
 
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Support
-
-- [Documentation](https://an5orm.github.io/an5/)
-- [GitHub Issues](https://github.com/an5ORM/an5/issues)
-- [Discord Community](https://discord.gg/an5)
+MIT

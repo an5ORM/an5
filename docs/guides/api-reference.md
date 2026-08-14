@@ -3,78 +3,35 @@ layout: page
 title: API Reference
 description: Complete API reference for an5 ORM
 ---
+layout: page
+title: API Reference
+description: Complete API reference for an5 ORM
+---
 
 # API Reference
 
 Complete API documentation for an5 ORM.
 
-## An5ORM Class
+## An5Adapter Class (`@an5/adapters`)
 
-### Constructor
-
-```typescript
-import { An5ORM } from '@an5/orm';
-
-const db = new An5ORM(customExecutor?, metadata?);
-```
-
-### Parameters
-
-| Param | Type | Default | Description |
-|--------|------|---------|-------------|
-| `customExecutor` | `(queryText: string, params?: Record<string, any>) => Promise<any[]>` | - | Custom query executor; defaults to a database adapter built from the `DATABASE_URL` environment variable. The scheme is auto-detected — `sqlserver://` yields SQL Server, `googlesheets://` yields a Google Sheets adapter, and so on |
-| `metadata` | `An5Metadata` | Auto-loaded from the ORM's generated `an5Metadata.ts` | Schema metadata: `{ modelToTable, relationMap, modelFields }`. Pass explicitly to provide schema models out of the box |
-
-`customExecutor` may also expose `executeRaw(queryText, params)`,
-`transaction(fn, options?)`, and `beginTransaction()`. The ORM uses those hooks
-for writes, raw execute, callback transactions, and interactive transactions;
-otherwise it falls back to the default adapter contract.
+### Factory / Constructor
 
 ```typescript
-// Auto-loaded metadata (from the ORM's generated an5Metadata.ts)
-const db = new An5ORM();
+import { createAn5Adapter, An5Adapter } from '@an5/adapters';
 
-// Explicit metadata
-import { modelToTable, relationMap, modelFields } from './an5Metadata';
-const db = new An5ORM(undefined, { modelToTable, relationMap, modelFields });
-```
-
-### Methods
-
-```typescript
-// Auto-loaded metadata (from the ORM's generated an5Metadata.ts)
-const db = new An5ORM();
-
-// Explicit metadata
-import { modelToTable, relationMap, modelFields } from './an5Metadata';
-const db = new An5ORM(undefined, { modelToTable, relationMap, modelFields });
+const db = createAn5Adapter({
+  connectionString: process.env.DATABASE_URL!,
+});
 ```
 
 ### Methods
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `$connect()` | `Promise<void>` | Establish connection (no-op for default adapter; connection is lazy) |
-| `$disconnect()` | `Promise<void>` | Close connection |
+| `$connect()` | `Promise<void>` | Establish connection to database |
+| `$disconnect()` | `Promise<void>` | Close database connection pool |
+| `table(name)` | `AdapterTableClient<T>` | Get table client instance (`db.table('User')`) |
 | `$transaction(fn, options?)` | `Promise<T>` | Execute callback-style transaction |
-| `$begin()` | `Promise<An5ORM>` | Start an interactive transaction and return a transaction-scoped client |
-| `table(name)` | `TableClient` | Get explicit model/table client instance (`db.table('User')`) |
-| `$view(name)` / `view(name)` | `ViewClient` | Get read-only view client instance (`db.$view('UserSummaryView')`) |
-| `$queryProc(procName, params)` | `Promise<T[]>` | Execute stored procedure and return query result rows |
-| `$executeProc(procName, params)` | `Promise<number>` | Execute stored procedure and return affected rows count |
-| `$queryFunction(fnName, params)` | `Promise<T[]>` | Execute database function and return query result set |
-| `tx.$commit()` | `Promise<void>` | Commit an interactive transaction client |
-| `tx.$rollback()` | `Promise<void>` | Roll back an interactive transaction client |
-| `$queryRaw(template)` | `Promise<any[]>` | Raw SQL query (template tag or string) |
-| `$queryRawUnsafe(query, ...values)` | `Promise<any[]>` | Raw SQL query with positional params |
-| `$executeRaw(template)` | `Promise<number>` | Raw SQL execute, returns rows affected |
-
-```typescript
-db.model.findUnique(params: FindUniqueArgs): Promise<Model | null>
-```
-
-**Params:**
-```typescript
 {
   where: { id: 'string' } | { uniqueField: 'value' }
 }

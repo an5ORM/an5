@@ -28,7 +28,7 @@ an5Orm/ ──► an5Client/ ──(optional metadata)──► an5Adapters/ ◄
 | Repository | Role | Key Capabilities |
 |------------|------|------------------|
 | **an5Adapters** | Runtime Execution Engine & Query Builder | Provider-based SQL (MSSQL, Postgres, MySQL, SQLite) and Google Sheets execution, Query Builder (`parseWhere`, `buildOrderBy`, `quote`), `executorFromAdapter` bridge, connection pooling, and multi-language sources (TS, Python, .NET, Go). |
-| **an5Orm** | Core Engine, Introspection & Migrations | Schema parser, multi-language code generator (`generator/`), database introspection (`pull.ts`), schema drift & migrations (`migrate.ts`, `migration-core.ts`), schema push (`push.ts`), generic seeder runner (`seed.ts`), `An5ORM` proxy client, views & procedures, and telemetry events (`$on`). |
+| **an5Orm** | Schema, Generator & Migrations | Schema parser, multi-language code generator (`generator/`), database introspection (`pull.ts`), schema drift & migrations (`migrate.ts`, `migration-core.ts`), schema push (`push.ts`), and generic seeder runner (`seed.ts`). |
 | **an5Client** | Generated Artifacts | TypeScript model interfaces + metadata, Python dataclasses + metadata, .NET entity classes, Go structs/client |
 | **an5Agent** | AI Agent Library | 7 schema-driven tools: schema, query, database, codegen, retrieve, task, analyzeSchema |
 | **an5Cli** | Workspace Automation & Release | Workspace release (`ws`), changelog generation, LLM-powered commits, local management UI |

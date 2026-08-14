@@ -22,12 +22,9 @@ module.exports = {
     typescript: {
       /** Output directory for generated TypeScript files */
       outputDir: 'an5Client/typescript',
-      
+
       /** Path for metadata file */
       metadataFile: 'an5Client/typescript/an5Metadata.ts',
-
-      /** Path for ORM-local metadata file (owned by @an5/orm so the core never imports from the generated client) */
-      ormMetadataFile: 'an5Orm/an5Metadata.ts',
     },
 
     /**

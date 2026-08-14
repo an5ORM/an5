@@ -1,12 +1,12 @@
 ---
 layout: page
 title: Deployment
-description: Deploy your an5 ORM application to production
+description: Deploy your an5 application to production
 ---
 
 # Deployment
 
-Deploy an5 ORM applications to various environments.
+Deploy an5 applications to various production environments.
 
 ## Production Checklist
 
@@ -14,7 +14,7 @@ Before deploying:
 
 - [ ] Set `DATABASE_URL` environment variable
 - [ ] Configure connection pooling
-- [ ] Enable HTTPS for database connections
+- [ ] Enable HTTPS / encryption for database connections
 - [ ] Set appropriate log level
 - [ ] Configure backup strategy
 - [ ] Test with production-like data
@@ -34,21 +34,22 @@ LOG_LEVEL=warn
 NODE_ENV=production
 ```
 
-For spreadsheet-backed apps, point `DATABASE_URL` at a `googlesheets://` connection
-string instead (the adapter auto-detects the scheme):
+For spreadsheet-backed apps, point `DATABASE_URL` at a `googlesheets://` connection string:
 
 ```ini
 DATABASE_URL=googlesheets://spreadsheetId;clientEmail=sa@project.iam.gserviceaccount.com;privateKey=url-encoded-key;sheetMapping=users:Users,orders:Orders
 ```
 
-When using a service account, deploy its private key as a secret (e.g. an App Service
-environment variable, Secret Manager, or Vault) rather than committing it to source.
-
-### Connection Pooling
+### Connection Setup
 
 ```typescript
-// Uses DATABASE_URL from the environment; pool sizing is handled by the database adapter
-const db = new An5ORM();
+import { createAn5Adapter } from '@an5/adapters';
+
+// Uses DATABASE_URL from the environment
+const db = createAn5Adapter({
+  connectionString: process.env.DATABASE_URL!,
+});
+await db.$connect();
 ```
 
 ## Deployment Options
@@ -70,10 +71,6 @@ const db = new An5ORM();
 
 3. **Deploy**
    ```bash
-   az webapp deployment source config-local-git \
-     --resource-group myRG \
-     --name myApp
-   
    git push azure main
    ```
 
@@ -176,7 +173,7 @@ spec:
 
 ## Database Migrations
 
-The migration commands support schema/database comparison, SQL generation, dry-run SQL previews, pending-file apply tracking, latest-migration rollback, multi-step rollback, and rollback through a named applied file when each file contains a `-- migrate:down` section. See [Feature Status]({{ '/guides/feature-status/' | relative_url }}) for current gaps.
+The migration commands support schema/database comparison, SQL generation, dry-run SQL previews, pending-file apply tracking, latest-migration rollback, multi-step rollback, and rollback through a named applied file.
 
 ### Push Schema
 
@@ -186,59 +183,26 @@ npm run db:migrate:apply
 npm run db:migrate:rollback
 ```
 
-### Pull Schema (Reverse)
+### Pull Schema (Introspection)
 
 ```bash
 npm run db:pull   # from an5Orm/
 ```
 
-### Manual Migration
-
-```typescript
-import { An5ORM } from '@an5/orm';
-
-async function migrate() {
-  const db = new An5ORM();  // Uses DATABASE_URL from the environment
-  
-  // Run migrations
-  await db.$executeRaw`CREATE TABLE IF NOT EXISTS users (...)`;
-  
-  await db.$disconnect();
-}
-
-migrate().catch(console.error);
-```
-
-## Monitoring
+## Monitoring & Health Checks
 
 ### Health Check Endpoint
 
 ```typescript
 app.get('/health', async (req, res) => {
   try {
-    await db.$queryRaw`SELECT 1`;
+    await db.$queryRawUnsafe('SELECT 1');
     res.json({ status: 'healthy' });
-  } catch (error) {
+  } catch (error: any) {
     res.status(503).json({ status: 'unhealthy', error: error.message });
   }
 });
 ```
-
-### Query Logging
-
-```typescript
-// Uses DATABASE_URL from the environment; set LOG_LEVEL=debug for query logging
-const db = new An5ORM();
-```
-
-### Metrics
-
-Track these metrics:
-
-- Query response times
-- Connection pool usage
-- Error rates
-- Slow query count
 
 ## Security
 
@@ -260,34 +224,3 @@ DATABASE_URL=sqlserver://server:1433;database=db;encrypt=true;trustServerCertifi
 - Use VNet/VPC for database access
 - Restrict IP whitelist
 - Use private endpoints
-
-## Troubleshooting
-
-### Common Issues
-
-**Connection Timeout:**
-```typescript
-// Uses DATABASE_URL from the environment; timeouts are configured via the adapter
-const db = new An5ORM();
-```
-
-**Memory Issues:**
-```typescript
-// Uses DATABASE_URL from the environment; pool sizing is handled by the adapter
-const db = new An5ORM();
-```
-
-**Slow Queries:**
-```typescript
-// Uses DATABASE_URL from the environment; set LOG_LEVEL=debug for slow-query logging
-const db = new An5ORM();
-```
-
-## Best Practices
-
-1. **Use connection pooling** - Essential for production performance
-2. **Enable monitoring** - Track query performance and errors
-3. **Implement health checks** - For load balancers and orchestrators
-4. **Use migrations** - Version control your schema changes
-5. **Test with production data** - Use realistic data volumes
-6. **Backup regularly** - Automated database backups

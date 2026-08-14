@@ -22,26 +22,25 @@ description: A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, 
     </div>
   </div>
   <div class="hero-code">
-    <pre><code class="language-typescript">import { An5ORM } from '@an5/orm';
+    <pre><code class="language-typescript">import { createAn5Adapter } from '@an5/adapters';
 
-const db = new An5ORM();
+const db = createAn5Adapter({
+  connectionString: process.env.DATABASE_URL!,
+});
+await db.$connect();
 
-// Type-safe queries
-const users = await db.user.findMany({
+// Type-safe table queries
+const users = await db.table('User').findMany({
   where: { email: { contains: '@example.com' } },
-  include: { orders: true },
   orderBy: { createdAt: 'desc' },
   take: 10,
 });
 
-// Create with relations
-const user = await db.user.create({
+// Create record
+const user = await db.table('User').create({
   data: {
     email: 'john@example.com',
     name: 'John',
-    orders: {
-      create: [{ total: 100 }, { total: 200 }]
-    }
   }
 });</code></pre>
   </div>

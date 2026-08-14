@@ -6,7 +6,17 @@ description: Complex query patterns with filtering, sorting, and aggregation
 
 # Advanced Queries
 
-an5 ORM provides powerful query capabilities for complex data retrieval.
+`@an5/adapters` provides powerful query capabilities for complex data retrieval across SQL dialects (MSSQL, PostgreSQL, MySQL, SQLite) and Google Sheets.
+
+## Setup
+
+```typescript
+import { createAn5Adapter } from '@an5/adapters';
+
+const db = createAn5Adapter({
+  connectionString: process.env.DATABASE_URL!,
+});
+```
 
 ## Filtering
 
@@ -95,8 +105,7 @@ const users = await db.user.findMany({
 });
 ```
 
-When `skip` is used, an `ORDER BY (SELECT NULL)` + `OFFSET/FETCH` pagination is
-generated (SQL Server requires an `ORDER BY` for `OFFSET`).
+When `skip` is used, dialect-aware pagination is automatically generated (`LIMIT/OFFSET` for PostgreSQL/MySQL/SQLite, `OFFSET/FETCH` for MSSQL).
 
 ## Aggregations
 
@@ -112,7 +121,7 @@ const stats = await db.order.aggregate({
 });
 
 console.log({
-  count: stats._count,
+  count: stats._count._all,
   total: stats._sum.total,
   average: stats._avg.total,
   min: stats._min.total,
@@ -124,23 +133,15 @@ console.log({
 
 ```typescript
 const ordersByUser = await db.order.groupBy({
-  by: ['userId'],
+  by: ['status'],
   where: { total: { gte: 10 } },
-  having: {
-    _count: { _all: { gt: 1 } },
-    _sum: { total: { gte: 100 } }
-  },
-  orderBy: { userId: 'asc' },
+  orderBy: { status: 'asc' },
   skip: 0,
   take: 10,
   _count: true,
   _sum: { total: true }
 });
 ```
-
-`groupBy` supports `by`, `where`, `orderBy`, `skip`, `take`, `_count`, `_sum`,
-`_avg`, `_min`, `_max`, and aggregate `having` filters. Generated clients (TypeScript,
-Python, .NET, Golang) type the `having` filters for your schema.
 
 ## Nested Relation Pagination
 
@@ -166,9 +167,7 @@ const users = await db.user.findMany({
     id: true,
     email: true,
     name: true,
-    _count: {
-      select: { posts: true }
-    }
+    _count: true,
   }
 });
 ```
@@ -180,13 +179,9 @@ const users = await db.user.findMany({
 const users = await db.user.findMany({
   where: {
     isActive: true,
-    posts: {
-      some: { published: true }
-    }
   },
   include: {
     posts: {
-      where: { published: true },
       select: {
         id: true,
         title: true,
@@ -195,9 +190,7 @@ const users = await db.user.findMany({
       orderBy: { createdAt: 'desc' },
       take: 5
     },
-    _count: {
-      select: { posts: true }
-    }
+    _count: true
   },
   orderBy: { createdAt: 'desc' },
   take: 10
@@ -206,22 +199,23 @@ const users = await db.user.findMany({
 
 ## Raw SQL Queries
 
-For complex queries that are hard to express with the ORM:
+For queries where you need direct SQL execution:
 
 ```typescript
-// Raw query (results are untyped)
-const users = await db.$queryRaw`
-  SELECT u.*, COUNT(p.id) as post_count
-  FROM users u
-  LEFT JOIN posts p ON u.id = p.author_id
-  WHERE u.is_active = 1
-  GROUP BY u.id
-  HAVING COUNT(p.id) > 5
-  ORDER BY post_count DESC
-`;
+const users = await db.$queryRawUnsafe(
+  `SELECT u.*, COUNT(p.id) as post_count
+   FROM users u
+   LEFT JOIN posts p ON u.id = p.author_id
+   WHERE u.is_active = @p_0
+   GROUP BY u.id
+   HAVING COUNT(p.id) > @p_1
+   ORDER BY post_count DESC`,
+  1,
+  5
+);
 ```
 
 ## Next Steps
 
-- [Transactions]({{ '/guides/transactions/' | relative_url }}) - Atomic operations
-- [Vector Search]({{ '/guides/vector-search/' | relative_url }}) - AI-powered search
+- [Relations]({{ '/guides/relations/' | relative_url }}) - Model relationships & nested writes
+- [Deployment]({{ '/guides/deployment/' | relative_url }}) - Production configuration
