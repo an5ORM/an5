@@ -190,6 +190,9 @@ await db.$transaction(async (tx) => {
 });
 ```
 
+When you need explicit control over when the transaction commits or rolls back,
+use interactive transactions instead — see [Transactions]({{ '/guides/transactions/' | relative_url }}).
+
 ## Raw Queries
 
 Execute raw SQL when you need more control:

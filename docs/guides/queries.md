@@ -139,7 +139,24 @@ const ordersByUser = await db.order.groupBy({
 ```
 
 `groupBy` supports `by`, `where`, `orderBy`, `skip`, `take`, `_count`, `_sum`,
-`_avg`, `_min`, `_max`, and aggregate `having` filters.
+`_avg`, `_min`, `_max`, and aggregate `having` filters. Generated clients (TypeScript,
+Python, .NET, Golang) type the `having` filters for your schema.
+
+## Nested Relation Pagination
+
+Inside `include`, `skip` and `take` paginate the related rows **per parent row**:
+
+```typescript
+const users = await db.user.findMany({
+  include: {
+    posts: {
+      orderBy: { createdAt: 'desc' },
+      skip: 0,
+      take: 5,    // first 5 posts for each user
+    }
+  }
+});
+```
 
 ## Select Specific Fields
 

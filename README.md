@@ -274,6 +274,8 @@ model Post {
 | `@relation(fields, references)` | Foreign key |
 | `@@map("table")` | Table name mapping |
 | `@@description("...")` | Model description |
+| `@@unique([...])` | Compound unique constraint |
+| `@@index([...])` | Index; supports `map`, `include`, `filter`, and `options` |
 
 ---
 

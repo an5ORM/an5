@@ -106,31 +106,6 @@ body {
   text-decoration: none;
 }
 
-/* ─── Crosslink Banner ──────────────────────────────────────────────────────── */
-.site-crosslink {
-  background: #eff6ff;
-  border-bottom: 1px solid #bfdbfe;
-  color: #1e3a8a;
-  font-size: 0.9rem;
-}
-
-.site-crosslink .wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0.65rem 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.site-crosslink a {
-  color: var(--primary-color);
-  font-weight: 700;
-  text-decoration: underline;
-}
-
 /* ─── Hero Section ──────────────────────────────────────────────────────────── */
 .hero {
   display: grid;
@@ -716,13 +691,6 @@ blockquote p {
     padding: 0.75rem 1rem;
     font-size: 1rem;
     border-radius: 8px;
-  }
-
-  .site-crosslink .wrapper {
-    padding: 0.65rem 1rem;
-    text-align: center;
-    flex-direction: column;
-    gap: 0.25rem;
   }
 
   .page-content {

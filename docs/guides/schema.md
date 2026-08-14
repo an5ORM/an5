@@ -39,22 +39,29 @@ model Post {
 
 ### Field Types
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `NVARCHAR(n)` | Variable-length Unicode string | `NVARCHAR(255)` |
-| `VARCHAR(n)` | Variable-length ASCII string | `VARCHAR(100)` |
-| `TEXT` | Large text field | `TEXT` |
-| `INT` | 32-bit integer | `INT` |
-| `BIGINT` | 64-bit integer | `BIGINT` |
-| `SMALLINT` | 16-bit integer | `SMALLINT` |
-| `FLOAT` | Floating point | `FLOAT` |
-| `DECIMAL(p,s)` | Fixed precision | `DECIMAL(10,2)` |
-| `BIT` | Boolean | `BIT` |
-| `DATETIME` | Date and time | `DATETIME` |
-| `DATETIME2` | High precision datetime | `DATETIME2` |
-| `DATE` | Date only | `DATE` |
-| `UNIQUEIDENTIFIER` | UUID/GUID | `UNIQUEIDENTIFIER` |
-| `VARBINARY(n)` | Binary data | `VARBINARY(255)` |
+| Type | Description | Example | TypeScript |
+|------|-------------|---------|------------|
+| `NVARCHAR(n)` | Variable-length Unicode string | `NVARCHAR(255)` | `string` |
+| `VARCHAR(n)` | Variable-length ASCII string | `VARCHAR(100)` | `string` |
+| `CHAR(n)` | Fixed-length string | `CHAR(10)` | `string` |
+| `TEXT` | Large text field | `TEXT` | `string` |
+| `INT` | 32-bit integer | `INT` | `number` |
+| `BIGINT` | 64-bit integer | `BIGINT` | `number \| bigint` |
+| `SMALLINT` | 16-bit integer | `SMALLINT` | `number` |
+| `TINYINT` | 8-bit integer | `TINYINT` | `number` |
+| `FLOAT` | Floating point | `FLOAT` | `number` |
+| `REAL` | Single-precision float | `REAL` | `number` |
+| `DECIMAL(p,s)` | Fixed precision | `DECIMAL(10,2)` | `number` |
+| `NUMERIC(p,s)` | Fixed precision | `NUMERIC(10,2)` | `number` |
+| `BIT` | Boolean | `BIT` | `boolean` |
+| `DATETIME` | Date and time | `DATETIME` | `Date` |
+| `DATETIME2` | High precision datetime | `DATETIME2` | `Date` |
+| `DATE` | Date only | `DATE` | `Date` |
+| `TIME` | Time only | `TIME` | `Date` |
+| `UNIQUEIDENTIFIER` | UUID/GUID | `UNIQUEIDENTIFIER` | `string` |
+| `VARBINARY(n)` | Binary data | `VARBINARY(255)` | `Buffer` |
+| `BINARY(n)` | Fixed binary data | `BINARY(16)` | `Buffer` |
+| `IMAGE` | Large binary data | `IMAGE` | `Buffer` |
 
 ### Optional Fields
 
@@ -105,7 +112,11 @@ model User {
 }
 ```
 
-## Table Mapping
+## Model Directives
+
+Directives are declared at the model level and control table mapping, constraints, and indexes.
+
+### Table Mapping
 
 Use `@@map()` to map a model to a different table name:
 
@@ -113,10 +124,76 @@ Use `@@map()` to map a model to a different table name:
 model User {
   id    NVARCHAR(1000) @id @default(uuid())
   email NVARCHAR(255)
-  
+
   @@map("app_users")
 }
 ```
+
+### Model Description
+
+```an5
+model User {
+  id NVARCHAR(1000) @id @default(uuid())
+
+  @@description("User account")
+}
+```
+
+### Unique Constraints
+
+`@@unique()` declares a unique constraint across one or more fields. Compound
+unique constraints are supported:
+
+```an5
+model Membership {
+  id     NVARCHAR(1000) @id @default(uuid())
+  userId NVARCHAR(1000)
+  orgId  NVARCHAR(1000)
+
+  @@unique([userId, orgId])
+}
+```
+
+### Indexes
+
+`@@index()` declares a database index. Advanced options are supported:
+
+```an5
+model Order {
+  id        NVARCHAR(1000) @id @default(uuid())
+  userId    NVARCHAR(1000)
+  total     DECIMAL(10,2)
+  status    NVARCHAR(50)
+  createdAt DATETIME2
+
+  // Simple index
+  @@index([userId])
+
+  // Named index (honored in migration diff/generate)
+  @@index([userId, createdAt], map: "idx_orders_user_created")
+
+  // Include columns
+  @@index([userId], include: [total, status])
+
+  // Filtered index
+  @@index([status], filter: "[status] <> 'cancelled'")
+
+  // Index options (e.g. fillfactor)
+  @@index([userId], options: "fillfactor=80")
+}
+```
+
+Supported index options:
+
+| Option | Description | Example |
+|--------|-------------|---------|
+| `map` | Custom index/constraint name | `map: "idx_orders_user"` |
+| `include` | Included (non-key) columns | `include: [total, status]` |
+| `filter` | Filtered index predicate | `filter: "[status] <> 'cancelled'"` |
+| `options` | Raw index options | `options: "fillfactor=80"` |
+
+Migrations honor mapped index/unique names, include/filter/options metadata,
+and `dbo.`-qualified table names when comparing schema with the database.
 
 ## Complete Example
 
@@ -150,6 +227,7 @@ model Post {
   author    User           @relation(fields: [authorId], references: [id])
   tags      Tag[]
   
+  @@index([authorId])
   @@map("posts")
 }
 
