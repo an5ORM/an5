@@ -41,23 +41,33 @@ const db = new An5ORM(undefined, { modelToTable, relationMap, modelFields });
 
 ### Methods
 
+```typescript
+// Auto-loaded metadata (from the ORM's generated an5Metadata.ts)
+const db = new An5ORM();
+
+// Explicit metadata
+import { modelToTable, relationMap, modelFields } from './an5Metadata';
+const db = new An5ORM(undefined, { modelToTable, relationMap, modelFields });
+```
+
+### Methods
+
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `$connect()` | `Promise<void>` | Establish connection (no-op for default adapter; connection is lazy) |
 | `$disconnect()` | `Promise<void>` | Close connection |
 | `$transaction(fn, options?)` | `Promise<T>` | Execute callback-style transaction |
 | `$begin()` | `Promise<An5ORM>` | Start an interactive transaction and return a transaction-scoped client |
+| `table(name)` | `TableClient` | Get explicit model/table client instance (`db.table('User')`) |
+| `$view(name)` / `view(name)` | `ViewClient` | Get read-only view client instance (`db.$view('UserSummaryView')`) |
+| `$queryProc(procName, params)` | `Promise<T[]>` | Execute stored procedure and return query result rows |
+| `$executeProc(procName, params)` | `Promise<number>` | Execute stored procedure and return affected rows count |
+| `$queryFunction(fnName, params)` | `Promise<T[]>` | Execute database function and return query result set |
 | `tx.$commit()` | `Promise<void>` | Commit an interactive transaction client |
 | `tx.$rollback()` | `Promise<void>` | Roll back an interactive transaction client |
 | `$queryRaw(template)` | `Promise<any[]>` | Raw SQL query (template tag or string) |
 | `$queryRawUnsafe(query, ...values)` | `Promise<any[]>` | Raw SQL query with positional params |
 | `$executeRaw(template)` | `Promise<number>` | Raw SQL execute, returns rows affected |
-| `$executeRawUnsafe(query, ...values)` | `Promise<number>` | Raw SQL execute with positional params |
-| `$use(middleware)` | `void` | Register a middleware hook |
-
-## Model Methods
-
-### findUnique
 
 ```typescript
 db.model.findUnique(params: FindUniqueArgs): Promise<Model | null>
