@@ -667,6 +667,40 @@ For detailed tool documentation, see [AI Agent Tools]({{ '/guides/agent-tools/' 
 
 Schema/database commands run as npm scripts from the `an5Orm/` repository directory (no standalone `an5` CLI binary is shipped).
 
+## Browser Adapters API (`@an5/adapters/browser`)
+
+The `@an5/adapters/browser` entrypoint provides zero-dependency browser-safe database adapters for Web Browsers, WASM, and Client Components.
+
+### `createBrowserSqliteAdapter`
+
+Creates a type-safe AN5 ORM adapter for in-browser SQLite execution drivers (such as `sql.js`, WASM, OPFS, or Capacitor/Expo SQLite).
+
+```typescript
+import { createBrowserSqliteAdapter } from '@an5/adapters/browser';
+
+const adapter = createBrowserSqliteAdapter({
+  driver: {
+    exec: (sql: string, params?: any[]) => rows
+  },
+  dialect: 'sqlite'
+});
+```
+
+### `An5SheetsAdapter` / `createAn5SheetsAdapter`
+
+Creates a browser-safe Google Sheets database adapter.
+
+```typescript
+import { createAn5SheetsAdapter } from '@an5/adapters/browser';
+
+const sheetsDb = createAn5SheetsAdapter({
+  spreadsheetId: 'YOUR_SHEET_ID',
+  accessToken: 'YOUR_OAUTH_TOKEN' // or apiKey: 'YOUR_API_KEY'
+});
+```
+
+---
+
 ### Schema Management
 
 | Command | Description |
