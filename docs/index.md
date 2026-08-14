@@ -1,22 +1,21 @@
 ---
 layout: default
 title: an5 ORM - Modern SQL Server ORM
-description: A modern, type-safe ORM for SQL Server
+description: A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, and Google Sheets
 ---
 
 <div class="hero">
   <div class="hero-content">
     <h1>an5 ORM</h1>
-    <p class="hero-subtitle">A modern, type-safe ORM for SQL Server</p>
+    <p class="hero-subtitle">A modern, type-safe ORM for Every Platform</p>
     <p class="hero-description">
       Build data-driven applications with an intuitive API, type-safe queries, 
-      and powerful features like vector search and AI agent integration.
+      and powerful features like vector search and AI agent integration across TypeScript, Python, .NET & Golang.
     </p>
     <div class="hero-buttons">
       <a href="{{ '/guides/getting-started/' | relative_url }}" class="btn btn-primary">Get Started</a>
       <a href="{{ '/guides/feature-status/' | relative_url }}" class="btn btn-secondary">Feature Status</a>
       <a href="{{ '/guides/schema/' | relative_url }}" class="btn btn-secondary">Documentation</a>
-      <a href="https://an5orm.github.io/" class="btn btn-secondary">Ecosystem Site</a>
       <a href="https://github.com/an5ORM/an5" class="btn btn-outline">
         <i class="fab fa-github"></i> GitHub
       </a>
@@ -50,7 +49,7 @@ const user = await db.user.create({
 
 ## Why an5 ORM?
 
-Install the published package with `npm install @an5/orm`, then use the npm scripts in the `an5Orm` repository (`npm run generate`, `npm run db:push`, …) for schema generation and database commands.
+Install the published package with `npm install @an5/orm`, then use the CLI tools for schema generation and database commands.
 
 <div class="features-grid">
   <div class="feature-card">
@@ -71,7 +70,7 @@ Install the published package with `npm install @an5/orm`, then use the npm scri
   <div class="feature-card">
     <div class="feature-icon">🔍</div>
     <h3>Vector Search</h3>
-    <p>Built-in vector search for AI and ML applications using SQL Server.</p>
+    <p>Built-in vector search for AI and ML applications across supported dialects.</p>
   </div>
   <div class="feature-card">
     <div class="feature-icon">🤖</div>
@@ -81,7 +80,7 @@ Install the published package with `npm install @an5/orm`, then use the npm scri
   <div class="feature-card">
     <div class="feature-icon">🔄</div>
     <h3>Multi-Language</h3>
-    <p>Generate type-safe clients for TypeScript, Python, .NET, and Go.</p>
+    <p>Generate type-safe clients for TypeScript, Python, .NET, and Golang.</p>
   </div>
 </div>
 
@@ -90,7 +89,8 @@ Install the published package with `npm install @an5/orm`, then use the npm scri
 <div class="example-tabs">
   <div class="example-tabs-header">
     <button class="tab-btn active" onclick="showTab('schema')">Schema</button>
-    <button class="tab-btn" onclick="showTab('query')">Query</button>
+    <button class="tab-btn" onclick="showTab('query')">TypeScript</button>
+    <button class="tab-btn" onclick="showTab('golang')">Golang</button>
     <button class="tab-btn" onclick="showTab('result')">Result</button>
   </div>
   <div class="tab-content active" id="schema">
@@ -125,13 +125,22 @@ model Order {
   take: 10
 });</code></pre>
   </div>
+  <div class="tab-content" id="golang">
+    <pre><code class="language-go">// Golang Adapter query example
+import an5 "github.com/an5ORM/an5Adapters/golang"
+
+db := an5.NewAn5Adapter(sqlDB, "postgres", connStr)
+users, err := db.Table("User").FindMany(ctx, map[string]any{
+    "email": "@example.com",
+})</code></pre>
+  </div>
   <div class="tab-content" id="result">
     <pre><code class="language-json">[
   {
     "id": "uuid-1",
     "email": "john@example.com",
     "name": "John",
-    "createdAt": "2024-01-15T10:30:00Z",
+    "createdAt": "2026-01-15T10:30:00Z",
     "orders": [
       { "total": 500 },
       { "total": 150 }
@@ -147,22 +156,10 @@ model Order {
 |---------|---------|--------|---------|-----------|
 | Type Safety | ✅ Full | ✅ Full | ⚠️ Partial | ⚠️ Partial |
 | Schema-first | ✅ | ✅ | ❌ | ❌ |
-| SQL Server | ✅ Native | ✅ | ✅ | ✅ |
+| SQL Server & Postgres | ✅ Native | ✅ | ✅ | ✅ |
 | Vector Search | ✅ Built-in | ❌ | ❌ | ❌ |
 | AI Agent | ✅ 7 tools | ❌ | ❌ | ❌ |
 | Multi-language | ✅ TS/Py/.NET/Go | ⚠️ TS only | ⚠️ TS only | ⚠️ TS only |
-
-## Trusted By
-
-<div class="trusted-section">
-  <p>Used by teams building:</p>
-  <ul>
-    <li>Enterprise applications</li>
-    <li>AI-powered products</li>
-    <li>Real-time systems</li>
-    <li>Multi-tenant platforms</li>
-  </ul>
-</div>
 
 <div class="cta-section">
   <h2>Ready to get started?</h2>
@@ -176,7 +173,8 @@ model Order {
 function showTab(tabId) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById(tabId).classList.add('active');
-  event.target.classList.add('active');
+  const target = document.getElementById(tabId);
+  if (target) target.classList.add('active');
+  if (event && event.target) event.target.classList.add('active');
 }
 </script>
