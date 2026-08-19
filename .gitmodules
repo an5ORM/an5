@@ -33,3 +33,6 @@
 [submodule "an5Site"]
 	path = an5Site
 	url = https://github.com/an5ORM/an5ORM.github.io.git
+[submodule "an5example"]
+	path = an5example
+	url = https://github.com/an5ORM/an5example.git
