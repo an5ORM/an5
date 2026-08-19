@@ -90,13 +90,11 @@ await adapter.exec(`
 `);
 
 // Type-safe CRUD
-const userClient = adapter.table('users');
-
-await userClient.create({
+await adapter.users.create({
   data: { id: 'u1', name: 'Alice', email: 'alice@example.com', active: true }
 });
 
-const activeUsers = await userClient.findMany({
+const activeUsers = await adapter.users.findMany({
   where: { active: true },
   orderBy: { name: 'asc' }
 });
@@ -109,7 +107,7 @@ console.log('Active users:', activeUsers);
 `createBrowserSqliteAdapter` includes built-in vector similarity search using Cosine, Euclidean, or Dot product metrics:
 
 ```typescript
-const items = await adapter.table('Product').vectorSearch({
+const items = await adapter.product.vectorSearch({
   vector: [0.12, 0.85, 0.43, 0.91],
   vectorField: 'embedding',
   take: 5,
@@ -134,16 +132,13 @@ const sheetsDb = createAn5SheetsAdapter({
   accessToken: 'YOUR_OATH_ACCESS_TOKEN' // or apiKey: 'YOUR_API_KEY'
 });
 
-// Access table client (corresponds to tab name in Google Sheets)
-const productTable = sheetsDb.table('Products');
-
-// Read rows
-const products = await productTable.findMany({
+// Read rows (model/tab name)
+const products = await sheetsDb.products.findMany({
   where: { category: 'Electronics' }
 });
 
 // Insert new row (auto-creates headers if tab is empty)
-await productTable.create({
+await sheetsDb.products.create({
   data: {
     id: 'prod_101',
     name: 'Wireless Mouse',
@@ -173,7 +168,7 @@ export function ProductList() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    db.table('Products').findMany().then(setItems);
+    db.products.findMany().then(setItems);
   }, []);
 
   return (

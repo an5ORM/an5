@@ -20,7 +20,7 @@
 |---------|-------------|
 | **Multi-Database Runtime** | Native support for MSSQL, PostgreSQL, MySQL, SQLite, and Google Sheets via `@an5/adapters` |
 | **Type-Safe Queries** | Full TypeScript, Python, .NET, and Golang support with autocompletion and type checking |
-| **Dynamic Table Access** | `adapter.table('User')` for fluent CRUD, aggregates, groupBy, and vector search |
+| **Model & Table Access** | `db.user` or `adapter.table('User')` for fluent CRUD, aggregates, groupBy, and vector search |
 | **Schema-First** | Define models in `.an5` files, generate multi-language clients |
 | **Automated Migrations** | Diff schema against database, generate up/down SQL, apply and rollback migrations |
 | **AI Agent** | 7 intelligent tools for natural language database queries |
@@ -101,25 +101,25 @@ const db = createAn5Adapter({
 await db.$connect();
 
 // Create
-const user = await db.table('User').create({
+const user = await db.user.create({
   data: { email: 'john@example.com', name: 'John' }
 });
 
 // Read
-const users = await db.table('User').findMany({
+const users = await db.user.findMany({
   where: { email: { contains: '@example.com' } },
   orderBy: { createdAt: 'desc' },
   take: 10
 });
 
 // Update
-await db.table('User').update({
+await db.user.update({
   where: { id: user.id },
   data: { name: 'John Updated' }
 });
 
 // Delete
-await db.table('User').delete({ where: { id: user.id } });
+await db.user.delete({ where: { id: user.id } });
 
 // Disconnect
 await db.$disconnect();
@@ -133,7 +133,7 @@ from an5_adapters import create_an5_adapter
 
 adapter = create_an5_adapter(os.environ['DATABASE_URL'])
 
-users = adapter.table('User').find_many(where={'isActive': True})
+users = adapter.user.find_many(where={'isActive': True})
 print(users)
 ```
 

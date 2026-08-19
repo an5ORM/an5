@@ -3,10 +3,6 @@ layout: page
 title: API Reference
 description: Complete API reference for an5 ORM
 ---
-layout: page
-title: API Reference
-description: Complete API reference for an5 ORM
----
 
 # API Reference
 
@@ -26,16 +22,17 @@ const db = createAn5Adapter({
 
 ### Methods
 
-| Method | Returns | Description |
-|--------|---------|-------------|
+| Method / Property | Returns | Description |
+|---|---|---|
+| `db[modelName]` | `AdapterTableClient<T>` | Dynamic model access property (e.g. `db.user`, `db.order`) |
+| `table(name)` | `AdapterTableClient<T>` | Explicit dynamic table client instance (`adapter.table('User')`) |
 | `$connect()` | `Promise<void>` | Establish connection to database |
 | `$disconnect()` | `Promise<void>` | Close database connection pool |
-| `table(name)` | `AdapterTableClient<T>` | Get table client instance (`db.table('User')`) |
 | `$transaction(fn, options?)` | `Promise<T>` | Execute callback-style transaction |
-{
-  where: { id: 'string' } | { uniqueField: 'value' }
-}
-```
+
+---
+
+## AdapterTableClient API
 
 ### findFirst
 

@@ -126,12 +126,15 @@ model Order {
 });</code></pre>
   </div>
   <div class="tab-content" id="golang">
-    <pre><code class="language-go">// Golang Adapter query example
-import an5 "github.com/an5ORM/an5Adapters/golang"
+    <pre><code class="language-go">// Golang ORM client example
+import an5client "github.com/an5ORM/an5Client/golang"
 
-db := an5.NewAn5Adapter(sqlDB, "postgres", connStr)
-users, err := db.Table("User").FindMany(ctx, map[string]any{
-    "email": "@example.com",
+db := an5client.NewAn5DbContextWithConnStr(sqlDB, connStr)
+users, err := db.User.FindMany(ctx, &an5client.UserFindManyArgs{
+    Where: &an5client.UserWhereInput{
+        Email: &an5client.StringFilter{Contains: an5client.Ptr("@example.com")},
+    },
+    Take: an5client.IntPtr(10),
 })</code></pre>
   </div>
   <div class="tab-content" id="result">

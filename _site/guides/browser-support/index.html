@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="/an5/assets/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg">
 </head>
 <body>
 
@@ -219,16 +219,13 @@
   <span class="na">accessToken</span><span class="p">:</span> <span class="dl">'</span><span class="s1">YOUR_OATH_ACCESS_TOKEN</span><span class="dl">'</span> <span class="c1">// or apiKey: 'YOUR_API_KEY'</span>
 <span class="p">});</span>
 
-<span class="c1">// Access table client (corresponds to tab name in Google Sheets)</span>
-<span class="kd">const</span> <span class="nx">productTable</span> <span class="o">=</span> <span class="nx">sheetsDb</span><span class="p">.</span><span class="nf">table</span><span class="p">(</span><span class="dl">'</span><span class="s1">Products</span><span class="dl">'</span><span class="p">);</span>
-
-<span class="c1">// Read rows</span>
-<span class="kd">const</span> <span class="nx">products</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">productTable</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+<span class="c1">// Read rows (model/tab name)</span>
+<span class="kd">const</span> <span class="nx">products</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">sheetsDb</span><span class="p">.</span><span class="nx">products</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
   <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">category</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Electronics</span><span class="dl">'</span> <span class="p">}</span>
 <span class="p">});</span>
 
 <span class="c1">// Insert new row (auto-creates headers if tab is empty)</span>
-<span class="k">await</span> <span class="nx">productTable</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+<span class="k">await</span> <span class="nx">sheetsDb</span><span class="p">.</span><span class="nx">products</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
   <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
     <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">prod_101</span><span class="dl">'</span><span class="p">,</span>
     <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Wireless Mouse</span><span class="dl">'</span><span class="p">,</span>
@@ -257,7 +254,7 @@
   <span class="kd">const</span> <span class="p">[</span><span class="nx">items</span><span class="p">,</span> <span class="nx">setItems</span><span class="p">]</span> <span class="o">=</span> <span class="nf">useState</span><span class="p">([]);</span>
 
   <span class="nf">useEffect</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="nx">db</span><span class="p">.</span><span class="nf">table</span><span class="p">(</span><span class="dl">'</span><span class="s1">Products</span><span class="dl">'</span><span class="p">).</span><span class="nf">findMany</span><span class="p">().</span><span class="nf">then</span><span class="p">(</span><span class="nx">setItems</span><span class="p">);</span>
+    <span class="nx">db</span><span class="p">.</span><span class="nx">products</span><span class="p">.</span><span class="nf">findMany</span><span class="p">().</span><span class="nf">then</span><span class="p">(</span><span class="nx">setItems</span><span class="p">);</span>
   <span class="p">},</span> <span class="p">[]);</span>
 
   <span class="k">return </span><span class="p">(</span>
