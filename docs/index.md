@@ -26,24 +26,25 @@ description: A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, 
     <pre><code class="language-typescript">import { createAn5Adapter } from '@an5/adapters';
 
 const db = createAn5Adapter({
-  connectionString: process.env.DATABASE_URL!,
+connectionString: process.env.DATABASE_URL!,
 });
 await db.$connect();
 
 // Type-safe model queries
 const users = await db.user.findMany({
-  where: { email: { contains: '@example.com' } },
-  orderBy: { createdAt: 'desc' },
-  take: 10,
+where: { email: { contains: '@example.com' } },
+orderBy: { createdAt: 'desc' },
+take: 10,
 });
 
 // Create record
 const user = await db.user.create({
-  data: {
-    email: 'john@example.com',
-    name: 'John',
-  }
+data: {
+email: 'john@example.com',
+name: 'John',
+}
 });</code></pre>
+
   </div>
 </div>
 
@@ -101,17 +102,18 @@ Install the published package with `npm install @an5/orm`, then use the CLI tool
   createdAt DATETIME2      @default(now())
   orders    Order[]
 
-  @@map("users")
+@@map("users")
 }
 
 model Order {
-  id     NVARCHAR(1000) @id @default(uuid())
-  total  INT            @default(0)
-  user   User           @relation(fields: [userId], references: [id])
-  userId NVARCHAR(1000)
+id NVARCHAR(1000) @id @default(uuid())
+total INT @default(0)
+user User @relation(fields: [userId], references: [id])
+userId NVARCHAR(1000)
 
-  @@map("orders")
+@@map("orders")
 }</code></pre>
+
   </div>
   <div class="tab-content" id="query">
     <pre><code class="language-typescript">const users = await db.user.findMany({
@@ -131,11 +133,12 @@ import an5client "github.com/an5ORM/an5Client/golang"
 
 db := an5client.NewAn5DbContextWithConnStr(sqlDB, connStr)
 users, err := db.User.FindMany(ctx, &an5client.UserFindManyArgs{
-    Where: &an5client.UserWhereInput{
-        Email: &an5client.StringFilter{Contains: an5client.Ptr("@example.com")},
-    },
-    Take: an5client.IntPtr(10),
+Where: &an5client.UserWhereInput{
+Email: &an5client.StringFilter{Contains: an5client.Ptr("@example.com")},
+},
+Take: an5client.IntPtr(10),
 })</code></pre>
+
   </div>
   <div class="tab-content" id="result">
     <pre><code class="language-json">[
@@ -152,17 +155,6 @@ users, err := db.User.FindMany(ctx, &an5client.UserFindManyArgs{
 ]</code></pre>
   </div>
 </div>
-
-## Comparison with Other ORMs
-
-| Feature | an5 ORM | Prisma | TypeORM | Sequelize |
-|---------|---------|--------|---------|-----------|
-| Type Safety | ✅ Full | ✅ Full | ⚠️ Partial | ⚠️ Partial |
-| Schema-first | ✅ | ✅ | ❌ | ❌ |
-| SQL Server & Postgres | ✅ Native | ✅ | ✅ | ✅ |
-| Vector Search | ✅ Built-in | ❌ | ❌ | ❌ |
-| AI Agent | ✅ 7 tools | ❌ | ❌ | ❌ |
-| Multi-language | ✅ TS/Py/.NET/Go | ⚠️ TS only | ⚠️ TS only | ⚠️ TS only |
 
 <div class="cta-section">
   <h2>Ready to get started?</h2>
