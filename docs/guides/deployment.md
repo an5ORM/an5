@@ -43,7 +43,7 @@ DATABASE_URL=googlesheets://spreadsheetId;clientEmail=sa@project.iam.gserviceacc
 ### Connection Setup
 
 ```typescript
-import { createAn5Adapter } from '@an5/adapters';
+import { createAn5Adapter } from "@an5/adapters";
 
 // Uses DATABASE_URL from the environment
 const db = createAn5Adapter({
@@ -57,11 +57,13 @@ await db.$connect();
 ### Azure App Service
 
 1. **Create App Service**
+
    ```bash
    az webapp create --resource-group myRG --plan myPlan --name myApp
    ```
 
 2. **Configure Settings**
+
    ```bash
    az webapp config appsettings set \
      --resource-group myRG \
@@ -77,16 +79,19 @@ await db.$connect();
 ### AWS Elastic Beanstalk
 
 1. **Initialize**
+
    ```bash
    eb init -p node.js my-app
    ```
 
 2. **Create Environment**
+
    ```bash
    eb create production
    ```
 
 3. **Set Environment Variables**
+
    ```bash
    eb setenv DATABASE_URL="sqlserver://..."
    ```
@@ -99,6 +104,7 @@ await db.$connect();
 ### Docker
 
 **Dockerfile:**
+
 ```dockerfile
 FROM node:24-alpine
 
@@ -116,8 +122,9 @@ CMD ["node", "dist/index.js"]
 ```
 
 **docker-compose.yml:**
+
 ```yaml
-version: '3.8'
+version: "3.8"
 services:
   app:
     build: .
@@ -143,6 +150,7 @@ volumes:
 ### Kubernetes
 
 **deployment.yaml:**
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -159,16 +167,16 @@ spec:
         app: my-app
     spec:
       containers:
-      - name: my-app
-        image: my-app:latest
-        ports:
-        - containerPort: 3000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: db-secret
-              key: url
+        - name: my-app
+          image: my-app:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: url
 ```
 
 ## Database Migrations
@@ -194,12 +202,12 @@ npm run db:pull   # from an5Orm/
 ### Health Check Endpoint
 
 ```typescript
-app.get('/health', async (req, res) => {
+app.get("/health", async (req, res) => {
   try {
-    await db.$queryRawUnsafe('SELECT 1');
-    res.json({ status: 'healthy' });
+    await db.$queryRawUnsafe("SELECT 1");
+    res.json({ status: "healthy" });
   } catch (error: any) {
-    res.status(503).json({ status: 'unhealthy', error: error.message });
+    res.status(503).json({ status: "unhealthy", error: error.message });
   }
 });
 ```

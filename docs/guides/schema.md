@@ -16,7 +16,7 @@ model User {
   email     NVARCHAR(255)  @unique
   name      NVARCHAR(255)?
   createdAt DATETIME2      @default(now())
-  
+
   @@map("users")
 }
 ```
@@ -39,29 +39,29 @@ model Post {
 
 ### Field Types
 
-| Type | Description | Example | TypeScript |
-|------|-------------|---------|------------|
-| `NVARCHAR(n)` | Variable-length Unicode string | `NVARCHAR(255)` | `string` |
-| `VARCHAR(n)` | Variable-length ASCII string | `VARCHAR(100)` | `string` |
-| `CHAR(n)` | Fixed-length string | `CHAR(10)` | `string` |
-| `TEXT` | Large text field | `TEXT` | `string` |
-| `INT` | 32-bit integer | `INT` | `number` |
-| `BIGINT` | 64-bit integer | `BIGINT` | `number \| bigint` |
-| `SMALLINT` | 16-bit integer | `SMALLINT` | `number` |
-| `TINYINT` | 8-bit integer | `TINYINT` | `number` |
-| `FLOAT` | Floating point | `FLOAT` | `number` |
-| `REAL` | Single-precision float | `REAL` | `number` |
-| `DECIMAL(p,s)` | Fixed precision | `DECIMAL(10,2)` | `number` |
-| `NUMERIC(p,s)` | Fixed precision | `NUMERIC(10,2)` | `number` |
-| `BIT` | Boolean | `BIT` | `boolean` |
-| `DATETIME` | Date and time | `DATETIME` | `Date` |
-| `DATETIME2` | High precision datetime | `DATETIME2` | `Date` |
-| `DATE` | Date only | `DATE` | `Date` |
-| `TIME` | Time only | `TIME` | `Date` |
-| `UNIQUEIDENTIFIER` | UUID/GUID | `UNIQUEIDENTIFIER` | `string` |
-| `VARBINARY(n)` | Binary data | `VARBINARY(255)` | `Buffer` |
-| `BINARY(n)` | Fixed binary data | `BINARY(16)` | `Buffer` |
-| `IMAGE` | Large binary data | `IMAGE` | `Buffer` |
+| Type               | Description                    | Example            | TypeScript         |
+| ------------------ | ------------------------------ | ------------------ | ------------------ |
+| `NVARCHAR(n)`      | Variable-length Unicode string | `NVARCHAR(255)`    | `string`           |
+| `VARCHAR(n)`       | Variable-length ASCII string   | `VARCHAR(100)`     | `string`           |
+| `CHAR(n)`          | Fixed-length string            | `CHAR(10)`         | `string`           |
+| `TEXT`             | Large text field               | `TEXT`             | `string`           |
+| `INT`              | 32-bit integer                 | `INT`              | `number`           |
+| `BIGINT`           | 64-bit integer                 | `BIGINT`           | `number \| bigint` |
+| `SMALLINT`         | 16-bit integer                 | `SMALLINT`         | `number`           |
+| `TINYINT`          | 8-bit integer                  | `TINYINT`          | `number`           |
+| `FLOAT`            | Floating point                 | `FLOAT`            | `number`           |
+| `REAL`             | Single-precision float         | `REAL`             | `number`           |
+| `DECIMAL(p,s)`     | Fixed precision                | `DECIMAL(10,2)`    | `number`           |
+| `NUMERIC(p,s)`     | Fixed precision                | `NUMERIC(10,2)`    | `number`           |
+| `BIT`              | Boolean                        | `BIT`              | `boolean`          |
+| `DATETIME`         | Date and time                  | `DATETIME`         | `Date`             |
+| `DATETIME2`        | High precision datetime        | `DATETIME2`        | `Date`             |
+| `DATE`             | Date only                      | `DATE`             | `Date`             |
+| `TIME`             | Time only                      | `TIME`             | `Date`             |
+| `UNIQUEIDENTIFIER` | UUID/GUID                      | `UNIQUEIDENTIFIER` | `string`           |
+| `VARBINARY(n)`     | Binary data                    | `VARBINARY(255)`   | `Buffer`           |
+| `BINARY(n)`        | Fixed binary data              | `BINARY(16)`       | `Buffer`           |
+| `IMAGE`            | Large binary data              | `IMAGE`            | `Buffer`           |
 
 ### Optional Fields
 
@@ -185,12 +185,12 @@ model Order {
 
 Supported index options:
 
-| Option | Description | Example |
-|--------|-------------|---------|
-| `map` | Custom index/constraint name | `map: "idx_orders_user"` |
-| `include` | Included (non-key) columns | `include: [total, status]` |
-| `filter` | Filtered index predicate | `filter: "[status] <> 'cancelled'"` |
-| `options` | Raw index options | `options: "fillfactor=80"` |
+| Option    | Description                  | Example                             |
+| --------- | ---------------------------- | ----------------------------------- |
+| `map`     | Custom index/constraint name | `map: "idx_orders_user"`            |
+| `include` | Included (non-key) columns   | `include: [total, status]`          |
+| `filter`  | Filtered index predicate     | `filter: "[status] <> 'cancelled'"` |
+| `options` | Raw index options            | `options: "fillfactor=80"`          |
 
 Migrations honor mapped index/unique names, include/filter/options metadata,
 and `dbo.`-qualified table names when comparing schema with the database.
@@ -207,11 +207,11 @@ model User {
   isActive  BIT            @default(1) @description("Account status")
   createdAt DATETIME2      @default(now()) @description("Creation date")
   updatedAt DATETIME2      @default(now()) @description("Last update")
-  
+
   // Relations
   posts     Post[]
   profile   Profile?
-  
+
   @@description("User account")
   @@map("users")
 }
@@ -222,11 +222,11 @@ model Post {
   content   TEXT?          @description("Post content")
   published BIT            @default(0) @description("Published status")
   authorId  NVARCHAR(1000) @description("Author reference")
-  
+
   // Relations
   author    User           @relation(fields: [authorId], references: [id])
   tags      Tag[]
-  
+
   @@index([authorId])
   @@map("posts")
 }
@@ -234,9 +234,9 @@ model Post {
 model Tag {
   id    NVARCHAR(1000) @id @default(uuid())
   name  NVARCHAR(100)  @unique
-  
+
   posts Post[]
-  
+
   @@map("tags")
 }
 ```

@@ -15,28 +15,28 @@ Create `an5Orm.config.js` in your project root to configure code generation and 
 ```javascript
 module.exports = {
   // Schema directory (default: 'an5Schema')
-  schemaDir: 'an5Schema',
+  schemaDir: "an5Schema",
 
   // Output configuration
   outputs: {
     typescript: {
-      outputDir: 'an5Client/typescript',
-      metadataFile: 'an5Client/typescript/an5Metadata.ts',
+      outputDir: "an5Client/typescript",
+      metadataFile: "an5Client/typescript/an5Metadata.ts",
     },
     python: {
-      metadataFile: 'an5Client/python/an5_metadata.py',
+      metadataFile: "an5Client/python/an5_metadata.py",
     },
     dotnet: {
-      outputDir: 'an5Client/dotnet',
+      outputDir: "an5Client/dotnet",
     },
     golang: {
-      outputDir: 'an5Client/golang',
+      outputDir: "an5Client/golang",
     },
   },
 
   // Database pull options
   pull: {
-    exclude: ['^__', '^sys\\.'],  // Exclude system tables
+    exclude: ["^__", "^sys\\."], // Exclude system tables
     preserveRelations: true,
   },
 };
@@ -44,16 +44,16 @@ module.exports = {
 
 ### Configuration Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `schemaDir` | `string` | `'an5Schema'` | Path to schema files |
-| `outputs.typescript.outputDir` | `string` | `'an5Client/typescript'` | TypeScript output directory |
-| `outputs.typescript.metadataFile` | `string` | `'an5Client/typescript/an5Metadata.ts'` | Metadata file path for the generated client |
-| `outputs.python.metadataFile` | `string` | `'an5Client/python/an5_metadata.py'` | Python metadata path |
-| `outputs.dotnet.outputDir` | `string` | `'an5Client/dotnet'` | .NET output directory |
-| `outputs.golang.outputDir` | `string` | `'an5Client/golang'` | Go output directory |
-| `pull.exclude` | `string[]` | `['^__', '^sys\\.']` | Tables to exclude from pull |
-| `pull.preserveRelations` | `boolean` | `true` | Keep relations in schema |
+| Option                            | Type       | Default                                 | Description                                 |
+| --------------------------------- | ---------- | --------------------------------------- | ------------------------------------------- |
+| `schemaDir`                       | `string`   | `'an5Schema'`                           | Path to schema files                        |
+| `outputs.typescript.outputDir`    | `string`   | `'an5Client/typescript'`                | TypeScript output directory                 |
+| `outputs.typescript.metadataFile` | `string`   | `'an5Client/typescript/an5Metadata.ts'` | Metadata file path for the generated client |
+| `outputs.python.metadataFile`     | `string`   | `'an5Client/python/an5_metadata.py'`    | Python metadata path                        |
+| `outputs.dotnet.outputDir`        | `string`   | `'an5Client/dotnet'`                    | .NET output directory                       |
+| `outputs.golang.outputDir`        | `string`   | `'an5Client/golang'`                    | Go output directory                         |
+| `pull.exclude`                    | `string[]` | `['^__', '^sys\\.']`                    | Tables to exclude from pull                 |
+| `pull.preserveRelations`          | `boolean`  | `true`                                  | Keep relations in schema                    |
 
 ## Environment Variables
 
@@ -87,7 +87,7 @@ LLM_MODEL=gpt-4o-mini
 ## Runtime Adapter Setup (via `@an5/adapters`)
 
 ```typescript
-import { createAn5Adapter } from '@an5/adapters';
+import { createAn5Adapter } from "@an5/adapters";
 
 const db = createAn5Adapter({
   connectionString: process.env.DATABASE_URL!,
@@ -106,12 +106,16 @@ import {
   setLlmConfig,
   getEmbeddingConfig,
   setEmbeddingConfig,
-  resetAdapter
-} from '@an5/adapters';
+  resetAdapter,
+} from "@an5/adapters";
 
 const current = getLlmConfig();
-setLlmConfig({ provider: 'openai', model: 'gpt-4o-mini', apiKey: '...' });
-setEmbeddingConfig({ provider: 'openai', model: 'text-embedding-3-small', apiKey: '...' });
+setLlmConfig({ provider: "openai", model: "gpt-4o-mini", apiKey: "..." });
+setEmbeddingConfig({
+  provider: "openai",
+  model: "text-embedding-3-small",
+  apiKey: "...",
+});
 resetAdapter();
 ```
 
@@ -120,7 +124,7 @@ resetAdapter();
 ### docker-compose.yml
 
 ```yaml
-version: '3.8'
+version: "3.8"
 services:
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest

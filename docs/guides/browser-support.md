@@ -29,8 +29,8 @@ import {
   createBrowserSqliteAdapter,
   createAn5SheetsAdapter,
   An5SheetsAdapter,
-  SqliteBrowserEngine
-} from '@an5/adapters/browser';
+  SqliteBrowserEngine,
+} from "@an5/adapters/browser";
 ```
 
 ---
@@ -52,11 +52,13 @@ export interface SqliteDriver {
 ### Quickstart Example (with `sql.js` / WASM)
 
 ```typescript
-import initSqlJs from 'sql.js';
-import { createBrowserSqliteAdapter } from '@an5/adapters/browser';
+import initSqlJs from "sql.js";
+import { createBrowserSqliteAdapter } from "@an5/adapters/browser";
 
 // Initialize sql.js WebAssembly instance
-const SQL = await initSqlJs({ locateFile: file => `https://sql.js.org/dist/${file}` });
+const SQL = await initSqlJs({
+  locateFile: (file) => `https://sql.js.org/dist/${file}`,
+});
 const db = new SQL.Database();
 
 // Create driver bridge
@@ -70,13 +72,13 @@ const sqliteDriver = {
     }
     stmt.free();
     return rows;
-  }
+  },
 };
 
 // Initialize AN5 Browser Adapter
 const adapter = createBrowserSqliteAdapter({
   driver: sqliteDriver,
-  dialect: 'sqlite'
+  dialect: "sqlite",
 });
 
 // Setup table schema
@@ -91,15 +93,15 @@ await adapter.exec(`
 
 // Type-safe CRUD
 await adapter.users.create({
-  data: { id: 'u1', name: 'Alice', email: 'alice@example.com', active: true }
+  data: { id: "u1", name: "Alice", email: "alice@example.com", active: true },
 });
 
 const activeUsers = await adapter.users.findMany({
   where: { active: true },
-  orderBy: { name: 'asc' }
+  orderBy: { name: "asc" },
 });
 
-console.log('Active users:', activeUsers);
+console.log("Active users:", activeUsers);
 ```
 
 ### In-Browser Vector Search
@@ -109,9 +111,9 @@ console.log('Active users:', activeUsers);
 ```typescript
 const items = await adapter.product.vectorSearch({
   vector: [0.12, 0.85, 0.43, 0.91],
-  vectorField: 'embedding',
+  vectorField: "embedding",
   take: 5,
-  distanceMetric: 'cosine'
+  distanceMetric: "cosine",
 });
 ```
 
@@ -124,27 +126,27 @@ The `An5SheetsAdapter` uses Google Sheets REST API as a serverless database back
 ### Setup with OAuth Token or API Key
 
 ```typescript
-import { createAn5SheetsAdapter } from '@an5/adapters/browser';
+import { createAn5SheetsAdapter } from "@an5/adapters/browser";
 
 // Initialize with OAuth Access Token or API Key
 const sheetsDb = createAn5SheetsAdapter({
-  spreadsheetId: 'YOUR_GOOGLE_SPREADSHEET_ID',
-  accessToken: 'YOUR_OATH_ACCESS_TOKEN' // or apiKey: 'YOUR_API_KEY'
+  spreadsheetId: "YOUR_GOOGLE_SPREADSHEET_ID",
+  accessToken: "YOUR_OATH_ACCESS_TOKEN", // or apiKey: 'YOUR_API_KEY'
 });
 
 // Read rows (model/tab name)
 const products = await sheetsDb.products.findMany({
-  where: { category: 'Electronics' }
+  where: { category: "Electronics" },
 });
 
 // Insert new row (auto-creates headers if tab is empty)
 await sheetsDb.products.create({
   data: {
-    id: 'prod_101',
-    name: 'Wireless Mouse',
+    id: "prod_101",
+    name: "Wireless Mouse",
     price: 29.99,
-    category: 'Electronics'
-  }
+    category: "Electronics",
+  },
 });
 ```
 
@@ -156,12 +158,12 @@ await sheetsDb.products.create({
 
 ```tsx
 // App.tsx
-import React, { useEffect, useState } from 'react';
-import { createAn5SheetsAdapter } from '@an5/adapters/browser';
+import React, { useEffect, useState } from "react";
+import { createAn5SheetsAdapter } from "@an5/adapters/browser";
 
 const db = createAn5SheetsAdapter({
   spreadsheetId: import.meta.env.VITE_SHEETS_ID,
-  apiKey: import.meta.env.VITE_GOOGLE_API_KEY
+  apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
 });
 
 export function ProductList() {
@@ -173,8 +175,10 @@ export function ProductList() {
 
   return (
     <ul>
-      {items.map(item => (
-        <li key={item.id}>{item.name} - ${item.price}</li>
+      {items.map((item) => (
+        <li key={item.id}>
+          {item.name} - ${item.price}
+        </li>
       ))}
     </ul>
   );
@@ -186,9 +190,9 @@ export function ProductList() {
 Add `'use client';` at top of file when importing `@an5/adapters/browser`:
 
 ```typescript
-'use client';
+"use client";
 
-import { createBrowserSqliteAdapter } from '@an5/adapters/browser';
+import { createBrowserSqliteAdapter } from "@an5/adapters/browser";
 
 // Safe to use in Client Components and custom hooks
 ```
@@ -197,10 +201,10 @@ import { createBrowserSqliteAdapter } from '@an5/adapters/browser';
 
 ## Summary
 
-| Feature | In-Browser SQLite | Google Sheets |
-| :--- | :--- | :--- |
-| **Import Subpath** | `@an5/adapters/browser` | `@an5/adapters/browser` |
-| **Node.js Built-ins** | None | None |
-| **Persistence** | Memory / OPFS / IndexedDB | Google Cloud / Sheets |
-| **Use Case** | Offline PWA, Local-first apps, WASM DB | No-code admin dashboards, MVPs |
-| **Vector Search** | ✅ Built-in | ✅ Built-in |
+| Feature               | In-Browser SQLite                      | Google Sheets                  |
+| :-------------------- | :------------------------------------- | :----------------------------- |
+| **Import Subpath**    | `@an5/adapters/browser`                | `@an5/adapters/browser`        |
+| **Node.js Built-ins** | None                                   | None                           |
+| **Persistence**       | Memory / OPFS / IndexedDB              | Google Cloud / Sheets          |
+| **Use Case**          | Offline PWA, Local-first apps, WASM DB | No-code admin dashboards, MVPs |
+| **Vector Search**     | ✅ Built-in                            | ✅ Built-in                    |
