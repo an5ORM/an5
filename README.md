@@ -131,10 +131,9 @@ await db.$disconnect();
 import os
 from an5_adapters import create_an5_adapter
 
-adapter = create_an5_adapter({'connectionString': os.environ['DATABASE_URL']})
-await adapter.connect()
+adapter = create_an5_adapter(os.environ['DATABASE_URL'])
 
-users = await adapter.table('User').find_many({'where': {'active': True}})
+users = adapter.table('User').find_many(where={'isActive': True})
 print(users)
 ```
 

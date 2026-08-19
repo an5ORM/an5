@@ -88,7 +88,7 @@ async function main() {
   await db.$connect();
 
   // Create a user
-  const user = await db.table('User').create({
+  const user = await db.user.create({
     data: {
       email: 'john@example.com',
       name: 'John Doe'
@@ -98,7 +98,7 @@ async function main() {
   console.log('Created user:', user);
   
   // Find all users
-  const users = await db.table('User').findMany();
+  const users = await db.user.findMany();
   console.log('All users:', users);
 }
 

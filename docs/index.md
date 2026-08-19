@@ -30,15 +30,15 @@ const db = createAn5Adapter({
 });
 await db.$connect();
 
-// Type-safe table queries
-const users = await db.table('User').findMany({
+// Type-safe model queries
+const users = await db.user.findMany({
   where: { email: { contains: '@example.com' } },
   orderBy: { createdAt: 'desc' },
   take: 10,
 });
 
 // Create record
-const user = await db.table('User').create({
+const user = await db.user.create({
   data: {
     email: 'john@example.com',
     name: 'John',
