@@ -1,0 +1,183 @@
+<h1 id="configuration">Configuration</h1>
+
+<p>an5 ORM uses environment variables, schema configuration files, and runtime adapters to customize behavior.</p>
+
+<h2 id="an5ormconfigjs">an5Orm.config.js</h2>
+
+<p>Create <code class="language-plaintext highlighter-rouge">an5Orm.config.js</code> in your project root to configure code generation and schema options:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="c1">// Schema directory (default: 'an5Schema')</span>
+  <span class="na">schemaDir</span><span class="p">:</span> <span class="dl">'</span><span class="s1">an5Schema</span><span class="dl">'</span><span class="p">,</span>
+
+  <span class="c1">// Output configuration</span>
+  <span class="na">outputs</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">typescript</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">outputDir</span><span class="p">:</span> <span class="dl">'</span><span class="s1">an5Client/typescript</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">metadataFile</span><span class="p">:</span> <span class="dl">'</span><span class="s1">an5Client/typescript/an5Metadata.ts</span><span class="dl">'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="na">python</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">metadataFile</span><span class="p">:</span> <span class="dl">'</span><span class="s1">an5Client/python/an5_metadata.py</span><span class="dl">'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="na">dotnet</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">outputDir</span><span class="p">:</span> <span class="dl">'</span><span class="s1">an5Client/dotnet</span><span class="dl">'</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="na">golang</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">outputDir</span><span class="p">:</span> <span class="dl">'</span><span class="s1">an5Client/golang</span><span class="dl">'</span><span class="p">,</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+
+  <span class="c1">// Database pull options</span>
+  <span class="na">pull</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">exclude</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">^__</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">^sys</span><span class="se">\\</span><span class="s1">.</span><span class="dl">'</span><span class="p">],</span>  <span class="c1">// Exclude system tables</span>
+    <span class="na">preserveRelations</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="p">},</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h3 id="configuration-options">Configuration Options</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Type</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">schemaDir</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><code class="language-plaintext highlighter-rouge">'an5Schema'</code></td>
+      <td>Path to schema files</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">outputs.typescript.outputDir</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><code class="language-plaintext highlighter-rouge">'an5Client/typescript'</code></td>
+      <td>TypeScript output directory</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">outputs.typescript.metadataFile</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><code class="language-plaintext highlighter-rouge">'an5Client/typescript/an5Metadata.ts'</code></td>
+      <td>Metadata file path for the generated client</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">outputs.python.metadataFile</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><code class="language-plaintext highlighter-rouge">'an5Client/python/an5_metadata.py'</code></td>
+      <td>Python metadata path</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">outputs.dotnet.outputDir</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><code class="language-plaintext highlighter-rouge">'an5Client/dotnet'</code></td>
+      <td>.NET output directory</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">outputs.golang.outputDir</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td><code class="language-plaintext highlighter-rouge">'an5Client/golang'</code></td>
+      <td>Go output directory</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">pull.exclude</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string[]</code></td>
+      <td><code class="language-plaintext highlighter-rouge">['^__', '^sys\\.']</code></td>
+      <td>Tables to exclude from pull</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">pull.preserveRelations</code></td>
+      <td><code class="language-plaintext highlighter-rouge">boolean</code></td>
+      <td><code class="language-plaintext highlighter-rouge">true</code></td>
+      <td>Keep relations in schema</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="environment-variables">Environment Variables</h2>
+
+<h3 id="database-database_url">Database (<code class="language-plaintext highlighter-rouge">DATABASE_URL</code>)</h3>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># SQL Server
+</span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">sqlserver://localhost:1433;database=mydb;user=sa;password=yourpassword</span>
+<span class="w">
+</span><span class="c"># PostgreSQL
+</span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">postgres://user:password@localhost:5432/mydb</span>
+<span class="w">
+</span><span class="c"># MySQL
+</span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">mysql://user:password@localhost:3306/mydb</span>
+<span class="w">
+</span><span class="c"># SQLite
+</span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">sqlite:///path/to/database.db</span>
+<span class="w">
+</span><span class="c"># Google Sheets
+</span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">googlesheets://spreadsheetId;clientEmail=sa@project.iam.gserviceaccount.com;privateKey=your-url-encoded-key</span>
+</code></pre></div></div>
+
+<h3 id="llm-configuration-for-an5-cli-release-notes--agent-features">LLM Configuration (for an5-cli release notes &amp; agent features)</h3>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="py">LLM_PROVIDER</span><span class="p">=</span><span class="s">openai  # openai, gemini, custom</span>
+<span class="py">LLM_API_KEY</span><span class="p">=</span><span class="s">sk-your-api-key</span>
+<span class="py">LLM_MODEL</span><span class="p">=</span><span class="s">gpt-4o-mini</span>
+</code></pre></div></div>
+
+<h2 id="runtime-adapter-setup-via-an5adapters">Runtime Adapter Setup (via <code class="language-plaintext highlighter-rouge">@an5/adapters</code>)</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
+  <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="o">!</span><span class="p">,</span>
+<span class="p">});</span>
+
+<span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$connect</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h2 id="llm--embedding-runtime-config">LLM &amp; Embedding Runtime Config</h2>
+
+<p>At runtime you can read and update the active LLM/Embedding config using the config API exported from <code class="language-plaintext highlighter-rouge">@an5/adapters</code>:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span>
+  <span class="nx">getLlmConfig</span><span class="p">,</span>
+  <span class="nx">setLlmConfig</span><span class="p">,</span>
+  <span class="nx">getEmbeddingConfig</span><span class="p">,</span>
+  <span class="nx">setEmbeddingConfig</span><span class="p">,</span>
+  <span class="nx">resetAdapter</span>
+<span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">current</span> <span class="o">=</span> <span class="nf">getLlmConfig</span><span class="p">();</span>
+<span class="nf">setLlmConfig</span><span class="p">({</span> <span class="na">provider</span><span class="p">:</span> <span class="dl">'</span><span class="s1">openai</span><span class="dl">'</span><span class="p">,</span> <span class="na">model</span><span class="p">:</span> <span class="dl">'</span><span class="s1">gpt-4o-mini</span><span class="dl">'</span><span class="p">,</span> <span class="na">apiKey</span><span class="p">:</span> <span class="dl">'</span><span class="s1">...</span><span class="dl">'</span> <span class="p">});</span>
+<span class="nf">setEmbeddingConfig</span><span class="p">({</span> <span class="na">provider</span><span class="p">:</span> <span class="dl">'</span><span class="s1">openai</span><span class="dl">'</span><span class="p">,</span> <span class="na">model</span><span class="p">:</span> <span class="dl">'</span><span class="s1">text-embedding-3-small</span><span class="dl">'</span><span class="p">,</span> <span class="na">apiKey</span><span class="p">:</span> <span class="dl">'</span><span class="s1">...</span><span class="dl">'</span> <span class="p">});</span>
+<span class="nf">resetAdapter</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h2 id="docker-configuration">Docker Configuration</h2>
+
+<h3 id="docker-composeyml">docker-compose.yml</h3>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">3.8'</span>
+<span class="na">services</span><span class="pi">:</span>
+  <span class="na">db</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">mcr.microsoft.com/mssql/server:2022-latest</span>
+    <span class="na">environment</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">ACCEPT_EULA=Y</span>
+      <span class="pi">-</span> <span class="s">SA_PASSWORD=yourpassword</span>
+      <span class="pi">-</span> <span class="s">MSSQL_PID=Developer</span>
+    <span class="na">ports</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">1433:1433"</span>
+    <span class="na">volumes</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">mssql-data:/var/opt/mssql</span>
+
+  <span class="na">app</span><span class="pi">:</span>
+    <span class="na">build</span><span class="pi">:</span> <span class="s">.</span>
+    <span class="na">environment</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">DATABASE_URL=sqlserver://db:1433;database=mydb;user=sa;password=yourpassword</span>
+    <span class="na">depends_on</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">db</span>
+
+<span class="na">volumes</span><span class="pi">:</span>
+  <span class="na">mssql-data</span><span class="pi">:</span>
+</code></pre></div></div>

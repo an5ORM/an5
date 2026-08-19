@@ -1,0 +1,207 @@
+<h1 id="relations">Relations</h1>
+
+<p>an5 ORM supports relations between models using foreign keys.</p>
+
+<h2 id="defining-relations">Defining Relations</h2>
+
+<h3 id="one-to-many">One-to-Many</h3>
+
+<pre><code class="language-an5">model User {
+  id    NVARCHAR(1000) @id @default(uuid())
+  email NVARCHAR(255)  @unique
+  
+  posts Post[]         // One user has many posts
+}
+
+model Post {
+  id       NVARCHAR(1000) @id @default(uuid())
+  title    NVARCHAR(255)
+  authorId NVARCHAR(1000)
+  
+  author   User @relation(fields: [authorId], references: [id])
+}
+</code></pre>
+
+<h3 id="one-to-one">One-to-One</h3>
+
+<pre><code class="language-an5">model User {
+  id      NVARCHAR(1000) @id @default(uuid())
+  email   NVARCHAR(255)  @unique
+  profile Profile?
+}
+
+model Profile {
+  id     NVARCHAR(1000) @id @default(uuid())
+  bio    TEXT
+  userId NVARCHAR(1000) @unique
+  
+  user   User @relation(fields: [userId], references: [id])
+}
+</code></pre>
+
+<h3 id="many-to-many">Many-to-Many</h3>
+
+<p>Implicit many-to-many join tables are <strong>not</strong> generated automatically. Model
+many-to-many as an explicit join model with two foreign keys:</p>
+
+<pre><code class="language-an5">model PostTag {
+  id     NVARCHAR(1000) @id @default(uuid())
+  postId NVARCHAR(1000)
+  tagId  NVARCHAR(1000)
+
+  post   Post @relation(fields: [postId], references: [id])
+  tag    Tag  @relation(fields: [tagId], references: [id])
+
+  @@map("post_tags")
+}
+</code></pre>
+
+<p>Relations are inferred from foreign-key fields (and their opposite FK) in the
+schema parser.</p>
+
+<h2 id="querying-relations">Querying Relations</h2>
+
+<h3 id="include-relations">Include Relations</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Include all posts</span>
+<span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findUnique</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">user-id</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="na">include</span><span class="p">:</span> <span class="p">{</span> <span class="na">posts</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// Include with filtering, ordering, pagination, and projection</span>
+<span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findUnique</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">user-id</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="na">include</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">posts</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">select</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span>
+      <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">published</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span>
+      <span class="na">orderBy</span><span class="p">:</span> <span class="p">{</span> <span class="na">createdAt</span><span class="p">:</span> <span class="dl">'</span><span class="s1">desc</span><span class="dl">'</span> <span class="p">},</span>
+      <span class="na">take</span><span class="p">:</span> <span class="mi">5</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>For many-side relations, <code class="language-plaintext highlighter-rouge">skip</code> and <code class="language-plaintext highlighter-rouge">take</code> inside <code class="language-plaintext highlighter-rouge">include</code> are applied per parent row.</p>
+
+<h3 id="nested-relations">Nested Relations</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">include</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">posts</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">include</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">tags</span><span class="p">:</span> <span class="kc">true</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="na">profile</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="relation-filters">Relation Filters</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Find users with at least one published post</span>
+<span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">posts</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">some</span><span class="p">:</span> <span class="p">{</span> <span class="na">published</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// Find users with no posts</span>
+<span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">posts</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">none</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// Find users where all posts are published</span>
+<span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">posts</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">every</span><span class="p">:</span> <span class="p">{</span> <span class="na">published</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="creating-with-relations">Creating with Relations</h2>
+
+<h3 id="nested-create">Nested Create</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">posts</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">create</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Post 1</span><span class="dl">'</span><span class="p">,</span> <span class="na">content</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Content 1</span><span class="dl">'</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Post 2</span><span class="dl">'</span><span class="p">,</span> <span class="na">content</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Content 2</span><span class="dl">'</span> <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="na">profile</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">create</span><span class="p">:</span> <span class="p">{</span> <span class="na">bio</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Hello!</span><span class="dl">'</span> <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="connect-existing-records">Connect Existing Records</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">post</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">post</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">New Post</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">author</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">connect</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">user-id</span><span class="dl">'</span> <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="cascade-operations">Cascade Operations</h2>
+
+<p>Define cascade behavior in your schema:</p>
+
+<pre><code class="language-an5">model User {
+  id    NVARCHAR(1000) @id @default(uuid())
+  posts Post[]         @cascade
+  
+  @@map("users")
+}
+
+model Post {
+  id       NVARCHAR(1000) @id @default(uuid())
+  authorId NVARCHAR(1000)
+  author   User           @relation(fields: [authorId], references: [id])
+  
+  @@map("posts")
+}
+</code></pre>
+
+<h2 id="select-specific-fields">Select Specific Fields</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findUnique</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">user-id</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="na">select</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">id</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">email</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">posts</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">select</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">id</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="na">title</span><span class="p">:</span> <span class="kc">true</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ul>
+  <li><a href="/an5/guides/queries/">Advanced Queries</a> - Complex query patterns</li>
+  <li><a href="/an5/guides/transactions/">Transactions</a> - Atomic operations</li>
+</ul>

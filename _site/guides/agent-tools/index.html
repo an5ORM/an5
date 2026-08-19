@@ -1,0 +1,418 @@
+<h1 id="ai-agent-tools">AI Agent Tools</h1>
+
+<p>an5 Agent provides <strong>7 consolidated tools</strong> for schema exploration, query generation, database operations, and task management.</p>
+
+<h2 id="tool-overview">Tool Overview</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tool</th>
+      <th>Actions</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">schema</code></td>
+      <td>list, describe, relations</td>
+      <td>Explore data models</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">query</code></td>
+      <td>generate, explain, validate</td>
+      <td>Work with SQL queries</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">database</code></td>
+      <td>execute, describe, health</td>
+      <td>Database operations</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">generateClientCode</code></td>
+      <td>-</td>
+      <td>Generate client code</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">analyzeSchema</code></td>
+      <td>-</td>
+      <td>Analyze schema issues</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">retrieve</code></td>
+      <td>schema, queries</td>
+      <td>Semantic search</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">task</code></td>
+      <td>create, list, update, delete</td>
+      <td>Manage tasks</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="schema">schema</h2>
+
+<p>Explore database schema structure.</p>
+
+<h3 id="actions">Actions</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Action</th>
+      <th>Description</th>
+      <th>Required Params</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">list</code></td>
+      <td>List all models</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">describe</code></td>
+      <td>Get model details</td>
+      <td><code class="language-plaintext highlighter-rouge">modelName</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">relations</code></td>
+      <td>Get foreign keys</td>
+      <td>- (optional: <code class="language-plaintext highlighter-rouge">modelName</code>)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="examples">Examples</h3>
+
+<p><strong>List all models:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">schema</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span> <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">list</span><span class="dl">'</span> <span class="p">});</span>
+<span class="c1">// Returns: { models: [...], totalModels: 5 }</span>
+</code></pre></div></div>
+
+<p><strong>Describe a model:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">schema</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span> 
+  <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">describe</span><span class="dl">'</span><span class="p">,</span> 
+  <span class="na">modelName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">User</span><span class="dl">'</span> 
+<span class="p">});</span>
+<span class="c1">// Returns: { model: { name, fields, relations }, found: true }</span>
+</code></pre></div></div>
+
+<p><strong>Get relations:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">schema</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span> 
+  <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">relations</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">modelName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">User</span><span class="dl">'</span>  <span class="c1">// Optional: filter by model</span>
+<span class="p">});</span>
+<span class="c1">// Returns: { relations: [...] }</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="query">query</h2>
+
+<p>Work with SQL queries.</p>
+
+<h3 id="actions-1">Actions</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Action</th>
+      <th>Description</th>
+      <th>Required Params</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">generate</code></td>
+      <td>Generate SQL from natural language</td>
+      <td><code class="language-plaintext highlighter-rouge">description</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">explain</code></td>
+      <td>Analyze SQL query</td>
+      <td><code class="language-plaintext highlighter-rouge">sql</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">validate</code></td>
+      <td>Check SQL syntax</td>
+      <td><code class="language-plaintext highlighter-rouge">sql</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="examples-1">Examples</h3>
+
+<p><strong>Generate SQL:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">query</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">generate</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Find all users with their orders</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">tables</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">User</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">Order</span><span class="dl">'</span><span class="p">]</span>  <span class="c1">// Optional</span>
+<span class="p">});</span>
+<span class="c1">// Returns: { sql: 'SELECT ...', explanation: '...', tables: [...] }</span>
+</code></pre></div></div>
+
+<p><strong>Explain query:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">query</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">explain</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">sql</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SELECT u.*, COUNT(o.id) FROM users u LEFT JOIN orders o ON u.id = o.userId GROUP BY u.id</span><span class="dl">'</span>
+<span class="p">});</span>
+<span class="c1">// Returns: { interpretedIntent: '...', estimatedComplexity: 'moderate', notes: [...] }</span>
+</code></pre></div></div>
+
+<p><strong>Validate query:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">query</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">validate</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">sql</span><span class="p">:</span> <span class="dl">'</span><span class="s1">UPDATE users SET name = "John"</span><span class="dl">'</span>  <span class="c1">// Invalid: uses double quotes</span>
+<span class="p">});</span>
+<span class="c1">// Returns: { isValid: false, errors: [...], suggestions: [...] }</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="database">database</h2>
+
+<p>Database operations.</p>
+
+<h3 id="actions-2">Actions</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Action</th>
+      <th>Description</th>
+      <th>Required Params</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">execute</code></td>
+      <td>Run SELECT query</td>
+      <td><code class="language-plaintext highlighter-rouge">sql</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">describe</code></td>
+      <td>Get table structure</td>
+      <td><code class="language-plaintext highlighter-rouge">tableName</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">health</code></td>
+      <td>Check connection</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="examples-2">Examples</h3>
+
+<p><strong>Execute query:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">database</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">execute</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">sql</span><span class="p">:</span> <span class="dl">'</span><span class="s1">SELECT TOP 10 * FROM users</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span>
+<span class="p">});</span>
+<span class="c1">// Returns: { success: true, rows: [...], rowCount: 10 }</span>
+</code></pre></div></div>
+
+<p><strong>Describe table (reads from schema first):</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">database</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">describe</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">tableName</span><span class="p">:</span> <span class="dl">'</span><span class="s1">User</span><span class="dl">'</span>
+<span class="p">});</span>
+<span class="c1">// Returns: { </span>
+<span class="c1">//   tableName: 'User',</span>
+<span class="c1">//   source: 'schema',  // or 'database' if not in schema</span>
+<span class="c1">//   columns: [...]</span>
+<span class="c1">// }</span>
+</code></pre></div></div>
+
+<p><strong>Health check:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">database</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">health</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span>
+<span class="p">});</span>
+<span class="c1">// Returns: { connected: true, serverVersion: '...', latencyMs: 12 }</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="generateclientcode">generateClientCode</h2>
+
+<p>Generate type-safe client code from schema.</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">generateClientCode</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">schemaPath</span><span class="p">:</span> <span class="dl">'</span><span class="s1">an5Schema</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">language</span><span class="p">:</span> <span class="dl">'</span><span class="s1">typescript</span><span class="dl">'</span>  <span class="c1">// or 'python' | 'dotnet' | 'golang'</span>
+<span class="p">});</span>
+<span class="c1">// Returns: { success: true, files: [...], message: '...' }</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="analyzeschema">analyzeSchema</h2>
+
+<p>Analyze schema for design issues.</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">analyzeSchema</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">schemaPath</span><span class="p">:</span> <span class="dl">'</span><span class="s1">an5Schema</span><span class="dl">'</span>
+<span class="p">});</span>
+<span class="c1">// Returns: { </span>
+<span class="c1">//   issues: [...],</span>
+<span class="c1">//   summary: { totalModels, totalFields, missingPrimaryKeys }</span>
+<span class="c1">// }</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="retrieve">retrieve</h2>
+
+<p>Semantic search over schema and query samples.</p>
+
+<h3 id="types">Types</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">schema</code></td>
+      <td>Find model definitions</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">queries</code></td>
+      <td>Find SQL examples</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="examples-3">Examples</h3>
+
+<p><strong>Search schema:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">retrieve</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">schema</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">query</span><span class="p">:</span> <span class="dl">'</span><span class="s1">user authentication and permissions</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">k</span><span class="p">:</span> <span class="mi">3</span>  <span class="c1">// Optional: max results</span>
+<span class="p">});</span>
+<span class="c1">// Returns: { results: [...], query: '...' }</span>
+</code></pre></div></div>
+
+<p><strong>Search query samples:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">retrieve</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">queries</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">query</span><span class="p">:</span> <span class="dl">'</span><span class="s1">aggregate sales by month</span><span class="dl">'</span>
+<span class="p">});</span>
+<span class="c1">// Returns: { results: [...], query: '...' }</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="task">task</h2>
+
+<p>Manage tasks from code reviews.</p>
+
+<h3 id="actions-3">Actions</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Action</th>
+      <th>Description</th>
+      <th>Required Params</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">create</code></td>
+      <td>Create task from issue</td>
+      <td><code class="language-plaintext highlighter-rouge">type</code>, <code class="language-plaintext highlighter-rouge">description</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">list</code></td>
+      <td>List tasks</td>
+      <td>- (optional: <code class="language-plaintext highlighter-rouge">status</code>, <code class="language-plaintext highlighter-rouge">priority</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">update</code></td>
+      <td>Update task</td>
+      <td><code class="language-plaintext highlighter-rouge">taskId</code> + <code class="language-plaintext highlighter-rouge">status</code>/<code class="language-plaintext highlighter-rouge">priority</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">delete</code></td>
+      <td>Delete task</td>
+      <td><code class="language-plaintext highlighter-rouge">taskId</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="examples-4">Examples</h3>
+
+<p><strong>Create task:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">task</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">create</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">type</span><span class="p">:</span> <span class="dl">'</span><span class="s1">BUG</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">User email not validated properly</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">file</span><span class="p">:</span> <span class="dl">'</span><span class="s1">src/services/user.ts</span><span class="dl">'</span>
+<span class="p">});</span>
+<span class="c1">// Returns: { id: '...', title: '...', priority: 'medium', status: 'todo' }</span>
+</code></pre></div></div>
+
+<p><strong>List tasks:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">task</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">list</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">status</span><span class="p">:</span> <span class="dl">'</span><span class="s1">todo</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">priority</span><span class="p">:</span> <span class="dl">'</span><span class="s1">high</span><span class="dl">'</span>
+<span class="p">});</span>
+<span class="c1">// Returns: [{ id: '...', title: '...', ... }]</span>
+</code></pre></div></div>
+
+<p><strong>Update task:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">task</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">update</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">taskId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">task-abc123</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">status</span><span class="p">:</span> <span class="dl">'</span><span class="s1">in-progress</span><span class="dl">'</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p><strong>Delete task:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">executeTool</span><span class="p">(</span><span class="dl">'</span><span class="s1">task</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">action</span><span class="p">:</span> <span class="dl">'</span><span class="s1">delete</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">taskId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">task-abc123</span><span class="dl">'</span>
+<span class="p">});</span>
+<span class="c1">// Returns: true</span>
+</code></pre></div></div>
+
+<hr />
+
+<h2 id="natural-language-processing">Natural Language Processing</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">An5Agent</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/agent</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">// Registers the 7 default tools; optionally pass extra tools</span>
+<span class="kd">const</span> <span class="nx">agent</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">An5Agent</span><span class="p">();</span>
+
+<span class="c1">// Ask questions in natural language</span>
+<span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">agent</span><span class="p">.</span><span class="nf">process</span><span class="p">({</span>
+  <span class="na">userQuestion</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Show me all users with their recent orders</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">toolContext</span><span class="p">:</span> <span class="p">{</span> <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">toolCalls</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">result</span><span class="p">.</span><span class="nx">answer</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="best-practices">Best Practices</h2>
+
+<ol>
+  <li><strong>Use <code class="language-plaintext highlighter-rouge">schema</code> tool first</strong> - Understand your data structure before querying</li>
+  <li><strong>Validate with <code class="language-plaintext highlighter-rouge">query</code> tool</strong> - Always validate SQL before executing</li>
+  <li><strong>Read from schema</strong> - <code class="language-plaintext highlighter-rouge">database describe</code> reads from <code class="language-plaintext highlighter-rouge">.an5</code> files first</li>
+  <li><strong>Use parameterized queries</strong> - Prevent SQL injection</li>
+  <li><strong>Check health</strong> - Verify connection before operations</li>
+</ol>

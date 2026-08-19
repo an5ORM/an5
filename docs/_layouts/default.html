@@ -176,6 +176,26 @@
       });
     }
 
+    // Mobile sidebar accordion
+    if (window.innerWidth <= 768) {
+      document.querySelectorAll('.sidebar-group').forEach(group => {
+        const heading = group.querySelector('.sidebar-heading');
+        const hasActiveLink = group.querySelector('a.active');
+        
+        if (hasActiveLink) {
+          group.classList.remove('collapsed');
+        } else {
+          group.classList.add('collapsed');
+        }
+        
+        if (heading) {
+          heading.addEventListener('click', () => {
+            group.classList.toggle('collapsed');
+          });
+        }
+      });
+    }
+
     // Code window decorator (wraps pre blocks into styled windows with dots)
     document.querySelectorAll('.docs-body pre').forEach(pre => {
       if (!pre.parentElement.classList.contains('code-window')) {

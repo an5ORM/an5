@@ -1,0 +1,199 @@
+<h1 id="vector-search">Vector Search</h1>
+
+<p>an5 ORM includes built-in vector search capabilities for AI and machine learning applications.</p>
+
+<h2 id="overview">Overview</h2>
+
+<p>Vector search allows you to find similar items based on semantic meaning rather than exact matches. This is useful for:</p>
+
+<ul>
+  <li>Semantic search in documentation</li>
+  <li>Recommendation systems</li>
+  <li>Image similarity search</li>
+  <li>Natural language queries</li>
+</ul>
+
+<h2 id="setup">Setup</h2>
+
+<h3 id="1-enable-vector-search">1. Enable Vector Search</h3>
+
+<p>Requires <strong>SQL Server 2025</strong> for native <code class="language-plaintext highlighter-rouge">VECTOR_DISTANCE</code>. On earlier instances the
+ORM automatically falls back to an in-memory cosine-distance search.</p>
+
+<h3 id="2-create-vector-fields">2. Create Vector Fields</h3>
+
+<pre><code class="language-an5">model Document {
+  id        NVARCHAR(1000)  @id @default(uuid())
+  title     NVARCHAR(255)
+  content   TEXT
+  embedding VARBINARY(8000) @description("Vector embedding for semantic search")
+  
+  @@map("documents")
+}
+</code></pre>
+
+<h3 id="3-generate-embeddings">3. Generate Embeddings</h3>
+
+<p>Embeddings are generated with your own embedding provider (e.g. OpenAI), typically
+configured through the <code class="language-plaintext highlighter-rouge">EmbeddingConfig</code> model:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Generate embedding with your provider, e.g. OpenAI text-embedding-3-small</span>
+<span class="kd">const</span> <span class="nx">embedding</span><span class="p">:</span> <span class="kr">number</span><span class="p">[]</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">myEmbeddingProvider</span><span class="p">.</span><span class="nf">embed</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">content</span><span class="p">);</span>
+
+<span class="c1">// Store with the document</span>
+<span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">title</span><span class="p">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">title</span><span class="p">,</span>
+    <span class="na">content</span><span class="p">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">content</span><span class="p">,</span>
+    <span class="na">embedding</span><span class="p">:</span> <span class="nx">Buffer</span><span class="p">.</span><span class="k">from</span><span class="p">(</span><span class="k">new</span> <span class="nc">Float32Array</span><span class="p">(</span><span class="nx">embedding</span><span class="p">).</span><span class="nx">buffer</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="basic-vector-search">Basic Vector Search</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Search for similar documents</span>
+<span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nf">vectorSearch</span><span class="p">({</span>
+  <span class="na">vector</span><span class="p">:</span> <span class="nx">queryEmbedding</span><span class="p">,</span>
+  <span class="na">vectorField</span><span class="p">:</span> <span class="dl">'</span><span class="s1">embedding</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">take</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+  <span class="na">distanceMetric</span><span class="p">:</span> <span class="dl">'</span><span class="s1">cosine</span><span class="dl">'</span>
+<span class="p">});</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">results</span><span class="p">);</span>
+<span class="c1">// [{ id: "...", title: "...", content: "...", distance: 0.85 }, ...]</span>
+</code></pre></div></div>
+
+<h2 id="advanced-vector-search">Advanced Vector Search</h2>
+
+<h3 id="with-filters">With Filters</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nf">vectorSearch</span><span class="p">({</span>
+  <span class="na">vector</span><span class="p">:</span> <span class="nx">queryEmbedding</span><span class="p">,</span>
+  <span class="na">vectorField</span><span class="p">:</span> <span class="dl">'</span><span class="s1">embedding</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">category</span><span class="p">:</span> <span class="dl">'</span><span class="s1">technical</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">published</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">},</span>
+  <span class="na">take</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+  <span class="na">distanceMetric</span><span class="p">:</span> <span class="dl">'</span><span class="s1">cosine</span><span class="dl">'</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="with-relations">With Relations</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nf">vectorSearch</span><span class="p">({</span>
+  <span class="na">vector</span><span class="p">:</span> <span class="nx">queryEmbedding</span><span class="p">,</span>
+  <span class="na">vectorField</span><span class="p">:</span> <span class="dl">'</span><span class="s1">embedding</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">include</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">author</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">select</span><span class="p">:</span> <span class="p">{</span> <span class="na">name</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="na">tags</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">},</span>
+  <span class="na">take</span><span class="p">:</span> <span class="mi">10</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="distance-metrics">Distance Metrics</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Description</th>
+      <th>Use Case</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">cosine</code></td>
+      <td>Cosine distance</td>
+      <td>General purpose, recommended</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">euclidean</code></td>
+      <td>Euclidean distance</td>
+      <td>When magnitude matters</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">dot</code></td>
+      <td>Dot product</td>
+      <td>When vectors are normalized</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="hybrid-search">Hybrid Search</h2>
+
+<p>Combine vector search with traditional filters:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nf">vectorSearch</span><span class="p">({</span>
+  <span class="na">vector</span><span class="p">:</span> <span class="nx">queryEmbedding</span><span class="p">,</span>
+  <span class="na">vectorField</span><span class="p">:</span> <span class="dl">'</span><span class="s1">embedding</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">AND</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="na">category</span><span class="p">:</span> <span class="p">{</span> <span class="na">in</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">tech</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">science</span><span class="dl">'</span><span class="p">]</span> <span class="p">}</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="na">createdAt</span><span class="p">:</span> <span class="p">{</span> <span class="na">gte</span><span class="p">:</span> <span class="nx">lastMonth</span> <span class="p">}</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="na">views</span><span class="p">:</span> <span class="p">{</span> <span class="na">gte</span><span class="p">:</span> <span class="mi">100</span> <span class="p">}</span> <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">},</span>
+  <span class="na">take</span><span class="p">:</span> <span class="mi">20</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>Results are always returned ordered by <code class="language-plaintext highlighter-rouge">distance</code> ascending (closest first).</p>
+
+<h2 id="in-memory-fallback">In-Memory Fallback</h2>
+
+<p>For development or when SQL Server vector support is unavailable, <code class="language-plaintext highlighter-rouge">vectorSearch</code>
+automatically falls back to an in-memory cosine-distance search. No separate store
+class is needed — pass the same arguments and the ORM handles the fallback:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">results</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nf">vectorSearch</span><span class="p">({</span>
+  <span class="na">vector</span><span class="p">:</span> <span class="nx">queryEmbedding</span><span class="p">,</span>
+  <span class="na">take</span><span class="p">:</span> <span class="mi">5</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="use-case-rag-pipeline">Use Case: RAG Pipeline</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. Generate the query embedding with your own provider</span>
+<span class="kd">const</span> <span class="nx">queryEmbedding</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">myEmbeddingProvider</span><span class="p">.</span><span class="nf">embed</span><span class="p">(</span><span class="nx">question</span><span class="p">);</span>
+
+<span class="c1">// 2. Retrieve relevant documents</span>
+<span class="kd">const</span> <span class="nx">relevantDocs</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nb">document</span><span class="p">.</span><span class="nf">vectorSearch</span><span class="p">({</span>
+  <span class="na">vector</span><span class="p">:</span> <span class="nx">queryEmbedding</span><span class="p">,</span>
+  <span class="na">take</span><span class="p">:</span> <span class="mi">5</span>
+<span class="p">});</span>
+
+<span class="c1">// 3. Build context and answer with your LLM of choice</span>
+<span class="kd">const</span> <span class="nx">context</span> <span class="o">=</span> <span class="nx">relevantDocs</span>
+  <span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="nx">doc</span> <span class="o">=&gt;</span> <span class="s2">`Title: </span><span class="p">${</span><span class="nx">doc</span><span class="p">.</span><span class="nx">title</span><span class="p">}</span><span class="s2">\nContent: </span><span class="p">${</span><span class="nx">doc</span><span class="p">.</span><span class="nx">content</span><span class="p">}</span><span class="s2">`</span><span class="p">)</span>
+  <span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="dl">'</span><span class="se">\n\n</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">answer</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">myLlmProvider</span><span class="p">.</span><span class="nf">complete</span><span class="p">({</span>
+  <span class="na">prompt</span><span class="p">:</span> <span class="s2">`Based on the following context, answer the question: </span><span class="p">${</span><span class="nx">question</span><span class="p">}</span><span class="s2">\n\nContext:\n</span><span class="p">${</span><span class="nx">context</span><span class="p">}</span><span class="s2">`</span>
+<span class="p">});</span>
+
+<span class="k">return</span> <span class="p">{</span>
+  <span class="nx">answer</span><span class="p">,</span>
+  <span class="na">sources</span><span class="p">:</span> <span class="nx">relevantDocs</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<h2 id="performance-tips">Performance Tips</h2>
+
+<ol>
+  <li><strong>Index your vector columns</strong> for faster similarity search</li>
+  <li><strong>Limit results</strong> with <code class="language-plaintext highlighter-rouge">take</code> to reduce computation</li>
+  <li><strong>Filter early</strong> with <code class="language-plaintext highlighter-rouge">where</code> to narrow candidates</li>
+  <li><strong>Cache embeddings</strong> to avoid regenerating them</li>
+</ol>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ul>
+  <li><a href="/an5/guides/agent-tools/">AI Agent</a> - Natural language database queries</li>
+  <li><a href="/an5/guides/queries/">Raw Queries</a> - Execute raw SQL</li>
+</ul>

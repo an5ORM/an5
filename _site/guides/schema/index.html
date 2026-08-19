@@ -1,0 +1,372 @@
+<h1 id="schema-definition">Schema Definition</h1>
+
+<p>an5 uses a declarative schema syntax to define your data models. Schema files use the <code class="language-plaintext highlighter-rouge">.an5</code> extension.</p>
+
+<h2 id="basic-syntax">Basic Syntax</h2>
+
+<pre><code class="language-an5">model User {
+  id        NVARCHAR(1000) @id @default(uuid())
+  email     NVARCHAR(255)  @unique
+  name      NVARCHAR(255)?
+  createdAt DATETIME2      @default(now())
+  
+  @@map("users")
+}
+</code></pre>
+
+<h2 id="model-definition">Model Definition</h2>
+
+<h3 id="fields">Fields</h3>
+
+<p>Each field has a name, type, and optional attributes:</p>
+
+<pre><code class="language-an5">model Post {
+  id        NVARCHAR(1000) @id @default(uuid())
+  title     NVARCHAR(255)  @description("The post title")
+  content   TEXT?
+  published BOOLEAN        @default(false)
+  authorId  NVARCHAR(1000)
+}
+</code></pre>
+
+<h3 id="field-types">Field Types</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Example</th>
+      <th>TypeScript</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">NVARCHAR(n)</code></td>
+      <td>Variable-length Unicode string</td>
+      <td><code class="language-plaintext highlighter-rouge">NVARCHAR(255)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">VARCHAR(n)</code></td>
+      <td>Variable-length ASCII string</td>
+      <td><code class="language-plaintext highlighter-rouge">VARCHAR(100)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">CHAR(n)</code></td>
+      <td>Fixed-length string</td>
+      <td><code class="language-plaintext highlighter-rouge">CHAR(10)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">TEXT</code></td>
+      <td>Large text field</td>
+      <td><code class="language-plaintext highlighter-rouge">TEXT</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">INT</code></td>
+      <td>32-bit integer</td>
+      <td><code class="language-plaintext highlighter-rouge">INT</code></td>
+      <td><code class="language-plaintext highlighter-rouge">number</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">BIGINT</code></td>
+      <td>64-bit integer</td>
+      <td><code class="language-plaintext highlighter-rouge">BIGINT</code></td>
+      <td><code class="language-plaintext highlighter-rouge">number \| bigint</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">SMALLINT</code></td>
+      <td>16-bit integer</td>
+      <td><code class="language-plaintext highlighter-rouge">SMALLINT</code></td>
+      <td><code class="language-plaintext highlighter-rouge">number</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">TINYINT</code></td>
+      <td>8-bit integer</td>
+      <td><code class="language-plaintext highlighter-rouge">TINYINT</code></td>
+      <td><code class="language-plaintext highlighter-rouge">number</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">FLOAT</code></td>
+      <td>Floating point</td>
+      <td><code class="language-plaintext highlighter-rouge">FLOAT</code></td>
+      <td><code class="language-plaintext highlighter-rouge">number</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">REAL</code></td>
+      <td>Single-precision float</td>
+      <td><code class="language-plaintext highlighter-rouge">REAL</code></td>
+      <td><code class="language-plaintext highlighter-rouge">number</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">DECIMAL(p,s)</code></td>
+      <td>Fixed precision</td>
+      <td><code class="language-plaintext highlighter-rouge">DECIMAL(10,2)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">number</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">NUMERIC(p,s)</code></td>
+      <td>Fixed precision</td>
+      <td><code class="language-plaintext highlighter-rouge">NUMERIC(10,2)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">number</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">BIT</code></td>
+      <td>Boolean</td>
+      <td><code class="language-plaintext highlighter-rouge">BIT</code></td>
+      <td><code class="language-plaintext highlighter-rouge">boolean</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">DATETIME</code></td>
+      <td>Date and time</td>
+      <td><code class="language-plaintext highlighter-rouge">DATETIME</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Date</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">DATETIME2</code></td>
+      <td>High precision datetime</td>
+      <td><code class="language-plaintext highlighter-rouge">DATETIME2</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Date</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">DATE</code></td>
+      <td>Date only</td>
+      <td><code class="language-plaintext highlighter-rouge">DATE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Date</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">TIME</code></td>
+      <td>Time only</td>
+      <td><code class="language-plaintext highlighter-rouge">TIME</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Date</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">UNIQUEIDENTIFIER</code></td>
+      <td>UUID/GUID</td>
+      <td><code class="language-plaintext highlighter-rouge">UNIQUEIDENTIFIER</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">VARBINARY(n)</code></td>
+      <td>Binary data</td>
+      <td><code class="language-plaintext highlighter-rouge">VARBINARY(255)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Buffer</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">BINARY(n)</code></td>
+      <td>Fixed binary data</td>
+      <td><code class="language-plaintext highlighter-rouge">BINARY(16)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Buffer</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">IMAGE</code></td>
+      <td>Large binary data</td>
+      <td><code class="language-plaintext highlighter-rouge">IMAGE</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Buffer</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="optional-fields">Optional Fields</h3>
+
+<p>Add <code class="language-plaintext highlighter-rouge">?</code> to make a field optional:</p>
+
+<pre><code class="language-an5">model User {
+  id    NVARCHAR(1000) @id @default(uuid())
+  name  NVARCHAR(255)?  // Optional field
+  email NVARCHAR(255)   // Required field
+}
+</code></pre>
+
+<h2 id="attributes">Attributes</h2>
+
+<h3 id="primary-key">Primary Key</h3>
+
+<pre><code class="language-an5">model User {
+  id NVARCHAR(1000) @id @default(uuid())
+}
+</code></pre>
+
+<h3 id="unique-constraint">Unique Constraint</h3>
+
+<pre><code class="language-an5">model User {
+  email NVARCHAR(255) @unique
+}
+</code></pre>
+
+<h3 id="default-values">Default Values</h3>
+
+<pre><code class="language-an5">model Post {
+  id        NVARCHAR(1000) @id @default(uuid())
+  status    NVARCHAR(50)   @default("draft")
+  views     INT            @default(0)
+  createdAt DATETIME2      @default(now())
+}
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<pre><code class="language-an5">model User {
+  id NVARCHAR(1000) @id @default(uuid()) @description("Primary key")
+}
+</code></pre>
+
+<h2 id="model-directives">Model Directives</h2>
+
+<p>Directives are declared at the model level and control table mapping, constraints, and indexes.</p>
+
+<h3 id="table-mapping">Table Mapping</h3>
+
+<p>Use <code class="language-plaintext highlighter-rouge">@@map()</code> to map a model to a different table name:</p>
+
+<pre><code class="language-an5">model User {
+  id    NVARCHAR(1000) @id @default(uuid())
+  email NVARCHAR(255)
+
+  @@map("app_users")
+}
+</code></pre>
+
+<h3 id="model-description">Model Description</h3>
+
+<pre><code class="language-an5">model User {
+  id NVARCHAR(1000) @id @default(uuid())
+
+  @@description("User account")
+}
+</code></pre>
+
+<h3 id="unique-constraints">Unique Constraints</h3>
+
+<p><code class="language-plaintext highlighter-rouge">@@unique()</code> declares a unique constraint across one or more fields. Compound
+unique constraints are supported:</p>
+
+<pre><code class="language-an5">model Membership {
+  id     NVARCHAR(1000) @id @default(uuid())
+  userId NVARCHAR(1000)
+  orgId  NVARCHAR(1000)
+
+  @@unique([userId, orgId])
+}
+</code></pre>
+
+<h3 id="indexes">Indexes</h3>
+
+<p><code class="language-plaintext highlighter-rouge">@@index()</code> declares a database index. Advanced options are supported:</p>
+
+<pre><code class="language-an5">model Order {
+  id        NVARCHAR(1000) @id @default(uuid())
+  userId    NVARCHAR(1000)
+  total     DECIMAL(10,2)
+  status    NVARCHAR(50)
+  createdAt DATETIME2
+
+  // Simple index
+  @@index([userId])
+
+  // Named index (honored in migration diff/generate)
+  @@index([userId, createdAt], map: "idx_orders_user_created")
+
+  // Include columns
+  @@index([userId], include: [total, status])
+
+  // Filtered index
+  @@index([status], filter: "[status] &lt;&gt; 'cancelled'")
+
+  // Index options (e.g. fillfactor)
+  @@index([userId], options: "fillfactor=80")
+}
+</code></pre>
+
+<p>Supported index options:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Option</th>
+      <th>Description</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">map</code></td>
+      <td>Custom index/constraint name</td>
+      <td><code class="language-plaintext highlighter-rouge">map: "idx_orders_user"</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">include</code></td>
+      <td>Included (non-key) columns</td>
+      <td><code class="language-plaintext highlighter-rouge">include: [total, status]</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">filter</code></td>
+      <td>Filtered index predicate</td>
+      <td><code class="language-plaintext highlighter-rouge">filter: "[status] &lt;&gt; 'cancelled'"</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">options</code></td>
+      <td>Raw index options</td>
+      <td><code class="language-plaintext highlighter-rouge">options: "fillfactor=80"</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Migrations honor mapped index/unique names, include/filter/options metadata,
+and <code class="language-plaintext highlighter-rouge">dbo.</code>-qualified table names when comparing schema with the database.</p>
+
+<h2 id="complete-example">Complete Example</h2>
+
+<pre><code class="language-an5">model User {
+  id        NVARCHAR(1000) @id @default(uuid()) @description("Primary key")
+  email     NVARCHAR(255)  @unique @description("User email")
+  name      NVARCHAR(255)? @description("Display name")
+  avatar    NVARCHAR(500)? @description("Avatar URL")
+  role      NVARCHAR(50)   @default("user") @description("User role")
+  isActive  BIT            @default(1) @description("Account status")
+  createdAt DATETIME2      @default(now()) @description("Creation date")
+  updatedAt DATETIME2      @default(now()) @description("Last update")
+  
+  // Relations
+  posts     Post[]
+  profile   Profile?
+  
+  @@description("User account")
+  @@map("users")
+}
+
+model Post {
+  id        NVARCHAR(1000) @id @default(uuid())
+  title     NVARCHAR(255)  @description("Post title")
+  content   TEXT?          @description("Post content")
+  published BIT            @default(0) @description("Published status")
+  authorId  NVARCHAR(1000) @description("Author reference")
+  
+  // Relations
+  author    User           @relation(fields: [authorId], references: [id])
+  tags      Tag[]
+  
+  @@index([authorId])
+  @@map("posts")
+}
+
+model Tag {
+  id    NVARCHAR(1000) @id @default(uuid())
+  name  NVARCHAR(100)  @unique
+  
+  posts Post[]
+  
+  @@map("tags")
+}
+</code></pre>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ul>
+  <li><a href="/an5/guides/crud/">CRUD Operations</a> - Learn how to query your data</li>
+  <li><a href="/an5/guides/relations/">Relations</a> - Define relationships between models</li>
+  <li><a href="/an5/guides/queries/">Advanced Queries</a> - Complex query patterns</li>
+</ul>

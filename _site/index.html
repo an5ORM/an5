@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>an5 ORM - Modern SQL Server ORM | an5 ORM</title>
+  <meta name="description" content="A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, and Google Sheets">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/an5/assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+
+  <!-- Background Glow FX -->
+  <div class="hero-glow glow-1"></div>
+  <div class="hero-glow glow-2"></div>
+
+  <!-- ─── NAV ─────────────────────────────────────────────────────────────── -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="/an5/" class="nav-logo">
+        <span class="logo-badge">AN5</span>
+        <span class="logo-text">ORM</span>
+        <span class="logo-docs-tag">Docs</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/an5/">Home</a></li>
+        <li><a href="/an5/guides/getting-started/">Getting Started</a></li>
+        <li><a href="/an5/guides/schema/">Schema</a></li>
+        <li><a href="/an5/guides/crud/">CRUD</a></li>
+        <li><a href="/an5/guides/agent-tools/">AI Agent</a></li>
+        <li><a href="/an5/guides/api-reference/">API</a></li>
+        <li><a href="https://github.com/an5ORM/an5" target="_blank" class="nav-github">
+          <i class="fab fa-github"></i> GitHub
+        </a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ─── MAIN LAYOUT ───────────────────────────────────────────────────────── -->
+  <div class="docs-layout container">
+    <!-- Sidebar Navigation -->
+    <aside class="docs-sidebar" id="docsSidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Getting Started</div>
+        <ul>
+          <li><a href="/an5/guides/getting-started/"><i class="fas fa-rocket"></i> Overview & Installation</a></li>
+          <li><a href="/an5/guides/configuration/"><i class="fas fa-sliders-h"></i> Configuration</a></li>
+          <li><a href="/an5/guides/cli/"><i class="fas fa-terminal"></i> CLI Commands</a></li>
+          <li><a href="/an5/guides/feature-status/"><i class="fas fa-tasks"></i> Feature Status</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Core Concepts</div>
+        <ul>
+          <li><a href="/an5/guides/schema/"><i class="fas fa-file-code"></i> Schema Definition (.an5)</a></li>
+          <li><a href="/an5/guides/crud/"><i class="fas fa-database"></i> CRUD Operations</a></li>
+          <li><a href="/an5/guides/relations/"><i class="fas fa-project-diagram"></i> Relations & Joins</a></li>
+          <li><a href="/an5/guides/queries/"><i class="fas fa-search"></i> Advanced Queries</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Advanced Features</div>
+        <ul>
+          <li><a href="/an5/guides/browser-support/"><i class="fas fa-globe"></i> Browser Support</a></li>
+          <li><a href="/an5/guides/transactions/"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+          <li><a href="/an5/guides/vector-search/"><i class="fas fa-brain"></i> Vector Search</a></li>
+          <li><a href="/an5/guides/agent-tools/"><i class="fas fa-robot"></i> AI Agent Tools</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Reference & Ops</div>
+        <ul>
+          <li><a href="/an5/guides/api-reference/"><i class="fas fa-book"></i> API Reference</a></li>
+          <li><a href="/an5/guides/architecture/"><i class="fas fa-sitemap"></i> Architecture</a></li>
+          <li><a href="/an5/guides/deployment/"><i class="fas fa-cloud-upload-alt"></i> Deployment</a></li>
+          <li><a href="/an5/guides/troubleshooting/"><i class="fas fa-wrench"></i> Troubleshooting</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="docs-content">
+      <div class="docs-body card-glass">
+        <div class="hero">
+  <div class="hero-content">
+    <h1>an5 ORM</h1>
+    <p class="hero-subtitle">A modern, type-safe ORM for Every Platform</p>
+    <p class="hero-description">
+      Build data-driven applications with an intuitive API, type-safe queries, 
+      and powerful features like vector search and AI agent integration across TypeScript, Python, .NET &amp; Golang.
+    </p>
+    <div class="hero-buttons">
+      <a href="/an5/guides/getting-started/" class="btn btn-primary">Get Started</a>
+      <a href="/an5/guides/feature-status/" class="btn btn-secondary">Feature Status</a>
+      <a href="/an5/guides/schema/" class="btn btn-secondary">Documentation</a>
+      <a href="https://github.com/an5ORM/an5" class="btn btn-outline">
+        <i class="fab fa-github"></i> GitHub
+      </a>
+    </div>
+  </div>
+  <div class="hero-code">
+    <pre><code class="language-typescript">import { createAn5Adapter } from '@an5/adapters';
+
+const db = createAn5Adapter({
+  connectionString: process.env.DATABASE_URL!,
+});
+await db.$connect();
+
+// Type-safe table queries
+const users = await db.table('User').findMany({
+  where: { email: { contains: '@example.com' } },
+  orderBy: { createdAt: 'desc' },
+  take: 10,
+});
+
+// Create record
+const user = await db.table('User').create({
+  data: {
+    email: 'john@example.com',
+    name: 'John',
+  }
+});</code></pre>
+  </div>
+</div>
+
+<h2 id="why-an5-orm">Why an5 ORM?</h2>
+
+<p>Install the published package with <code class="language-plaintext highlighter-rouge">npm install @an5/orm</code>, then use the CLI tools for schema generation and database commands.</p>
+
+<div class="features-grid">
+  <div class="feature-card">
+    <div class="feature-icon">🎯</div>
+    <h3>Type-Safe</h3>
+    <p>Full TypeScript support with autocompletion and type checking for all queries.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">📝</div>
+    <h3>Intuitive API</h3>
+    <p>Syntax that's easy to learn and powerful enough for complex queries.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🔗</div>
+    <h3>Relations</h3>
+    <p>Define and query relations with nested includes and explicit joins.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🔍</div>
+    <h3>Vector Search</h3>
+    <p>Built-in vector search for AI and ML applications across supported dialects.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🤖</div>
+    <h3>AI Agent</h3>
+    <p>7 intelligent tools for natural language database queries and schema exploration.</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🔄</div>
+    <h3>Multi-Language</h3>
+    <p>Generate type-safe clients for TypeScript, Python, .NET, and Golang.</p>
+  </div>
+</div>
+
+<h2 id="quick-example">Quick Example</h2>
+
+<div class="example-tabs">
+  <div class="example-tabs-header">
+    <button class="tab-btn active" onclick="showTab('schema')">Schema</button>
+    <button class="tab-btn" onclick="showTab('query')">TypeScript</button>
+    <button class="tab-btn" onclick="showTab('golang')">Golang</button>
+    <button class="tab-btn" onclick="showTab('result')">Result</button>
+  </div>
+  <div class="tab-content active" id="schema">
+    <pre><code class="language-an5">model User {
+  id        NVARCHAR(1000) @id @default(uuid())
+  email     NVARCHAR(255)  @unique
+  name      NVARCHAR(255)?
+  createdAt DATETIME2      @default(now())
+  orders    Order[]
+
+  @@map("users")
+}
+
+model Order {
+  id     NVARCHAR(1000) @id @default(uuid())
+  total  INT            @default(0)
+  user   User           @relation(fields: [userId], references: [id])
+  userId NVARCHAR(1000)
+
+  @@map("orders")
+}</code></pre>
+  </div>
+  <div class="tab-content" id="query">
+    <pre><code class="language-typescript">const users = await db.user.findMany({
+  where: { email: { contains: '@example.com' } },
+  include: {
+    orders: {
+      select: { total: true },
+      orderBy: { total: 'desc' }
+    }
+  },
+  take: 10
+});</code></pre>
+  </div>
+  <div class="tab-content" id="golang">
+    <pre><code class="language-go">// Golang Adapter query example
+import an5 "github.com/an5ORM/an5Adapters/golang"
+
+db := an5.NewAn5Adapter(sqlDB, "postgres", connStr)
+users, err := db.Table("User").FindMany(ctx, map[string]any{
+    "email": "@example.com",
+})</code></pre>
+  </div>
+  <div class="tab-content" id="result">
+    <pre><code class="language-json">[
+  {
+    "id": "uuid-1",
+    "email": "john@example.com",
+    "name": "John",
+    "createdAt": "2026-01-15T10:30:00Z",
+    "orders": [
+      { "total": 500 },
+      { "total": 150 }
+    ]
+  }
+]</code></pre>
+  </div>
+</div>
+
+<h2 id="comparison-with-other-orms">Comparison with Other ORMs</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Feature</th>
+      <th>an5 ORM</th>
+      <th>Prisma</th>
+      <th>TypeORM</th>
+      <th>Sequelize</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Type Safety</td>
+      <td>✅ Full</td>
+      <td>✅ Full</td>
+      <td>⚠️ Partial</td>
+      <td>⚠️ Partial</td>
+    </tr>
+    <tr>
+      <td>Schema-first</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>❌</td>
+      <td>❌</td>
+    </tr>
+    <tr>
+      <td>SQL Server &amp; Postgres</td>
+      <td>✅ Native</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td>Vector Search</td>
+      <td>✅ Built-in</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>❌</td>
+    </tr>
+    <tr>
+      <td>AI Agent</td>
+      <td>✅ 7 tools</td>
+      <td>❌</td>
+      <td>❌</td>
+      <td>❌</td>
+    </tr>
+    <tr>
+      <td>Multi-language</td>
+      <td>✅ TS/Py/.NET/Go</td>
+      <td>⚠️ TS only</td>
+      <td>⚠️ TS only</td>
+      <td>⚠️ TS only</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="cta-section">
+  <h2>Ready to get started?</h2>
+  <p>Get up and running with an5 ORM in under 5 minutes.</p>
+  <a href="/an5/guides/getting-started/" class="btn btn-primary btn-large">
+    Start Building →
+  </a>
+</div>
+
+<script>
+function showTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById(tabId);
+  if (target) target.classList.add('active');
+  if (event && event.target) event.target.classList.add('active');
+}
+</script>
+
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ─── FOOTER ────────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="/an5/" class="nav-logo">
+          <span class="logo-badge">AN5</span>
+          <span class="logo-text">ORM</span>
+        </a>
+        <p>Lightweight, type-safe ORM for TypeScript, Python, .NET, and Golang.</p>
+        <div class="footer-social">
+          <a href="https://github.com/an5ORM" target="_blank" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="https://open-vsx.org/namespace/an5orm" target="_blank" aria-label="Open VSX">
+            <i class="fas fa-puzzle-piece"></i>
+          </a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Getting Started</h4>
+          <ul>
+            <li><a href="/an5/guides/getting-started/">Installation</a></li>
+            <li><a href="/an5/guides/configuration/">Configuration</a></li>
+            <li><a href="/an5/guides/cli/">CLI Tools</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Core Concepts</h4>
+          <ul>
+            <li><a href="/an5/guides/schema/">Schema</a></li>
+            <li><a href="/an5/guides/crud/">CRUD API</a></li>
+            <li><a href="/an5/guides/relations/">Relations</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Ecosystem & Reference</h4>
+          <ul>
+            <li><a href="/an5/guides/api-reference/">API Reference</a></li>
+            <li><a href="/an5/guides/agent-tools/">AI Agent Tools</a></li>
+            <li><a href="https://github.com/an5ORM/an5" target="_blank">GitHub Repository</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 AN5 ORM · Open Source under MIT License</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+
+  <script>
+    // Active sidebar link highlighting
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.docs-sidebar a').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && (currentPath.endsWith(href) || currentPath === href || (href !== '/' && currentPath.includes(href)))) {
+        link.classList.add('active');
+      }
+    });
+
+    // Mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (navToggle && navLinks) {
+      navToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+        navToggle.classList.toggle('open');
+      });
+    }
+
+    // Mobile sidebar accordion
+    if (window.innerWidth <= 768) {
+      document.querySelectorAll('.sidebar-group').forEach(group => {
+        const heading = group.querySelector('.sidebar-heading');
+        const hasActiveLink = group.querySelector('a.active');
+        
+        if (hasActiveLink) {
+          group.classList.remove('collapsed');
+        } else {
+          group.classList.add('collapsed');
+        }
+        
+        if (heading) {
+          heading.addEventListener('click', () => {
+            group.classList.toggle('collapsed');
+          });
+        }
+      });
+    }
+
+    // Code window decorator (wraps pre blocks into styled windows with dots)
+    document.querySelectorAll('.docs-body pre').forEach(pre => {
+      if (!pre.parentElement.classList.contains('code-window')) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'code-window';
+        
+        const titlebar = document.createElement('div');
+        titlebar.className = 'code-titlebar';
+        titlebar.innerHTML = '<span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>';
+        
+        const code = pre.querySelector('code');
+        if (code) {
+          const match = code.className.match(/language-(\w+)/);
+          if (match) {
+            const langSpan = document.createElement('span');
+            langSpan.className = 'code-filename';
+            langSpan.textContent = match[1].toUpperCase();
+            titlebar.appendChild(langSpan);
+          }
+        }
+        
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(titlebar);
+        wrapper.appendChild(pre);
+      }
+    });
+  </script>
+</body>
+</html>

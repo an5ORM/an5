@@ -1,0 +1,225 @@
+<h1 id="crud-operations">CRUD Operations</h1>
+
+<p><code class="language-plaintext highlighter-rouge">@an5/adapters</code> provides a clean, type-safe API for all CRUD operations.</p>
+
+<h2 id="setup">Setup</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
+  <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="o">!</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="create">Create</h2>
+
+<h3 id="create-a-single-record">Create a Single Record</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John Doe</span><span class="dl">'</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">user</span><span class="p">);</span>
+<span class="c1">// { id: "uuid", email: "john@example.com", name: "John Doe", ... }</span>
+</code></pre></div></div>
+
+<h3 id="create-with-relations">Create with Relations</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John Doe</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">posts</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">create</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">First Post</span><span class="dl">'</span><span class="p">,</span> <span class="na">content</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Hello world!</span><span class="dl">'</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Second Post</span><span class="dl">'</span><span class="p">,</span> <span class="na">content</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Another post</span><span class="dl">'</span> <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="na">profile</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">create</span><span class="p">:</span> <span class="p">{</span> <span class="na">bio</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Software developer</span><span class="dl">'</span> <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="create-many-records">Create Many Records</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">createMany</span><span class="p">({</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">alice@example.com</span><span class="dl">'</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Alice</span><span class="dl">'</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">bob@example.com</span><span class="dl">'</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Bob</span><span class="dl">'</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">charlie@example.com</span><span class="dl">'</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Charlie</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`Created </span><span class="p">${</span><span class="nx">users</span><span class="p">.</span><span class="nx">count</span><span class="p">}</span><span class="s2"> users`</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="read">Read</h2>
+
+<h3 id="find-unique-record">Find Unique Record</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// By primary key</span>
+<span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findUnique</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">user-id-123</span><span class="dl">'</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// By unique field</span>
+<span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findUnique</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span> <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="find-first-record">Find First Record</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findFirst</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">name</span><span class="p">:</span> <span class="p">{</span> <span class="na">contains</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John</span><span class="dl">'</span> <span class="p">},</span>
+    <span class="na">isActive</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">},</span>
+  <span class="na">orderBy</span><span class="p">:</span> <span class="p">{</span> <span class="na">createdAt</span><span class="p">:</span> <span class="dl">'</span><span class="s1">desc</span><span class="dl">'</span> <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="find-many-records">Find Many Records</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">isActive</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">email</span><span class="p">:</span> <span class="p">{</span> <span class="na">contains</span><span class="p">:</span> <span class="dl">'</span><span class="s1">@example.com</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="na">orderBy</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="na">createdAt</span><span class="p">:</span> <span class="dl">'</span><span class="s1">desc</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="na">skip</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">take</span><span class="p">:</span> <span class="mi">10</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="count-records">Count Records</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">count</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">count</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">isActive</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="update">Update</h2>
+
+<h3 id="update-a-single-record">Update a Single Record</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">user-id-123</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Jane Doe</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">updatedAt</span><span class="p">:</span> <span class="k">new</span> <span class="nc">Date</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="update-many-records">Update Many Records</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">updateMany</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">role</span><span class="p">:</span> <span class="dl">'</span><span class="s1">admin</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">isActive</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`Updated </span><span class="p">${</span><span class="nx">result</span><span class="p">.</span><span class="nx">count</span><span class="p">}</span><span class="s2"> users`</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="upsert-update-or-create">Upsert (Update or Create)</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">upsert</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="na">update</span><span class="p">:</span> <span class="p">{</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John Updated</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="na">create</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John Doe</span><span class="dl">'</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="delete">Delete</h2>
+
+<h3 id="delete-a-single-record">Delete a Single Record</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="k">delete</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">user-id-123</span><span class="dl">'</span> <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="delete-many-records">Delete Many Records</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">deleteMany</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">isActive</span><span class="p">:</span> <span class="kc">false</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="s2">`Deleted </span><span class="p">${</span><span class="nx">result</span><span class="p">.</span><span class="nx">count</span><span class="p">}</span><span class="s2"> users`</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="transactions">Transactions</h2>
+
+<p>Use <code class="language-plaintext highlighter-rouge">$transaction</code> to execute multiple operations atomically:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$transaction</span><span class="p">(</span><span class="k">async </span><span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// All operations succeed or all fail</span>
+  <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">});</span>
+  
+  <span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">order</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">userId</span><span class="p">:</span> <span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+      <span class="na">total</span><span class="p">:</span> <span class="mi">100</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+  
+  <span class="c1">// If any error occurs, all changes are rolled back</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>When you need explicit control over when the transaction commits or rolls back,
+use interactive transactions instead — see <a href="/an5/guides/transactions/">Transactions</a>.</p>
+
+<h2 id="raw-queries">Raw Queries</h2>
+
+<p>Execute raw SQL when you need more control:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Query with parameters</span>
+<span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">$queryRaw</span><span class="s2">`
+  SELECT * FROM users 
+  WHERE email LIKE </span><span class="p">${</span><span class="dl">'</span><span class="s1">%@example.com</span><span class="dl">'</span><span class="p">}</span><span class="s2">
+  ORDER BY created_at DESC
+`</span><span class="p">;</span>
+
+<span class="c1">// Execute (INSERT, UPDATE, DELETE)</span>
+<span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">$executeRaw</span><span class="s2">`
+  UPDATE users SET is_active = 0 
+  WHERE last_login &lt; </span><span class="p">${</span><span class="nx">dateThreshold</span><span class="p">}</span><span class="s2">
+`</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="error-handling">Error Handling</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">}</span> <span class="k">catch </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">error</span><span class="p">.</span><span class="nx">code</span> <span class="o">===</span> <span class="dl">'</span><span class="s1">P2002</span><span class="dl">'</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Unique constraint violation</span><span class="dl">'</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">error</span><span class="p">(</span><span class="dl">'</span><span class="s1">Database error:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ul>
+  <li><a href="/an5/guides/relations/">Relations</a> - Define relationships between models</li>
+  <li><a href="/an5/guides/queries/">Advanced Queries</a> - Complex query patterns</li>
+  <li><a href="/an5/guides/transactions/">Transactions</a> - Atomic operations</li>
+</ul>

@@ -1,0 +1,205 @@
+<h1 id="advanced-queries">Advanced Queries</h1>
+
+<p><code class="language-plaintext highlighter-rouge">@an5/adapters</code> provides powerful query capabilities for complex data retrieval across SQL dialects (MSSQL, PostgreSQL, MySQL, SQLite) and Google Sheets.</p>
+
+<h2 id="setup">Setup</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
+  <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="o">!</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="filtering">Filtering</h2>
+
+<h3 id="comparison-operators">Comparison Operators</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+    <span class="c1">// Equal</span>
+    <span class="na">status</span><span class="p">:</span> <span class="dl">'</span><span class="s1">active</span><span class="dl">'</span><span class="p">,</span>
+    
+    <span class="c1">// Not equal</span>
+    <span class="na">status</span><span class="p">:</span> <span class="p">{</span> <span class="na">not</span><span class="p">:</span> <span class="dl">'</span><span class="s1">banned</span><span class="dl">'</span> <span class="p">},</span>
+    
+    <span class="c1">// Comparison</span>
+    <span class="na">age</span><span class="p">:</span> <span class="p">{</span> <span class="na">gte</span><span class="p">:</span> <span class="mi">18</span> <span class="p">},</span>
+    <span class="na">score</span><span class="p">:</span> <span class="p">{</span> <span class="na">gt</span><span class="p">:</span> <span class="mi">100</span> <span class="p">},</span>
+    <span class="na">views</span><span class="p">:</span> <span class="p">{</span> <span class="na">lt</span><span class="p">:</span> <span class="mi">1000</span> <span class="p">},</span>
+    <span class="na">orderCount</span><span class="p">:</span> <span class="p">{</span> <span class="na">lte</span><span class="p">:</span> <span class="mi">10</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="string-operators">String Operators</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+    <span class="c1">// Contains</span>
+    <span class="na">email</span><span class="p">:</span> <span class="p">{</span> <span class="na">contains</span><span class="p">:</span> <span class="dl">'</span><span class="s1">@example.com</span><span class="dl">'</span> <span class="p">},</span>
+    
+    <span class="c1">// Starts with</span>
+    <span class="na">name</span><span class="p">:</span> <span class="p">{</span> <span class="na">startsWith</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John</span><span class="dl">'</span> <span class="p">},</span>
+    
+    <span class="c1">// Ends with</span>
+    <span class="na">name</span><span class="p">:</span> <span class="p">{</span> <span class="na">endsWith</span><span class="p">:</span> <span class="dl">'</span><span class="s1">son</span><span class="dl">'</span> <span class="p">},</span>
+    
+    <span class="c1">// In list</span>
+    <span class="na">role</span><span class="p">:</span> <span class="p">{</span> <span class="na">in</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">admin</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">moderator</span><span class="dl">'</span><span class="p">]</span> <span class="p">},</span>
+    
+    <span class="c1">// Not in list</span>
+    <span class="na">role</span><span class="p">:</span> <span class="p">{</span> <span class="na">notIn</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">banned</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">suspended</span><span class="dl">'</span><span class="p">]</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="logical-operators">Logical Operators</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">OR</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="na">role</span><span class="p">:</span> <span class="dl">'</span><span class="s1">admin</span><span class="dl">'</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="na">role</span><span class="p">:</span> <span class="dl">'</span><span class="s1">moderator</span><span class="dl">'</span> <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="na">AND</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="na">isActive</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="na">createdAt</span><span class="p">:</span> <span class="p">{</span> <span class="na">gte</span><span class="p">:</span> <span class="nx">lastMonth</span> <span class="p">}</span> <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="na">NOT</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">status</span><span class="p">:</span> <span class="dl">'</span><span class="s1">banned</span><span class="dl">'</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="sorting">Sorting</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">orderBy</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="na">role</span><span class="p">:</span> <span class="dl">'</span><span class="s1">asc</span><span class="dl">'</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="na">createdAt</span><span class="p">:</span> <span class="dl">'</span><span class="s1">desc</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="pagination">Pagination</h2>
+
+<h3 id="offset-based">Offset-based</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">skip</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>  <span class="c1">// Skip first 20</span>
+  <span class="na">take</span><span class="p">:</span> <span class="mi">10</span>   <span class="c1">// Take next 10</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>When <code class="language-plaintext highlighter-rouge">skip</code> is used, dialect-aware pagination is automatically generated (<code class="language-plaintext highlighter-rouge">LIMIT/OFFSET</code> for PostgreSQL/MySQL/SQLite, <code class="language-plaintext highlighter-rouge">OFFSET/FETCH</code> for MSSQL).</p>
+
+<h2 id="aggregations">Aggregations</h2>
+
+<h3 id="basic-aggregations">Basic Aggregations</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">stats</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">order</span><span class="p">.</span><span class="nf">aggregate</span><span class="p">({</span>
+  <span class="na">_count</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="na">_sum</span><span class="p">:</span> <span class="p">{</span> <span class="na">total</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span>
+  <span class="na">_avg</span><span class="p">:</span> <span class="p">{</span> <span class="na">total</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span>
+  <span class="na">_min</span><span class="p">:</span> <span class="p">{</span> <span class="na">total</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span>
+  <span class="na">_max</span><span class="p">:</span> <span class="p">{</span> <span class="na">total</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">({</span>
+  <span class="na">count</span><span class="p">:</span> <span class="nx">stats</span><span class="p">.</span><span class="nx">_count</span><span class="p">.</span><span class="nx">_all</span><span class="p">,</span>
+  <span class="na">total</span><span class="p">:</span> <span class="nx">stats</span><span class="p">.</span><span class="nx">_sum</span><span class="p">.</span><span class="nx">total</span><span class="p">,</span>
+  <span class="na">average</span><span class="p">:</span> <span class="nx">stats</span><span class="p">.</span><span class="nx">_avg</span><span class="p">.</span><span class="nx">total</span><span class="p">,</span>
+  <span class="na">min</span><span class="p">:</span> <span class="nx">stats</span><span class="p">.</span><span class="nx">_min</span><span class="p">.</span><span class="nx">total</span><span class="p">,</span>
+  <span class="na">max</span><span class="p">:</span> <span class="nx">stats</span><span class="p">.</span><span class="nx">_max</span><span class="p">.</span><span class="nx">total</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="group-by">Group By</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">ordersByUser</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">order</span><span class="p">.</span><span class="nf">groupBy</span><span class="p">({</span>
+  <span class="na">by</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">status</span><span class="dl">'</span><span class="p">],</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">total</span><span class="p">:</span> <span class="p">{</span> <span class="na">gte</span><span class="p">:</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">},</span>
+  <span class="na">orderBy</span><span class="p">:</span> <span class="p">{</span> <span class="na">status</span><span class="p">:</span> <span class="dl">'</span><span class="s1">asc</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="na">skip</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="na">take</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+  <span class="na">_count</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="na">_sum</span><span class="p">:</span> <span class="p">{</span> <span class="na">total</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="nested-relation-pagination">Nested Relation Pagination</h2>
+
+<p>Inside <code class="language-plaintext highlighter-rouge">include</code>, <code class="language-plaintext highlighter-rouge">skip</code> and <code class="language-plaintext highlighter-rouge">take</code> paginate the related rows <strong>per parent row</strong>:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">include</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">posts</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">orderBy</span><span class="p">:</span> <span class="p">{</span> <span class="na">createdAt</span><span class="p">:</span> <span class="dl">'</span><span class="s1">desc</span><span class="dl">'</span> <span class="p">},</span>
+      <span class="na">skip</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="na">take</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>    <span class="c1">// first 5 posts for each user</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="select-specific-fields">Select Specific Fields</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">select</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">id</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">email</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">_count</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="complex-query-example">Complex Query Example</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Find active users with published posts, ordered by join date</span>
+<span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">isActive</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="p">},</span>
+  <span class="na">include</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">posts</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">select</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">id</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="na">title</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="na">createdAt</span><span class="p">:</span> <span class="kc">true</span>
+      <span class="p">},</span>
+      <span class="na">orderBy</span><span class="p">:</span> <span class="p">{</span> <span class="na">createdAt</span><span class="p">:</span> <span class="dl">'</span><span class="s1">desc</span><span class="dl">'</span> <span class="p">},</span>
+      <span class="na">take</span><span class="p">:</span> <span class="mi">5</span>
+    <span class="p">},</span>
+    <span class="na">_count</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">},</span>
+  <span class="na">orderBy</span><span class="p">:</span> <span class="p">{</span> <span class="na">createdAt</span><span class="p">:</span> <span class="dl">'</span><span class="s1">desc</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="na">take</span><span class="p">:</span> <span class="mi">10</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="raw-sql-queries">Raw SQL Queries</h2>
+
+<p>For queries where you need direct SQL execution:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$queryRawUnsafe</span><span class="p">(</span>
+  <span class="s2">`SELECT u.*, COUNT(p.id) as post_count
+   FROM users u
+   LEFT JOIN posts p ON u.id = p.author_id
+   WHERE u.is_active = @p_0
+   GROUP BY u.id
+   HAVING COUNT(p.id) &gt; @p_1
+   ORDER BY post_count DESC`</span><span class="p">,</span>
+  <span class="mi">1</span><span class="p">,</span>
+  <span class="mi">5</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ul>
+  <li><a href="/an5/guides/relations/">Relations</a> - Model relationships &amp; nested writes</li>
+  <li><a href="/an5/guides/deployment/">Deployment</a> - Production configuration</li>
+</ul>

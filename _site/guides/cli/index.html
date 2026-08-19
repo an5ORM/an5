@@ -1,0 +1,290 @@
+<h1 id="cli-commands">CLI Commands</h1>
+
+<p><code class="language-plaintext highlighter-rouge">an5-cli</code> is a workspace/release automation tool for the monorepo. ORM and database operations are run as npm scripts from the <code class="language-plaintext highlighter-rouge">an5Orm/</code> repository (no standalone <code class="language-plaintext highlighter-rouge">an5</code> ORM CLI binary is shipped).</p>
+
+<p>Use <a href="/an5/guides/feature-status/">Feature Status</a> to see which commands are stable and which migration workflows are still evolving.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>The workspace/release CLI lives in the <code class="language-plaintext highlighter-rouge">an5Cli/</code> repository:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>an5Cli
+npm <span class="nb">install
+</span>npm run build
+</code></pre></div></div>
+
+<p>This exposes the <code class="language-plaintext highlighter-rouge">an5-cli</code> binary:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx an5-cli <span class="nt">--help</span>
+</code></pre></div></div>
+
+<p>ORM schema/database commands (generate, db:push, …) are npm scripts in <code class="language-plaintext highlighter-rouge">an5Orm/</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>an5Orm
+npm run &lt;<span class="nb">command</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<h2 id="schema-commands">Schema Commands</h2>
+
+<p>Run from the <code class="language-plaintext highlighter-rouge">an5Orm/</code> repository directory.</p>
+
+<h3 id="generate-client-code">Generate Client Code</h3>
+
+<p>Generate type-safe client code from your schema files.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Generate all clients (TypeScript, Python, .NET, Go)</span>
+npm run generate
+</code></pre></div></div>
+
+<p><strong>Output:</strong></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>an5Client/
+├── typescript/     # TypeScript interfaces and metadata
+├── python/         # Python dataclasses
+├── dotnet/         # .NET entity classes
+└── golang/         # Go structs and client
+</code></pre></div></div>
+
+<h3 id="push-schema-to-database">Push Schema to Database</h3>
+
+<p>Create or update database tables based on your schema.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Push schema to database</span>
+npm run db:push
+</code></pre></div></div>
+
+<p><strong>What it does:</strong></p>
+<ul>
+  <li>Compares schema with existing database</li>
+  <li>Creates new tables</li>
+  <li>Adds missing columns</li>
+  <li>Preserves existing data</li>
+</ul>
+
+<h3 id="pull-schema-from-database">Pull Schema from Database</h3>
+
+<p>Reverse-engineer schema from existing database.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Pull schema from database</span>
+npm run db:pull
+</code></pre></div></div>
+
+<p><strong>Output:</strong> Creates <code class="language-plaintext highlighter-rouge">.an5</code> files in <code class="language-plaintext highlighter-rouge">an5Schema/</code> directory.</p>
+
+<h3 id="seed-database">Seed Database</h3>
+
+<p>Populate database with sample data.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Run seed script</span>
+npm run db:seed
+</code></pre></div></div>
+
+<h3 id="migrations">Migrations</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Compare schema with database</span>
+npm run db:migrate diff
+
+<span class="c"># Generate migration SQL</span>
+npm run db:migrate:generate
+
+<span class="c"># Apply pending migration files and record them in _an5_migrations</span>
+npm run db:migrate:apply
+npm run db:migrate:apply <span class="nt">--</span> <span class="nt">--dry-run</span>
+
+<span class="c"># Roll back the latest applied migration with a -- migrate:down section</span>
+npm run db:migrate:rollback
+npm run db:migrate:rollback <span class="nt">--</span> <span class="nt">--dry-run</span>
+
+<span class="c"># Roll back multiple steps, or through a named applied file</span>
+npm run db:migrate:rollback <span class="nt">--</span> 3
+npm run db:migrate:rollback <span class="nt">--</span> <span class="nt">--to</span> 2026-08-11T10-00-00_migration.sql
+
+<span class="c"># Show migration status</span>
+npm run db:migrate:status
+</code></pre></div></div>
+
+<h2 id="development-commands">Development Commands</h2>
+
+<p>The development commands below are <strong>workspace-root</strong> scripts — run them from the
+monorepo root (where the root <code class="language-plaintext highlighter-rouge">package.json</code> lives), not from <code class="language-plaintext highlighter-rouge">an5Orm/</code>. Only the
+schema/database commands earlier in this page run inside <code class="language-plaintext highlighter-rouge">an5Orm/</code>.</p>
+
+<h3 id="build-all-packages">Build All Packages</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run build
+</code></pre></div></div>
+
+<h3 id="run-tests">Run Tests</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Run the full workspace test suite</span>
+npm <span class="nb">test</span>
+
+<span class="c"># Run a specific workspace package</span>
+npm run <span class="nb">test</span> <span class="nt">-w</span> an5Orm
+npm run <span class="nb">test</span> <span class="nt">-w</span> an5Agent
+</code></pre></div></div>
+
+<h3 id="start-local-ui">Start Local UI</h3>
+
+<p>Launch the local development UI.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Start UI on port 5070</span>
+npm run ui
+</code></pre></div></div>
+
+<p><strong>Features:</strong></p>
+<ul>
+  <li>Repository status dashboard</li>
+  <li>Git diff viewer</li>
+  <li>Build and test buttons</li>
+  <li>Commit and release workflow</li>
+  <li>LLM configuration</li>
+</ul>
+
+<h2 id="release-commands">Release Commands</h2>
+
+<h3 id="dry-run-release">Dry Run Release</h3>
+
+<p>Preview release changes without committing.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run dryrun
+</code></pre></div></div>
+
+<h3 id="release-workspace">Release Workspace</h3>
+
+<p>Compile, test, tag, commit, and push submodules.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run release
+</code></pre></div></div>
+
+<p>Or invoke the workspace automation CLI directly:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx an5-cli ws <span class="nb">.</span> <span class="nt">--push</span>
+</code></pre></div></div>
+
+<h2 id="an5-cli-commands">an5-cli Commands</h2>
+
+<h3 id="impact-analysis">Impact Analysis</h3>
+
+<p>Analyze cross-repo impact from changes.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx an5-cli impact <span class="o">[</span>repo]
+</code></pre></div></div>
+
+<h3 id="documentation">Documentation</h3>
+
+<p>Auto-update docs based on changed files.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx an5-cli doc:diff <span class="o">[</span>repo]
+</code></pre></div></div>
+
+<h3 id="format-schema-files">Format Schema Files</h3>
+
+<p>Auto-format <code class="language-plaintext highlighter-rouge">.an5</code> files.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx an5-cli format <span class="o">[</span>path]
+</code></pre></div></div>
+
+<h3 id="task-management">Task Management</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># List tasks</span>
+npx an5-cli tasks list
+
+<span class="c"># Update task</span>
+npx an5-cli tasks update
+
+<span class="c"># Delete task</span>
+npx an5-cli tasks delete
+</code></pre></div></div>
+
+<h2 id="environment-configuration">Environment Configuration</h2>
+
+<h3 id="interactive-setup">Interactive Setup</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx an5-cli config
+</code></pre></div></div>
+
+<h3 id="direct-configuration">Direct Configuration</h3>
+
+<p>Edit <code class="language-plaintext highlighter-rouge">.env</code> file:</p>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Database (required)
+</span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">sqlserver://localhost:1433;database=mydb;user=sa;password=yourpassword</span>
+<span class="w">
+</span><span class="c"># Optional
+</span><span class="py">LOG_LEVEL</span><span class="p">=</span><span class="s">info</span>
+</code></pre></div></div>
+
+<h3 id="llm-configuration">LLM Configuration</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Configure via CLI</span>
+npx an5-cli config
+
+<span class="c"># Or set environment variables</span>
+<span class="nb">export </span><span class="nv">LLM_PROVIDER</span><span class="o">=</span>openai
+<span class="nb">export </span><span class="nv">LLM_API_KEY</span><span class="o">=</span>sk-your-api-key
+<span class="nb">export </span><span class="nv">LLM_MODEL</span><span class="o">=</span>gpt-4o-mini
+</code></pre></div></div>
+
+<h2 id="common-workflows">Common Workflows</h2>
+
+<h3 id="new-project-setup">New Project Setup</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 1. Install package</span>
+npm <span class="nb">install</span> @an5/orm
+
+<span class="c"># 2. Configure database</span>
+<span class="c"># Create .env and set DATABASE_URL</span>
+
+<span class="c"># 3. Generate code (from the an5Orm/ repository)</span>
+npm run generate
+
+<span class="c"># 4. Push schema (from the an5Orm/ repository)</span>
+npm run db:push
+</code></pre></div></div>
+
+<h3 id="daily-development">Daily Development</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Pull latest changes</span>
+git pull
+
+<span class="c"># Build</span>
+npm run build
+
+<span class="c"># Run tests</span>
+npm <span class="nb">test</span>
+
+<span class="c"># Start UI</span>
+npm run ui
+</code></pre></div></div>
+
+<h3 id="release-process">Release Process</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 1. Dry run</span>
+npm run dryrun
+
+<span class="c"># 2. Release</span>
+npm run release
+</code></pre></div></div>
+
+<h3 id="auto-version-bump">Auto Version Bump</h3>
+
+<p>For maintainers publishing npm packages under the <code class="language-plaintext highlighter-rouge">@an5</code> organization:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Apply patch bumps based on latest npm versions</span>
+node scripts/auto-bump-version.js
+
+<span class="c"># Bump minor or major</span>
+node scripts/auto-bump-version.js minor
+node scripts/auto-bump-version.js major
+</code></pre></div></div>
+
+<p>The default package set is <code class="language-plaintext highlighter-rouge">@an5/adapters</code> and <code class="language-plaintext highlighter-rouge">@an5/orm</code>. The script also updates internal dependency ranges, for example <code class="language-plaintext highlighter-rouge">@an5/orm</code> depending on the new <code class="language-plaintext highlighter-rouge">@an5/adapters</code> version.</p>
+
+<h2 id="tips">Tips</h2>
+
+<ul>
+  <li>Use <code class="language-plaintext highlighter-rouge">npm run ui</code> for visual feedback during development</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">npx an5-cli format</code> to keep schema files consistent</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">npm run generate</code> (in the <code class="language-plaintext highlighter-rouge">an5Orm/</code> repo) instead of calling files under <code class="language-plaintext highlighter-rouge">node_modules/@an5/orm</code></li>
+  <li>Check <code class="language-plaintext highlighter-rouge">npm run dryrun</code> before releases</li>
+</ul>

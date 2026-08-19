@@ -1,0 +1,342 @@
+<h1 id="troubleshooting">Troubleshooting</h1>
+
+<p>Solutions to common issues with an5 ORM.</p>
+
+<h2 id="connection-issues">Connection Issues</h2>
+
+<h3 id="cannot-connect-to-database">Cannot Connect to Database</h3>
+
+<p><strong>Error:</strong> <code class="language-plaintext highlighter-rouge">Connection refused</code> or <code class="language-plaintext highlighter-rouge">ECONNREFUSED</code></p>
+
+<p><strong>Solution:</strong></p>
+<ol>
+  <li>Verify database server is running</li>
+  <li>Check connection string format</li>
+  <li>Ensure firewall allows connection</li>
+  <li>Verify credentials</li>
+</ol>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Correct format
+</span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">sqlserver://localhost:1433;database=mydb;user=sa;password=yourpassword</span>
+<span class="w">
+</span><span class="c"># With encryption (Azure SQL)
+</span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">sqlserver://server.database.windows.net:1433;database=mydb;user=admin;password=pass;encrypt=true</span>
+</code></pre></div></div>
+
+<h3 id="connection-timeout">Connection Timeout</h3>
+
+<p><strong>Error:</strong> <code class="language-plaintext highlighter-rouge">Connection acquire timeout</code></p>
+
+<p><strong>Solution:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
+  <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="o">!</span><span class="p">,</span>
+<span class="p">});</span>
+<span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$connect</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h3 id="too-many-connections">Too Many Connections</h3>
+
+<p><strong>Error:</strong> <code class="language-plaintext highlighter-rouge">Login failed for user</code> or connection limit reached</p>
+
+<p><strong>Solution:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
+  <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="o">!</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="schema-issues">Schema Issues</h2>
+
+<h3 id="table-already-exists">Table Already Exists</h3>
+
+<p><strong>Error:</strong> <code class="language-plaintext highlighter-rouge">Table already exists</code></p>
+
+<p><strong>Solution:</strong></p>
+<ul>
+  <li>Use <code class="language-plaintext highlighter-rouge">IF NOT EXISTS</code> in migrations</li>
+  <li>Check schema before creating</li>
+</ul>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">$executeRaw</span><span class="s2">`
+  CREATE TABLE IF NOT EXISTS users (
+    id NVARCHAR(1000) PRIMARY KEY,
+    email NVARCHAR(255) UNIQUE
+  )
+`</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="column-type-mismatch">Column Type Mismatch</h3>
+
+<p><strong>Error:</strong> <code class="language-plaintext highlighter-rouge">Invalid column type</code></p>
+
+<p><strong>Solution:</strong></p>
+<ul>
+  <li>Verify schema matches database</li>
+  <li>Use correct SQL Server types</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Schema Type</th>
+      <th>SQL Server</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">NVARCHAR(n)</code></td>
+      <td>nvarchar</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">INT</code></td>
+      <td>int</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">DATETIME2</code></td>
+      <td>datetime2</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">BIT</code></td>
+      <td>bit</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="unique-constraint-violation">Unique Constraint Violation</h3>
+
+<p><strong>Error:</strong> <code class="language-plaintext highlighter-rouge">Unique constraint violation</code></p>
+
+<p><strong>Solution:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Check if exists before creating</span>
+<span class="kd">const</span> <span class="nx">existing</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findUnique</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="k">if </span><span class="p">(</span><span class="nx">existing</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// Update instead</span>
+  <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span>
+    <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span> <span class="p">},</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John Updated</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="c1">// Create new</span>
+  <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="query-issues">Query Issues</h2>
+
+<h3 id="no-results-found">No Results Found</h3>
+
+<p><strong>Possible causes:</strong></p>
+<ul>
+  <li>Data doesn’t exist</li>
+  <li>Wrong filter conditions</li>
+  <li>Case sensitivity</li>
+</ul>
+
+<p><strong>Solution:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Debug: log the query</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Filter:</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span> <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span> <span class="p">}</span> <span class="p">});</span>
+
+<span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findFirst</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span> <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Result:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">user</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="type-errors">Type Errors</h3>
+
+<p><strong>Error:</strong> <code class="language-plaintext highlighter-rouge">Type 'string' is not assignable to type 'number'</code></p>
+
+<p><strong>Solution:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Ensure correct types</span>
+<span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">age</span><span class="p">:</span> <span class="nf">parseInt</span><span class="p">(</span><span class="dl">'</span><span class="s1">25</span><span class="dl">'</span><span class="p">)</span>  <span class="c1">// Convert string to number</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="relation-not-included">Relation Not Included</h3>
+
+<p><strong>Error:</strong> <code class="language-plaintext highlighter-rouge">Cannot read property of undefined</code></p>
+
+<p><strong>Solution:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Include the relation</span>
+<span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findUnique</span><span class="p">({</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">user-id</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="na">include</span><span class="p">:</span> <span class="p">{</span> <span class="na">posts</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>  <span class="c1">// Add this</span>
+<span class="p">});</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="nx">user</span><span class="p">.</span><span class="nx">posts</span><span class="p">);</span>  <span class="c1">// Now available</span>
+</code></pre></div></div>
+
+<h2 id="performance-issues">Performance Issues</h2>
+
+<h3 id="slow-queries">Slow Queries</h3>
+
+<p><strong>Solution:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
+  <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="o">!</span><span class="p">,</span>
+<span class="p">});</span>
+
+<span class="c1">// Add indexes</span>
+<span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$executeRaw</span><span class="p">(</span><span class="dl">'</span><span class="s1">CREATE INDEX idx_email ON users(email)</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="memory-leaks">Memory Leaks</h3>
+
+<p><strong>Solution:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">// Always disconnect when done</span>
+<span class="k">async</span> <span class="kd">function</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
+    <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="o">!</span><span class="p">,</span>
+  <span class="p">});</span>
+  <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$connect</span><span class="p">();</span>
+  
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="c1">// Use db</span>
+  <span class="p">}</span> <span class="k">finally</span> <span class="p">{</span>
+    <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$disconnect</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="n1-query-problem">N+1 Query Problem</h3>
+
+<p><strong>Solution:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Bad: N+1 queries</span>
+<span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">();</span>
+<span class="k">for </span><span class="p">(</span><span class="kd">const</span> <span class="nx">user</span> <span class="k">of</span> <span class="nx">users</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">user</span><span class="p">.</span><span class="nx">posts</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">post</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+    <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">authorId</span><span class="p">:</span> <span class="nx">user</span><span class="p">.</span><span class="nx">id</span> <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="c1">// Good: Include relations</span>
+<span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+  <span class="na">include</span><span class="p">:</span> <span class="p">{</span> <span class="na">posts</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="build-issues">Build Issues</h2>
+
+<h3 id="typescript-errors">TypeScript Errors</h3>
+
+<p><strong>Error:</strong> <code class="language-plaintext highlighter-rouge">Cannot find module '@an5/orm'</code></p>
+
+<p><strong>Solution:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install the published ORM package</span>
+npm <span class="nb">install</span> @an5/orm
+
+<span class="c"># Verify the package resolves</span>
+node <span class="nt">-e</span> <span class="s2">"require('@an5/orm')"</span>
+</code></pre></div></div>
+
+<h3 id="generation-fails">Generation Fails</h3>
+
+<p><strong>Error:</strong> <code class="language-plaintext highlighter-rouge">Schema parse error</code></p>
+
+<p><strong>Solution:</strong></p>
+<ol>
+  <li>Check <code class="language-plaintext highlighter-rouge">.an5</code> file syntax</li>
+  <li>Validate field types</li>
+  <li>Run format command</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx an5-cli format schema/
+npm run generate   <span class="c"># from an5Orm/</span>
+</code></pre></div></div>
+
+<h2 id="environment-issues">Environment Issues</h2>
+
+<h3 id="env-not-loading">.env Not Loading</h3>
+
+<p><strong>Solution:</strong></p>
+<ol>
+  <li>Ensure <code class="language-plaintext highlighter-rouge">.env</code> is in project root</li>
+  <li>Check file name (no spaces)</li>
+  <li>Restart application</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Verify file exists</span>
+<span class="nb">ls</span> <span class="nt">-la</span> .env
+
+<span class="c"># Check content</span>
+<span class="nb">cat</span> .env
+</code></pre></div></div>
+
+<h3 id="wrong-node-version">Wrong Node Version</h3>
+
+<p><strong>Error:</strong> <code class="language-plaintext highlighter-rouge">SyntaxError</code> or unexpected behavior</p>
+
+<p><strong>Solution:</strong></p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check version</span>
+node <span class="nt">--version</span>  <span class="c"># Should be 18+</span>
+
+<span class="c"># Use nvm</span>
+nvm use 24
+npm <span class="nb">install</span>
+</code></pre></div></div>
+
+<h2 id="debug-mode">Debug Mode</h2>
+
+<p>Enable debug logging:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Set debug level</span>
+<span class="nb">export </span><span class="nv">LOG_LEVEL</span><span class="o">=</span>debug
+
+<span class="c"># Or in .env</span>
+<span class="nv">LOG_LEVEL</span><span class="o">=</span>debug
+</code></pre></div></div>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Uses DATABASE_URL from the environment; set LOG_LEVEL=debug for verbose query logging</span>
+<span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">An5ORM</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h2 id="getting-help">Getting Help</h2>
+
+<ol>
+  <li><strong>Check logs</strong> - Enable debug logging</li>
+  <li><strong>Search issues</strong> - GitHub Issues</li>
+  <li><strong>Community</strong> - Discord/Slack</li>
+  <li><strong>Documentation</strong> - This site</li>
+</ol>
+
+<h2 id="known-error-codes">Known Error Codes</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Description</th>
+      <th>Solution</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>P2002</td>
+      <td>Unique constraint violation</td>
+      <td>Check for duplicate values</td>
+    </tr>
+    <tr>
+      <td>P2003</td>
+      <td>Foreign key constraint</td>
+      <td>Check related records</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>These are raised as <code class="language-plaintext highlighter-rouge">An5ClientKnownRequestError</code> from <code class="language-plaintext highlighter-rouge">@an5/orm</code>. Other failures
+surface as the underlying driver error (or a plain <code class="language-plaintext highlighter-rouge">Error</code> for records not found).</p>

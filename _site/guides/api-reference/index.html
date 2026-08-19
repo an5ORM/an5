@@ -1,0 +1,947 @@
+<p>layout: page
+title: API Reference
+description: Complete API reference for an5 ORM
+—</p>
+
+<h1 id="api-reference">API Reference</h1>
+
+<p>Complete API documentation for an5 ORM.</p>
+
+<h2 id="an5adapter-class-an5adapters">An5Adapter Class (<code class="language-plaintext highlighter-rouge">@an5/adapters</code>)</h2>
+
+<h3 id="factory--constructor">Factory / Constructor</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span><span class="p">,</span> <span class="nx">An5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
+  <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="o">!</span><span class="p">,</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="methods">Methods</h3>
+
+<p>| Method | Returns | Description |
+|——–|———|————-|
+| <code class="language-plaintext highlighter-rouge">$connect()</code> | <code class="language-plaintext highlighter-rouge">Promise&lt;void&gt;</code> | Establish connection to database |
+| <code class="language-plaintext highlighter-rouge">$disconnect()</code> | <code class="language-plaintext highlighter-rouge">Promise&lt;void&gt;</code> | Close database connection pool |
+| <code class="language-plaintext highlighter-rouge">table(name)</code> | <code class="language-plaintext highlighter-rouge">AdapterTableClient&lt;T&gt;</code> | Get table client instance (<code class="language-plaintext highlighter-rouge">db.table('User')</code>) |
+| <code class="language-plaintext highlighter-rouge">$transaction(fn, options?)</code> | <code class="language-plaintext highlighter-rouge">Promise&lt;T&gt;</code> | Execute callback-style transaction |
+{
+  where: { id: ‘string’ } | { uniqueField: ‘value’ }
+}</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+### findFirst
+
+```typescript
+db.model.findFirst(params: FindFirstArgs): Promise&lt;Model | null&gt;
+</code></pre></div></div>
+
+<p><strong>Params:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">where</span><span class="p">?:</span> <span class="nx">WhereInput</span><span class="p">,</span>
+  <span class="nx">orderBy</span><span class="p">?:</span> <span class="nx">OrderByInput</span><span class="p">,</span>
+  <span class="nx">include</span><span class="p">?:</span> <span class="nx">IncludeInput</span><span class="p">,</span>
+  <span class="nx">select</span><span class="p">?:</span> <span class="nx">SelectInput</span><span class="p">,</span>
+  <span class="nx">skip</span><span class="p">?:</span> <span class="kr">number</span><span class="p">,</span>
+  <span class="nx">take</span><span class="p">?:</span> <span class="kr">number</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="findmany">findMany</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nf">findMany</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="nx">FindManyArgs</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Model</span><span class="p">[]</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Params:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">where</span><span class="p">?:</span> <span class="nx">WhereInput</span><span class="p">,</span>
+  <span class="nx">orderBy</span><span class="p">?:</span> <span class="nx">OrderByInput</span> <span class="o">|</span> <span class="nx">OrderByInput</span><span class="p">[],</span>
+  <span class="nx">include</span><span class="p">?:</span> <span class="nx">IncludeInput</span><span class="p">,</span>
+  <span class="nx">select</span><span class="p">?:</span> <span class="nx">SelectInput</span><span class="p">,</span>
+  <span class="nx">skip</span><span class="p">?:</span> <span class="kr">number</span><span class="p">,</span>
+  <span class="nx">take</span><span class="p">?:</span> <span class="kr">number</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="create">create</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="nx">CreateArgs</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Model</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Params:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">data</span><span class="p">:</span> <span class="nx">CreateInput</span><span class="p">,</span>
+  <span class="nx">include</span><span class="p">?:</span> <span class="nx">IncludeInput</span><span class="p">,</span>
+  <span class="nx">select</span><span class="p">?:</span> <span class="nx">SelectInput</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="createmany">createMany</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nf">createMany</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="nx">CreateManyArgs</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">BatchPayload</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Params:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">data</span><span class="p">:</span> <span class="nx">CreateInput</span><span class="p">[],</span>
+  <span class="nx">skipDuplicates</span><span class="p">?:</span> <span class="nx">boolean</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="update">update</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nf">update</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="nx">UpdateArgs</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Model</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Params:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">where</span><span class="p">:</span> <span class="nx">WhereInput</span><span class="p">,</span>
+  <span class="nx">data</span><span class="p">:</span> <span class="nx">UpdateInput</span><span class="p">,</span>
+  <span class="nx">include</span><span class="p">?:</span> <span class="nx">IncludeInput</span><span class="p">,</span>
+  <span class="nx">select</span><span class="p">?:</span> <span class="nx">SelectInput</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="updatemany">updateMany</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nf">updateMany</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="nx">UpdateManyArgs</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">BatchPayload</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Params:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">where</span><span class="p">?:</span> <span class="nx">WhereInput</span><span class="p">,</span>
+  <span class="nx">data</span><span class="p">:</span> <span class="nx">UpdateInput</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="upsert">upsert</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nf">upsert</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="nx">UpsertArgs</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Model</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Params:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">where</span><span class="p">:</span> <span class="nx">WhereInput</span><span class="p">,</span>
+  <span class="nx">create</span><span class="p">:</span> <span class="nx">CreateInput</span><span class="p">,</span>
+  <span class="nx">update</span><span class="p">:</span> <span class="nx">UpdateInput</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="delete">delete</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="nx">DeleteArgs</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Model</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Params:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">where</span><span class="p">:</span> <span class="nx">WhereInput</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="deletemany">deleteMany</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nf">deleteMany</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="nx">DeleteManyArgs</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">BatchPayload</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Params:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">where</span><span class="p">?:</span> <span class="nx">WhereInput</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="count">count</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nf">count</span><span class="p">(</span><span class="nx">params</span><span class="p">?:</span> <span class="nx">CountArgs</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="kr">number</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<h3 id="aggregate">aggregate</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nf">aggregate</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="nx">AggregateArgs</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">AggregateResult</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Params:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">where</span><span class="p">?:</span> <span class="nx">WhereInput</span><span class="p">,</span>
+  <span class="nx">_count</span><span class="p">?:</span> <span class="nx">boolean</span><span class="p">,</span>
+  <span class="nx">_sum</span><span class="p">?:</span> <span class="p">{</span> <span class="na">field</span><span class="p">:</span> <span class="nx">boolean</span> <span class="p">},</span>
+  <span class="nx">_avg</span><span class="p">?:</span> <span class="p">{</span> <span class="na">field</span><span class="p">:</span> <span class="nx">boolean</span> <span class="p">},</span>
+  <span class="nx">_min</span><span class="p">?:</span> <span class="p">{</span> <span class="na">field</span><span class="p">:</span> <span class="nx">boolean</span> <span class="p">},</span>
+  <span class="nx">_max</span><span class="p">?:</span> <span class="p">{</span> <span class="na">field</span><span class="p">:</span> <span class="nx">boolean</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="groupby">groupBy</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nf">groupBy</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="nx">GroupByArgs</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">GroupByResult</span><span class="p">[]</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Params:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">by</span><span class="p">:</span> <span class="nx">ScalarFieldEnum</span> <span class="o">|</span> <span class="nx">ScalarFieldEnum</span><span class="p">[],</span>
+  <span class="nx">where</span><span class="p">?:</span> <span class="nx">WhereInput</span><span class="p">,</span>
+  <span class="nx">orderBy</span><span class="p">?:</span> <span class="nx">OrderByInput</span> <span class="o">|</span> <span class="nx">OrderByInput</span><span class="p">[],</span>
+  <span class="nx">skip</span><span class="p">?:</span> <span class="kr">number</span><span class="p">,</span>
+  <span class="nx">take</span><span class="p">?:</span> <span class="kr">number</span><span class="p">,</span>
+  <span class="nx">_count</span><span class="p">?:</span> <span class="kc">true</span> <span class="o">|</span> <span class="p">{</span> <span class="nx">_all</span><span class="p">?:</span> <span class="kc">true</span><span class="p">;</span> <span class="nl">field</span><span class="p">?:</span> <span class="kc">true</span> <span class="p">},</span>
+  <span class="nx">_sum</span><span class="p">?:</span> <span class="p">{</span> <span class="nx">numericField</span><span class="p">?:</span> <span class="kc">true</span> <span class="p">},</span>
+  <span class="nx">_avg</span><span class="p">?:</span> <span class="p">{</span> <span class="nx">numericField</span><span class="p">?:</span> <span class="kc">true</span> <span class="p">},</span>
+  <span class="nx">_min</span><span class="p">?:</span> <span class="p">{</span> <span class="nx">field</span><span class="p">?:</span> <span class="kc">true</span> <span class="p">},</span>
+  <span class="nx">_max</span><span class="p">?:</span> <span class="p">{</span> <span class="nx">field</span><span class="p">?:</span> <span class="kc">true</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="vectorsearch">vectorSearch</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">db</span><span class="p">.</span><span class="nx">model</span><span class="p">.</span><span class="nf">vectorSearch</span><span class="p">(</span><span class="nx">params</span><span class="p">:</span> <span class="nx">VectorSearchArgs</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">Model</span><span class="p">[]</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Params:</strong></p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">vector</span><span class="p">:</span> <span class="kr">number</span><span class="p">[],</span>
+  <span class="nx">vectorField</span><span class="p">?:</span> <span class="kr">string</span><span class="p">,</span>
+  <span class="nx">take</span><span class="p">?:</span> <span class="kr">number</span><span class="p">,</span>
+  <span class="nx">distanceMetric</span><span class="p">?:</span> <span class="dl">'</span><span class="s1">cosine</span><span class="dl">'</span> <span class="o">|</span> <span class="dl">'</span><span class="s1">euclidean</span><span class="dl">'</span> <span class="o">|</span> <span class="dl">'</span><span class="s1">dot</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">vectorElementType</span><span class="p">?:</span> <span class="dl">'</span><span class="s1">float32</span><span class="dl">'</span> <span class="o">|</span> <span class="dl">'</span><span class="s1">float16</span><span class="dl">'</span> <span class="o">|</span> <span class="dl">'</span><span class="s1">uint8</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">where</span><span class="p">?:</span> <span class="nx">WhereInput</span><span class="p">,</span>
+  <span class="nx">include</span><span class="p">?:</span> <span class="nx">IncludeInput</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Returns <code class="language-plaintext highlighter-rouge">(Model &amp; { distance: number })[]</code>. Native <code class="language-plaintext highlighter-rouge">VECTOR_DISTANCE</code> is used when
+supported by the SQL Server instance; otherwise a cosine-distance fallback runs
+in memory.</p>
+
+<h2 id="where-input">Where Input</h2>
+
+<h3 id="basic-operators">Basic Operators</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="c1">// Equality</span>
+  <span class="nl">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">value</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">status</span><span class="p">:</span> <span class="p">{</span> <span class="nl">equals</span><span class="p">:</span> <span class="dl">'</span><span class="s1">active</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="nx">deletedAt</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="nx">archivedAt</span><span class="p">:</span> <span class="p">{</span> <span class="nl">equals</span><span class="p">:</span> <span class="kc">null</span> <span class="p">},</span>
+  <span class="nx">role</span><span class="p">:</span> <span class="p">{</span> <span class="nl">not</span><span class="p">:</span> <span class="dl">'</span><span class="s1">banned</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="nx">email</span><span class="p">:</span> <span class="p">{</span> <span class="nl">not</span><span class="p">:</span> <span class="kc">null</span> <span class="p">},</span>
+  <span class="nx">name</span><span class="p">:</span> <span class="p">{</span> <span class="nl">not</span><span class="p">:</span> <span class="p">{</span> <span class="na">contains</span><span class="p">:</span> <span class="dl">'</span><span class="s1">legacy</span><span class="dl">'</span> <span class="p">}</span> <span class="p">},</span>
+  
+  <span class="c1">// Comparison</span>
+  <span class="nx">score</span><span class="p">:</span> <span class="p">{</span> <span class="nl">gt</span><span class="p">:</span> <span class="mi">10</span> <span class="p">},</span>
+  <span class="nx">age</span><span class="p">:</span> <span class="p">{</span> <span class="nl">gte</span><span class="p">:</span> <span class="mi">18</span> <span class="p">},</span>
+  <span class="nx">views</span><span class="p">:</span> <span class="p">{</span> <span class="nl">lt</span><span class="p">:</span> <span class="mi">1000</span> <span class="p">},</span>
+  <span class="nx">orderCount</span><span class="p">:</span> <span class="p">{</span> <span class="nl">lte</span><span class="p">:</span> <span class="mi">10</span> <span class="p">},</span>
+  
+  <span class="c1">// String</span>
+  <span class="nx">title</span><span class="p">:</span> <span class="p">{</span> <span class="nl">contains</span><span class="p">:</span> <span class="dl">'</span><span class="s1">text</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="nx">firstName</span><span class="p">:</span> <span class="p">{</span> <span class="nl">startsWith</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Jo</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="nx">lastName</span><span class="p">:</span> <span class="p">{</span> <span class="nl">endsWith</span><span class="p">:</span> <span class="dl">'</span><span class="s1">son</span><span class="dl">'</span> <span class="p">},</span>
+  
+  <span class="c1">// List</span>
+  <span class="nx">team</span><span class="p">:</span> <span class="p">{</span> <span class="nl">in</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">a</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">b</span><span class="dl">'</span><span class="p">]</span> <span class="p">},</span>
+  <span class="nx">tag</span><span class="p">:</span> <span class="p">{</span> <span class="nl">notIn</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">archived</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">deleted</span><span class="dl">'</span><span class="p">]</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="logical-operators">Logical Operators</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">AND</span><span class="p">:</span> <span class="p">[{</span> <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">value</span><span class="dl">'</span> <span class="p">},</span> <span class="p">{</span> <span class="na">field2</span><span class="p">:</span> <span class="dl">'</span><span class="s1">value</span><span class="dl">'</span> <span class="p">}],</span>
+  <span class="nx">OR</span><span class="p">:</span> <span class="p">[{</span> <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">value</span><span class="dl">'</span> <span class="p">},</span> <span class="p">{</span> <span class="na">field2</span><span class="p">:</span> <span class="dl">'</span><span class="s1">value</span><span class="dl">'</span> <span class="p">}],</span>
+  <span class="nx">NOT</span><span class="p">:</span> <span class="p">[{</span> <span class="na">field</span><span class="p">:</span> <span class="dl">'</span><span class="s1">value</span><span class="dl">'</span> <span class="p">},</span> <span class="p">{</span> <span class="na">field2</span><span class="p">:</span> <span class="p">{</span> <span class="na">startsWith</span><span class="p">:</span> <span class="dl">'</span><span class="s1">tmp</span><span class="dl">'</span> <span class="p">}</span> <span class="p">}]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">AND</code> and <code class="language-plaintext highlighter-rouge">NOT</code> accept either a single object or an array of objects.</p>
+
+<h3 id="relation-filters">Relation Filters</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">posts</span><span class="p">:</span> <span class="p">{</span> <span class="na">some</span><span class="p">:</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Hello</span><span class="dl">'</span> <span class="p">}</span> <span class="p">},</span>
+  <span class="nx">posts</span><span class="p">:</span> <span class="p">{</span> <span class="nl">none</span><span class="p">:</span> <span class="p">{}</span> <span class="p">},</span>
+  <span class="nx">posts</span><span class="p">:</span> <span class="p">{</span> <span class="nl">every</span><span class="p">:</span> <span class="p">{</span> <span class="na">published</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Empty relation filters are meaningful: <code class="language-plaintext highlighter-rouge">some: {}</code> checks that at least one
+related row exists, <code class="language-plaintext highlighter-rouge">none: {}</code> checks that no related rows exist, and
+<code class="language-plaintext highlighter-rouge">every: {}</code> is treated as true.</p>
+
+<h2 id="update-input">Update Input</h2>
+
+<p>Scalar fields accept direct replacement values. Numeric fields also accept
+field operations:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Updated</span><span class="dl">'</span><span class="p">,</span>
+  <span class="nx">score</span><span class="p">:</span> <span class="p">{</span> <span class="nl">increment</span><span class="p">:</span> <span class="mi">1</span> <span class="p">},</span>
+  <span class="nx">total</span><span class="p">:</span> <span class="p">{</span> <span class="nl">decrement</span><span class="p">:</span> <span class="mi">10</span> <span class="p">},</span>
+  <span class="nx">multiplier</span><span class="p">:</span> <span class="p">{</span> <span class="nl">multiply</span><span class="p">:</span> <span class="mi">2</span> <span class="p">},</span>
+  <span class="nx">ratio</span><span class="p">:</span> <span class="p">{</span> <span class="nl">divide</span><span class="p">:</span> <span class="mi">4</span> <span class="p">},</span>
+  <span class="nx">count</span><span class="p">:</span> <span class="p">{</span> <span class="nl">set</span><span class="p">:</span> <span class="mi">0</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Common nested writes are supported on relation fields:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">posts</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">create</span><span class="p">:</span> <span class="p">[{</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">New</span><span class="dl">'</span> <span class="p">}],</span>
+    <span class="na">connect</span><span class="p">:</span> <span class="p">[{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">post-1</span><span class="dl">'</span> <span class="p">}],</span>
+    <span class="na">set</span><span class="p">:</span> <span class="p">[{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">post-2</span><span class="dl">'</span> <span class="p">}],</span>
+    <span class="na">disconnect</span><span class="p">:</span> <span class="p">[{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">post-3</span><span class="dl">'</span> <span class="p">}],</span>
+    <span class="na">delete</span><span class="p">:</span> <span class="p">[{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">post-4</span><span class="dl">'</span> <span class="p">}],</span>
+    <span class="na">update</span><span class="p">:</span> <span class="p">[{</span> <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">post-5</span><span class="dl">'</span> <span class="p">},</span> <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Updated</span><span class="dl">'</span> <span class="p">}</span> <span class="p">}],</span>
+    <span class="na">upsert</span><span class="p">:</span> <span class="p">[{</span>
+      <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">post-6</span><span class="dl">'</span> <span class="p">},</span>
+      <span class="na">create</span><span class="p">:</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Created</span><span class="dl">'</span> <span class="p">},</span>
+      <span class="na">update</span><span class="p">:</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Updated</span><span class="dl">'</span> <span class="p">}</span>
+    <span class="p">}]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="include-input">Include Input</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="c1">// Simple include</span>
+  <span class="nl">posts</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  
+  <span class="c1">// With ordering / projection</span>
+  <span class="nx">posts</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">select</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span>
+    <span class="nx">orderBy</span><span class="p">:</span> <span class="p">{</span> <span class="nl">createdAt</span><span class="p">:</span> <span class="dl">'</span><span class="s1">desc</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">},</span>
+  
+  <span class="c1">// Nested</span>
+  <span class="nx">posts</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">include</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">comments</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="na">author</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  
+  <span class="c1">// Count</span>
+  <span class="nx">_count</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">select</span><span class="p">:</span> <span class="p">{</span> <span class="na">posts</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="select-input">Select Input</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">id</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">email</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">name</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">posts</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">select</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">id</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="na">title</span><span class="p">:</span> <span class="kc">true</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">_count</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Relation fields inside <code class="language-plaintext highlighter-rouge">select</code> behave as implicit includes. Helper keys needed
+to resolve selected relations are fetched internally and removed from the final
+projection when not explicitly selected.</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">orders</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">select</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nx">_count</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">select</span><span class="p">:</span> <span class="p">{</span> <span class="na">orders</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="order-by-input">Order By Input</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Single field</span>
+<span class="p">{</span> <span class="nl">createdAt</span><span class="p">:</span> <span class="dl">'</span><span class="s1">desc</span><span class="dl">'</span> <span class="p">}</span>
+
+<span class="c1">// Multiple fields</span>
+<span class="p">[</span>
+  <span class="p">{</span> <span class="na">role</span><span class="p">:</span> <span class="dl">'</span><span class="s1">asc</span><span class="dl">'</span> <span class="p">},</span>
+  <span class="p">{</span> <span class="na">createdAt</span><span class="p">:</span> <span class="dl">'</span><span class="s1">desc</span><span class="dl">'</span> <span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div></div>
+
+<p>For regular <code class="language-plaintext highlighter-rouge">find*</code> queries, only scalar columns are supported in <code class="language-plaintext highlighter-rouge">orderBy</code>.
+<code class="language-plaintext highlighter-rouge">groupBy</code> can also order grouped rows through its <code class="language-plaintext highlighter-rouge">orderBy</code> argument.</p>
+
+<h2 id="transaction">Transaction</h2>
+
+<h3 id="transaction-1">$transaction</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$transaction</span><span class="p">(</span><span class="k">async </span><span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// Operations using tx instead of db</span>
+  <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({...});</span>
+  <span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">order</span><span class="p">.</span><span class="nf">create</span><span class="p">({...});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">$transaction</code> is callback-based and automatically commits or rolls back.
+Calling <code class="language-plaintext highlighter-rouge">tx.$transaction()</code> inside an active transaction reuses the same
+transactional executor when the adapter does not provide native nested
+transactions.</p>
+
+<h3 id="interactive-transactions">Interactive Transactions</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">tx</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$begin</span><span class="p">();</span>
+
+<span class="k">try</span> <span class="p">{</span>
+  <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span> <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="nx">userId</span> <span class="p">},</span> <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">active</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span> <span class="p">});</span>
+  <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nf">$commit</span><span class="p">();</span>
+<span class="p">}</span> <span class="k">catch </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nf">$rollback</span><span class="p">();</span>
+  <span class="k">throw</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">$begin()</code> requires the underlying adapter or custom executor to expose
+interactive transaction support. Google Sheets does not support interactive
+transactions.</p>
+
+<h2 id="raw-queries">Raw Queries</h2>
+
+<h3 id="queryraw">$queryRaw</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Template tag</span>
+<span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">$queryRaw</span><span class="s2">`
+  SELECT * FROM users 
+  WHERE email LIKE </span><span class="p">${</span><span class="dl">'</span><span class="s1">%@example.com</span><span class="dl">'</span><span class="p">}</span><span class="s2">
+`</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="executeraw">$executeRaw</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">$executeRaw</span><span class="s2">`
+  UPDATE users SET active = 0 
+  WHERE last_login &lt; </span><span class="p">${</span><span class="nx">dateThreshold</span><span class="p">}</span><span class="s2">
+`</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="batch-payload">Batch Payload</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">count</span><span class="p">:</span> <span class="kr">number</span>  <span class="c1">// Number of affected rows</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="error-handling">Error Handling</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">An5ClientKnownRequestError</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/orm</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="k">try</span> <span class="p">{</span>
+  <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">}</span> <span class="k">catch </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">error</span> <span class="k">instanceof</span> <span class="nx">An5ClientKnownRequestError</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Code:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">error</span><span class="p">.</span><span class="nx">code</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Message:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="known-error-codes">Known Error Codes</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>P2002</td>
+      <td>Unique constraint violation</td>
+    </tr>
+    <tr>
+      <td>P2003</td>
+      <td>Foreign key constraint</td>
+    </tr>
+    <tr>
+      <td>P2025</td>
+      <td>Record not found</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Other failures surface as the underlying driver error.</p>
+
+<hr />
+
+<h2 id="an5adapters">@an5/adapters</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">@an5/adapters</code> package provides database and spreadsheet execution for the ORM
+and can also be used standalone. The full public API is exported from the package root.</p>
+
+<h3 id="factory-functions">Factory functions</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Function</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">createAn5Adapter(config)</code></td>
+      <td>Create an adapter from <code class="language-plaintext highlighter-rouge">An5AdapterConfig</code>. Detects the dialect from the config <code class="language-plaintext highlighter-rouge">type</code> or from a <code class="language-plaintext highlighter-rouge">connectionString</code> scheme (<code class="language-plaintext highlighter-rouge">sqlserver://</code>, <code class="language-plaintext highlighter-rouge">postgres://</code>, <code class="language-plaintext highlighter-rouge">mysql://</code>, <code class="language-plaintext highlighter-rouge">sqlite://</code>, <code class="language-plaintext highlighter-rouge">googlesheets://</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">createAn5SheetsAdapter(config)</code></td>
+      <td>Create a Google Sheets adapter from <code class="language-plaintext highlighter-rouge">An5SheetsAdapterConfig</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">parseSheetsConnectionString(url)</code></td>
+      <td>Parse a <code class="language-plaintext highlighter-rouge">googlesheets://</code> connection string into <code class="language-plaintext highlighter-rouge">An5SheetsAdapterConfig</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span>
+  <span class="nx">createAn5Adapter</span><span class="p">,</span>
+  <span class="nx">createAn5SheetsAdapter</span><span class="p">,</span>
+  <span class="nx">parseSheetsConnectionString</span><span class="p">,</span>
+<span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">// Dialect auto-detection from connection string</span>
+<span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
+  <span class="na">connectionString</span><span class="p">:</span> <span class="dl">'</span><span class="s1">googlesheets://spreadsheetId;clientEmail=...;privateKey=...</span><span class="dl">'</span><span class="p">,</span>
+<span class="p">});</span>
+
+<span class="c1">// Direct Sheets configuration</span>
+<span class="kd">const</span> <span class="nx">sheets</span> <span class="o">=</span> <span class="nf">createAn5SheetsAdapter</span><span class="p">({</span>
+  <span class="na">spreadsheetId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">spreadsheetId</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">clientEmail</span><span class="p">:</span> <span class="dl">'</span><span class="s1">sa@project.iam.gserviceaccount.com</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">privateKey</span><span class="p">:</span> <span class="dl">'</span><span class="s1">...</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">sheetMapping</span><span class="p">:</span> <span class="p">{</span> <span class="na">users</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Users</span><span class="dl">'</span> <span class="p">},</span>
+<span class="p">});</span>
+
+<span class="c1">// Parse a connection string</span>
+<span class="kd">const</span> <span class="nx">cfg</span> <span class="o">=</span> <span class="nf">parseSheetsConnectionString</span><span class="p">(</span><span class="dl">'</span><span class="s1">googlesheets://spreadsheetId;apiKey=...</span><span class="dl">'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="adapter-classes">Adapter classes</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Class</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">An5Adapter</code></td>
+      <td>Dialect-agnostic adapter (<code class="language-plaintext highlighter-rouge">exec</code>, <code class="language-plaintext highlighter-rouge">executeRaw</code>, <code class="language-plaintext highlighter-rouge">table</code>, <code class="language-plaintext highlighter-rouge">$transaction</code>, <code class="language-plaintext highlighter-rouge">$connect</code>, <code class="language-plaintext highlighter-rouge">$disconnect</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">An5SheetsAdapter</code></td>
+      <td>Spreadsheet adapter. Adds <code class="language-plaintext highlighter-rouge">readRange</code>, <code class="language-plaintext highlighter-rouge">writeRange</code>, <code class="language-plaintext highlighter-rouge">appendRange</code>, <code class="language-plaintext highlighter-rouge">listSheets</code>, <code class="language-plaintext highlighter-rouge">deleteSheet</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">SheetsTableClient&lt;T&gt;</code></td>
+      <td>Typed table client over a sheet (<code class="language-plaintext highlighter-rouge">findMany</code>, <code class="language-plaintext highlighter-rouge">findFirst</code>, <code class="language-plaintext highlighter-rouge">create</code>, <code class="language-plaintext highlighter-rouge">update</code>, <code class="language-plaintext highlighter-rouge">delete</code>, <code class="language-plaintext highlighter-rouge">clear</code>, <code class="language-plaintext highlighter-rouge">deleteAll</code>, …)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="config-functions">Config functions</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Function</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">getLlmConfig()</code> / <code class="language-plaintext highlighter-rouge">setLlmConfig(config)</code></td>
+      <td>Read/update the active LLM configuration</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">getEmbeddingConfig()</code> / <code class="language-plaintext highlighter-rouge">setEmbeddingConfig(config)</code></td>
+      <td>Read/update the active embedding configuration</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">resetAdapter()</code></td>
+      <td>Clear cached adapter/config state</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">setAdapterMetadata(metadata)</code></td>
+      <td>Pass schema metadata explicitly to the adapter</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="subpaths">Subpaths</h3>
+
+<p>The package also exposes scoped entry points:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Subpath</th>
+      <th>Contents</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@an5/adapters/browser</code></td>
+      <td>Browser-safe bundle (Sheets via fetch + metadata helpers, no SQL engines)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@an5/adapters/googlesheets</code></td>
+      <td>Google Sheets adapter only</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@an5/adapters/config</code></td>
+      <td><code class="language-plaintext highlighter-rouge">LlmConfigData</code> / <code class="language-plaintext highlighter-rouge">EmbeddingConfigData</code> types and helpers</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@an5/adapters/mssql</code></td>
+      <td>SQL Server engine</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@an5/adapters/postgres</code></td>
+      <td>PostgreSQL engine</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@an5/adapters/mysql</code></td>
+      <td>MySQL engine</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@an5/adapters/sqlite</code></td>
+      <td>SQLite engine</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@an5/adapters/base</code></td>
+      <td>Base types and metadata helpers</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@an5/adapters/python</code></td>
+      <td>Packaged Python adapter facade source</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@an5/adapters/dotnet</code></td>
+      <td>Packaged .NET adapter facade source</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">@an5/adapters/golang</code></td>
+      <td>Packaged Go adapter facade source</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="sheets-config-an5sheetsadapterconfig">Sheets config (<code class="language-plaintext highlighter-rouge">An5SheetsAdapterConfig</code>)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">spreadsheetId</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>Google Sheets spreadsheet id</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">clientEmail?</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>OAuth service-account email (use with <code class="language-plaintext highlighter-rouge">privateKey</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">privateKey?</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>Service-account private key</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">credentials?</code></td>
+      <td><code class="language-plaintext highlighter-rouge">object</code></td>
+      <td>Alternative: full service-account JSON credentials</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">accessToken?</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>OAuth access token (browser mode)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">apiKey?</code></td>
+      <td><code class="language-plaintext highlighter-rouge">string</code></td>
+      <td>Google API key (browser mode)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">sheetMapping?</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Record&lt;string, string&gt;</code></td>
+      <td>Model → sheet name mapping (defaults to model name)</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="an5agent-class">An5Agent Class</h2>
+
+<h3 id="constructor">Constructor</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">An5Agent</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/agent</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">agent</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">An5Agent</span><span class="p">(</span><span class="nx">tools</span><span class="p">?:</span> <span class="nx">Tool</span><span class="p">[]);</span>
+</code></pre></div></div>
+
+<p>Registers the 7 default tools unless overridden; custom tools can be appended.</p>
+
+<h3 id="methods-1">Methods</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Returns</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">process(context)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Promise&lt;AgentResponse&gt;</code></td>
+      <td>Process <code class="language-plaintext highlighter-rouge">AgentContext</code> (<code class="language-plaintext highlighter-rouge">{ userQuestion, database?, toolContext? }</code>)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">executeTool(name, input, context?)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Promise&lt;unknown&gt;</code></td>
+      <td>Execute a specific tool</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">getTools()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Tool[]</code></td>
+      <td>Get all registered tools</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">getTool(name)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Tool \| undefined</code></td>
+      <td>Get tool by name</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">addTool(tool)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">void</code></td>
+      <td>Register a new tool</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="tools-7-consolidated">Tools (7 consolidated)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tool</th>
+      <th>Actions</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">schema</code></td>
+      <td>list, describe, relations</td>
+      <td>Explore data models</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">query</code></td>
+      <td>generate, explain, validate</td>
+      <td>Work with SQL queries</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">database</code></td>
+      <td>execute, describe, health</td>
+      <td>Database operations</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">generateClientCode</code></td>
+      <td>-</td>
+      <td>Generate client code</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">analyzeSchema</code></td>
+      <td>-</td>
+      <td>Analyze schema issues</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">retrieve</code></td>
+      <td>schema, queries</td>
+      <td>Semantic search</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">task</code></td>
+      <td>create, list, update, delete</td>
+      <td>Manage tasks</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>For detailed tool documentation, see <a href="/an5/guides/agent-tools/">AI Agent Tools</a>.</p>
+
+<hr />
+
+<h2 id="cli-commands">CLI Commands</h2>
+
+<p>Schema/database commands run as npm scripts from the <code class="language-plaintext highlighter-rouge">an5Orm/</code> repository directory (no standalone <code class="language-plaintext highlighter-rouge">an5</code> CLI binary is shipped).</p>
+
+<h2 id="browser-adapters-api-an5adaptersbrowser">Browser Adapters API (<code class="language-plaintext highlighter-rouge">@an5/adapters/browser</code>)</h2>
+
+<p>The <code class="language-plaintext highlighter-rouge">@an5/adapters/browser</code> entrypoint provides zero-dependency browser-safe database adapters for Web Browsers, WASM, and Client Components.</p>
+
+<h3 id="createbrowsersqliteadapter"><code class="language-plaintext highlighter-rouge">createBrowserSqliteAdapter</code></h3>
+
+<p>Creates a type-safe AN5 ORM adapter for in-browser SQLite execution drivers (such as <code class="language-plaintext highlighter-rouge">sql.js</code>, WASM, OPFS, or Capacitor/Expo SQLite).</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createBrowserSqliteAdapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters/browser</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">adapter</span> <span class="o">=</span> <span class="nf">createBrowserSqliteAdapter</span><span class="p">({</span>
+  <span class="na">driver</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">exec</span><span class="p">:</span> <span class="p">(</span><span class="na">sql</span><span class="p">:</span> <span class="kr">string</span><span class="p">,</span> <span class="nx">params</span><span class="p">?:</span> <span class="kr">any</span><span class="p">[])</span> <span class="o">=&gt;</span> <span class="nx">rows</span>
+  <span class="p">},</span>
+  <span class="na">dialect</span><span class="p">:</span> <span class="dl">'</span><span class="s1">sqlite</span><span class="dl">'</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="an5sheetsadapter--createan5sheetsadapter"><code class="language-plaintext highlighter-rouge">An5SheetsAdapter</code> / <code class="language-plaintext highlighter-rouge">createAn5SheetsAdapter</code></h3>
+
+<p>Creates a browser-safe Google Sheets database adapter.</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5SheetsAdapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters/browser</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">sheetsDb</span> <span class="o">=</span> <span class="nf">createAn5SheetsAdapter</span><span class="p">({</span>
+  <span class="na">spreadsheetId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">YOUR_SHEET_ID</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">accessToken</span><span class="p">:</span> <span class="dl">'</span><span class="s1">YOUR_OAUTH_TOKEN</span><span class="dl">'</span> <span class="c1">// or apiKey: 'YOUR_API_KEY'</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<hr />
+
+<h3 id="schema-management">Schema Management</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run generate</code></td>
+      <td>Generate client code from schema</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run db:push</code></td>
+      <td>Push schema to database</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run db:pull</code></td>
+      <td>Pull schema from database</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run db:seed</code></td>
+      <td>Seed database with sample data</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate diff</code></td>
+      <td>Compare schema with database</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate:generate</code></td>
+      <td>Generate migration SQL</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate:apply</code></td>
+      <td>Apply pending migration files; pass <code class="language-plaintext highlighter-rouge">-- --dry-run</code> to preview SQL</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate:rollback</code></td>
+      <td>Roll back the latest applied migration; pass <code class="language-plaintext highlighter-rouge">-- --dry-run</code>, <code class="language-plaintext highlighter-rouge">-- 3</code>, or <code class="language-plaintext highlighter-rouge">-- --to &lt;file&gt;</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate:status</code></td>
+      <td>Show migration status</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="development">Development</h3>
+
+<p>The following are workspace-root scripts (run from the repository root, not from <code class="language-plaintext highlighter-rouge">an5Orm/</code>):</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Where</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run build</code></td>
+      <td>workspace root</td>
+      <td>Build all workspace packages</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm test</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code> or workspace root</td>
+      <td>Run tests (an5Orm) or the full workspace suite</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run test:full</code></td>
+      <td>workspace root</td>
+      <td>Run workspace tests plus generator, package smoke, and Python/.NET/Go compile gates</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run test:integration:live</code></td>
+      <td>workspace root</td>
+      <td>Run live adapter Postgres/SQL Server checks plus ORM SQL Server relation/transaction/vector fallback checks when database URLs are configured</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run ui</code></td>
+      <td>workspace root</td>
+      <td>Start local UI</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="release">Release</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run dryrun</code></td>
+      <td>Preview release changes</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">npm run release</code></td>
+      <td>Release across the workspace</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>For more CLI commands, see <a href="/an5/guides/cli/">CLI Commands</a>.</p>

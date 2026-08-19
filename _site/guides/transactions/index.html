@@ -1,0 +1,177 @@
+<h1 id="transactions">Transactions</h1>
+
+<p>an5 ORM supports transactions to ensure data consistency when performing multiple related operations.</p>
+
+<h2 id="basic-transaction">Basic Transaction</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$transaction</span><span class="p">(</span><span class="k">async </span><span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// All operations succeed or all fail</span>
+  <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">});</span>
+  
+  <span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">order</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">userId</span><span class="p">:</span> <span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+      <span class="na">total</span><span class="p">:</span> <span class="mi">100</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+  
+  <span class="c1">// If any error occurs, all changes are rolled back</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="transaction-with-rollback">Transaction with Rollback</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span> <span class="p">{</span>
+  <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$transaction</span><span class="p">(</span><span class="k">async </span><span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+      <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John</span><span class="dl">'</span> <span class="p">}</span>
+    <span class="p">});</span>
+    
+    <span class="c1">// This will fail if email already exists</span>
+    <span class="kd">const</span> <span class="nx">duplicate</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+      <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Another John</span><span class="dl">'</span> <span class="p">}</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="p">}</span> <span class="k">catch </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Transaction rolled back:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">error</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="nested-transactions">Nested Transactions</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$transaction</span><span class="p">(</span><span class="k">async </span><span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// Outer transaction</span>
+  <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="p">});</span>
+  
+  <span class="c1">// Inner transaction (uses the same connection)</span>
+  <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nf">$transaction</span><span class="p">(</span><span class="k">async </span><span class="p">(</span><span class="nx">innerTx</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">innerTx</span><span class="p">.</span><span class="nx">order</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+      <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">userId</span><span class="p">:</span> <span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="na">total</span><span class="p">:</span> <span class="mi">100</span> <span class="p">}</span>
+    <span class="p">});</span>
+    
+    <span class="k">await</span> <span class="nx">innerTx</span><span class="p">.</span><span class="nx">inventory</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span>
+      <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">productId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">product-1</span><span class="dl">'</span> <span class="p">},</span>
+      <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">quantity</span><span class="p">:</span> <span class="p">{</span> <span class="na">decrement</span><span class="p">:</span> <span class="mi">1</span> <span class="p">}</span> <span class="p">}</span>
+    <span class="p">});</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="interactive-transactions">Interactive Transactions</h2>
+
+<p>Use <code class="language-plaintext highlighter-rouge">$begin()</code> when you need explicit control over the transaction lifetime.
+The returned <code class="language-plaintext highlighter-rouge">tx</code> client uses the same model API as <code class="language-plaintext highlighter-rouge">db</code>.</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">tx</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$begin</span><span class="p">();</span>
+
+<span class="k">try</span> <span class="p">{</span>
+  <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span>
+    <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="nx">senderId</span> <span class="p">},</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">balance</span><span class="p">:</span> <span class="p">{</span> <span class="na">decrement</span><span class="p">:</span> <span class="nx">amount</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="p">});</span>
+
+  <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span>
+    <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="nx">receiverId</span> <span class="p">},</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">balance</span><span class="p">:</span> <span class="p">{</span> <span class="na">increment</span><span class="p">:</span> <span class="nx">amount</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="p">});</span>
+
+  <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nf">$commit</span><span class="p">();</span>
+<span class="p">}</span> <span class="k">catch </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nf">$rollback</span><span class="p">();</span>
+  <span class="k">throw</span> <span class="nx">error</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Interactive transaction clients are single-use: after <code class="language-plaintext highlighter-rouge">tx.$commit()</code> or
+<code class="language-plaintext highlighter-rouge">tx.$rollback()</code>, use a new <code class="language-plaintext highlighter-rouge">db.$begin()</code> call for the next transaction.</p>
+
+<h2 id="common-use-cases">Common Use Cases</h2>
+
+<h3 id="transfer-funds">Transfer Funds</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$transaction</span><span class="p">(</span><span class="k">async </span><span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// Debit sender</span>
+  <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span>
+    <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="nx">senderId</span> <span class="p">},</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">balance</span><span class="p">:</span> <span class="p">{</span> <span class="na">decrement</span><span class="p">:</span> <span class="nx">amount</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="p">});</span>
+  
+  <span class="c1">// Credit receiver</span>
+  <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">account</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span>
+    <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="nx">receiverId</span> <span class="p">},</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">balance</span><span class="p">:</span> <span class="p">{</span> <span class="na">increment</span><span class="p">:</span> <span class="nx">amount</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="p">});</span>
+  
+  <span class="c1">// Create transaction record</span>
+  <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">transaction</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">fromId</span><span class="p">:</span> <span class="nx">senderId</span><span class="p">,</span>
+      <span class="na">toId</span><span class="p">:</span> <span class="nx">receiverId</span><span class="p">,</span>
+      <span class="nx">amount</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="order-with-inventory">Order with Inventory</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$transaction</span><span class="p">(</span><span class="k">async </span><span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// Check inventory</span>
+  <span class="kd">const</span> <span class="nx">product</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">product</span><span class="p">.</span><span class="nf">findUnique</span><span class="p">({</span>
+    <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="nx">productId</span> <span class="p">}</span>
+  <span class="p">});</span>
+  
+  <span class="k">if </span><span class="p">(</span><span class="nx">product</span><span class="p">.</span><span class="nx">quantity</span> <span class="o">&lt;</span> <span class="nx">quantity</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nc">Error</span><span class="p">(</span><span class="dl">'</span><span class="s1">Insufficient inventory</span><span class="dl">'</span><span class="p">);</span>
+  <span class="p">}</span>
+  
+  <span class="c1">// Create order</span>
+  <span class="kd">const</span> <span class="nx">order</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">order</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nx">userId</span><span class="p">,</span>
+      <span class="na">items</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">create</span><span class="p">:</span> <span class="p">[{</span> <span class="nx">productId</span><span class="p">,</span> <span class="nx">quantity</span><span class="p">,</span> <span class="na">price</span><span class="p">:</span> <span class="nx">product</span><span class="p">.</span><span class="nx">price</span> <span class="p">}]</span>
+      <span class="p">},</span>
+      <span class="na">total</span><span class="p">:</span> <span class="nx">product</span><span class="p">.</span><span class="nx">price</span> <span class="o">*</span> <span class="nx">quantity</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+  
+  <span class="c1">// Update inventory</span>
+  <span class="k">await</span> <span class="nx">tx</span><span class="p">.</span><span class="nx">product</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span>
+    <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="nx">productId</span> <span class="p">},</span>
+    <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">quantity</span><span class="p">:</span> <span class="p">{</span> <span class="na">decrement</span><span class="p">:</span> <span class="nx">quantity</span> <span class="p">}</span> <span class="p">}</span>
+  <span class="p">});</span>
+  
+  <span class="k">return</span> <span class="nx">order</span><span class="p">;</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="transaction-options">Transaction Options</h2>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$transaction</span><span class="p">(</span><span class="k">async </span><span class="p">(</span><span class="nx">tx</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// Operations here</span>
+<span class="p">},</span> <span class="p">{</span>
+  <span class="na">timeout</span><span class="p">:</span> <span class="mi">10000</span>  <span class="c1">// Maximum time for transaction to complete (ms)</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="best-practices">Best Practices</h2>
+
+<ol>
+  <li><strong>Keep transactions short</strong> - Minimize the time the database is locked</li>
+  <li><strong>Handle errors properly</strong> - Always catch and handle transaction errors</li>
+  <li><strong>Use appropriate isolation levels</strong> - For concurrent scenarios</li>
+  <li><strong>Avoid deadlocks</strong> - Access resources in a consistent order</li>
+  <li><strong>Prefer <code class="language-plaintext highlighter-rouge">$transaction</code> for scoped work</strong> - Use <code class="language-plaintext highlighter-rouge">$begin()</code> only when manual lifetime control is needed</li>
+</ol>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<ul>
+  <li><a href="/an5/guides/vector-search/">Vector Search</a> - AI-powered search</li>
+  <li><a href="/an5/guides/queries/">Raw Queries</a> - Execute raw SQL</li>
+</ul>

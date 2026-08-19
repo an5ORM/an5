@@ -1,0 +1,336 @@
+<h1 id="architecture">Architecture</h1>
+
+<p>Multi-repository monorepo providing a SQL Server schema-driven development platform with multi-language code generation, provider-based runtime adapters, and AI-powered agent assistance.</p>
+
+<h2 id="system-overview">System Overview</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>an5Schema/     an5OrmVScode/     an5Cli/
+(schema src)     (editor tooling)    (automation)
+      │                                  │
+      ▼                                  ▼
+an5Orm/ ──► an5Client/ ──(optional metadata)──► an5Adapters/ ◄── an5Agent/ ◄── an5Tasks/
+(generator)   (generated)              (runtimes)          (AI tools)       (Genkit flows)
+</code></pre></div></div>
+
+<blockquote>
+  <p>The ORM owns its metadata locally (generated <code class="language-plaintext highlighter-rouge">an5Metadata.ts</code>) and never imports from
+the generated client. The client is generated <em>from</em> the ORM, and adapters receive
+metadata only when it is passed explicitly.</p>
+</blockquote>
+
+<h2 id="repository-roles">Repository Roles</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Repository</th>
+      <th>Role</th>
+      <th>Key Capabilities</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>an5Adapters</strong></td>
+      <td>Runtime Execution Engine &amp; Query Builder</td>
+      <td>Provider-based SQL (MSSQL, Postgres, MySQL, SQLite) and Google Sheets execution, Query Builder (<code class="language-plaintext highlighter-rouge">parseWhere</code>, <code class="language-plaintext highlighter-rouge">buildOrderBy</code>, <code class="language-plaintext highlighter-rouge">quote</code>), <code class="language-plaintext highlighter-rouge">executorFromAdapter</code> bridge, connection pooling, and multi-language sources (TS, Python, .NET, Go).</td>
+    </tr>
+    <tr>
+      <td><strong>an5Orm</strong></td>
+      <td>Schema, Generator &amp; Migrations</td>
+      <td>Schema parser, multi-language code generator (<code class="language-plaintext highlighter-rouge">generator/</code>), database introspection (<code class="language-plaintext highlighter-rouge">pull.ts</code>), schema drift &amp; migrations (<code class="language-plaintext highlighter-rouge">migrate.ts</code>, <code class="language-plaintext highlighter-rouge">migration-core.ts</code>), schema push (<code class="language-plaintext highlighter-rouge">push.ts</code>), and generic seeder runner (<code class="language-plaintext highlighter-rouge">seed.ts</code>).</td>
+    </tr>
+    <tr>
+      <td><strong>an5Client</strong></td>
+      <td>Generated Artifacts</td>
+      <td>TypeScript model interfaces + metadata, Python dataclasses + metadata, .NET entity classes, Go structs/client</td>
+    </tr>
+    <tr>
+      <td><strong>an5Agent</strong></td>
+      <td>AI Agent Library</td>
+      <td>7 schema-driven tools: schema, query, database, codegen, retrieve, task, analyzeSchema</td>
+    </tr>
+    <tr>
+      <td><strong>an5Cli</strong></td>
+      <td>Workspace Automation &amp; Release</td>
+      <td>Workspace release (<code class="language-plaintext highlighter-rouge">ws</code>), changelog generation, LLM-powered commits, local management UI</td>
+    </tr>
+    <tr>
+      <td><strong>an5OrmVScode</strong></td>
+      <td>Editor Extension</td>
+      <td>Syntax highlighting, formatter, snippets for <code class="language-plaintext highlighter-rouge">.an5</code> files</td>
+    </tr>
+    <tr>
+      <td><strong>an5Schema</strong></td>
+      <td>Schema Source</td>
+      <td>Sample <code class="language-plaintext highlighter-rouge">.an5</code> model definitions</td>
+    </tr>
+    <tr>
+      <td><strong>an5Tasks</strong></td>
+      <td>Task Manager</td>
+      <td>Genkit v1.39 flows, LLM review parsing, task CRUD, tools for agent integration</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="data-flow">Data Flow</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Developer writes .an5 ──► an5Orm/generator ──► an5Client/ (TS/Python/C#/Go)
+                                                          v
+                                               an5Adapters/ (optional metadata injection)
+                                                          │
+                                                          v
+                                               an5Agent/ (7 consolidated tools)
+                                                          │
+                                               an5Cli/ (orchestrate all repos)
+</code></pre></div></div>
+
+<h2 id="cross-repo-connections">Cross-Repo Connections</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Source</th>
+      <th>Target</th>
+      <th>Mechanism</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Agent</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Adapters</code></td>
+      <td>Dynamic <code class="language-plaintext highlighter-rouge">require()</code> via relative path</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Agent</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Tasks</code></td>
+      <td>Dynamic <code class="language-plaintext highlighter-rouge">require()</code> — bridges Genkit tools into agent Tool interface</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Agent</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Client</code></td>
+      <td>Metadata file read for model info</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Agent</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Schema</code></td>
+      <td>Directory scan for <code class="language-plaintext highlighter-rouge">.an5</code> files</td>
+    </tr>
+    <tr>
+      <td>generated clients</td>
+      <td><code class="language-plaintext highlighter-rouge">an5Adapters</code></td>
+      <td>Optional metadata injection for model/table mapping</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Orm</code></td>
+      <td>own <code class="language-plaintext highlighter-rouge">an5Metadata.ts</code></td>
+      <td>Local metadata require — the core never imports the generated client (the client is generated <em>from</em> the ORM)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Orm</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Adapters</code></td>
+      <td><code class="language-plaintext highlighter-rouge">An5Adapter</code> (constructed directly from the <code class="language-plaintext highlighter-rouge">DATABASE_URL</code>-derived config) for DB operations</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Orm/generator</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Client/*</code></td>
+      <td><strong>Writes</strong> generated files</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Orm/generator</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Schema/</code></td>
+      <td><strong>Reads</strong> .an5 definitions</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Cli</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Tasks</code></td>
+      <td>Dynamic <code class="language-plaintext highlighter-rouge">require()</code> for task operations</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="agent-tools-architecture-7-consolidated">Agent Tools Architecture (7 Consolidated)</h2>
+
+<h3 id="schema-1-tool-with-3-actions">Schema (1 tool with 3 actions)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tool</th>
+      <th>Actions</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">schema</code></td>
+      <td>list, describe, relations</td>
+      <td>Explore data models</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="query-1-tool-with-3-actions">Query (1 tool with 3 actions)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tool</th>
+      <th>Actions</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">query</code></td>
+      <td>generate, explain, validate</td>
+      <td>Work with SQL queries</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="database-1-tool-with-3-actions">Database (1 tool with 3 actions)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tool</th>
+      <th>Actions</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">database</code></td>
+      <td>execute, describe, health</td>
+      <td>Database operations</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="code-generation-2-tools">Code Generation (2 tools)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tool</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">generateClientCode</code></td>
+      <td>Generate TS/Python/.NET/Go client code</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">analyzeSchema</code></td>
+      <td>Analyze schema for design issues</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="rag-1-tool-with-2-actions">RAG (1 tool with 2 actions)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tool</th>
+      <th>Actions</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">retrieve</code></td>
+      <td>schema, queries</td>
+      <td>Semantic search</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="task-management-1-tool-with-4-actions">Task Management (1 tool with 4 actions)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tool</th>
+      <th>Actions</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">task</code></td>
+      <td>create, list, update, delete</td>
+      <td>Manage tasks</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="genkit-bridge-task-tool">Genkit Bridge (Task Tool)</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>an5Tasks/src/index.ts                    an5Agent/src/tools/task-tools.ts
+┌─────────────────────────────┐            ┌──────────────────────────────────┐
+│ ai.defineTool('createTask') │ ◄──require── │ loadTasksModule()               │
+│ ai.defineTool('listTasks')  │            │ task.execute() calls mod         │
+│ ai.defineTool('updateTask') │            │ action param routes to method    │
+│ ai.defineTool('deleteTask') │            │                                  │
+└─────────────────────────────┘            └──────────────────────────────────┘
+         ▲                                                  │
+         │ Genkit v1.39                                     │ Tool interface
+         │                                                  ▼
+         │                                   an5Agent an5Agent class
+         │                                     .addTool(task)
+         │                                     .executeTool('task', {action:'create'})
+</code></pre></div></div>
+
+<h2 id="llm-integration">LLM Integration</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Provider</th>
+      <th>Env Variable</th>
+      <th>Default Model</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>OpenAI</td>
+      <td><code class="language-plaintext highlighter-rouge">OPENAI_API_KEY</code> / <code class="language-plaintext highlighter-rouge">LLM_API_KEY</code></td>
+      <td><code class="language-plaintext highlighter-rouge">gpt-4o-mini</code></td>
+    </tr>
+    <tr>
+      <td>Gemini</td>
+      <td><code class="language-plaintext highlighter-rouge">GEMINI_API_KEY</code> / <code class="language-plaintext highlighter-rouge">LLM_API_KEY</code></td>
+      <td><code class="language-plaintext highlighter-rouge">gemini-2.5-flash</code></td>
+    </tr>
+    <tr>
+      <td>Custom</td>
+      <td><code class="language-plaintext highlighter-rouge">LLM_ENDPOINT</code></td>
+      <td><code class="language-plaintext highlighter-rouge">llama3</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>At runtime the active LLM/embedding config can be read and updated through the
+<code class="language-plaintext highlighter-rouge">@an5/adapters</code> config API (<code class="language-plaintext highlighter-rouge">getLlmConfig</code>/<code class="language-plaintext highlighter-rouge">setLlmConfig</code>,
+<code class="language-plaintext highlighter-rouge">getEmbeddingConfig</code>/<code class="language-plaintext highlighter-rouge">setEmbeddingConfig</code>).</p>
+
+<h2 id="technology-stack">Technology Stack</h2>
+
+<ul>
+  <li><strong>Runtime</strong>: Node.js 18+</li>
+  <li><strong>Language</strong>: TypeScript</li>
+  <li><strong>Database</strong>: SQL Server (primary), PostgreSQL, MySQL, SQLite</li>
+  <li><strong>AI Framework</strong>: Google Genkit v1.39</li>
+  <li><strong>Build Tool</strong>: npm workspaces</li>
+  <li><strong>Testing</strong>: Node built-in test runner (<code class="language-plaintext highlighter-rouge">node test/*.test.js</code>)</li>
+  <li><strong>Documentation</strong>: Jekyll (GitHub Pages)</li>
+</ul>
+
+<h2 id="related">Related</h2>
+
+<ul>
+  <li><a href="../guides/getting-started/">Getting Started</a> - Quick start guide</li>
+  <li><a href="../packages/an5Orm/">Package Documentation</a> - Explore individual packages</li>
+</ul>

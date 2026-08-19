@@ -1,0 +1,215 @@
+<h1 id="deployment">Deployment</h1>
+
+<p>Deploy an5 applications to various production environments.</p>
+
+<h2 id="production-checklist">Production Checklist</h2>
+
+<p>Before deploying:</p>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Set <code class="language-plaintext highlighter-rouge">DATABASE_URL</code> environment variable</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Configure connection pooling</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Enable HTTPS / encryption for database connections</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Set appropriate log level</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Configure backup strategy</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Test with production-like data</li>
+</ul>
+
+<h2 id="environment-setup">Environment Setup</h2>
+
+<h3 id="environment-variables">Environment Variables</h3>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Production database
+</span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">sqlserver://your-server.database.windows.net:1433;database=proddb;user=admin;password=secure-password;encrypt=true</span>
+<span class="w">
+</span><span class="c"># Logging
+</span><span class="py">LOG_LEVEL</span><span class="p">=</span><span class="s">warn</span>
+<span class="w">
+</span><span class="c"># Disable debug features
+</span><span class="py">NODE_ENV</span><span class="p">=</span><span class="s">production</span>
+</code></pre></div></div>
+
+<p>For spreadsheet-backed apps, point <code class="language-plaintext highlighter-rouge">DATABASE_URL</code> at a <code class="language-plaintext highlighter-rouge">googlesheets://</code> connection string:</p>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">googlesheets://spreadsheetId;clientEmail=sa@project.iam.gserviceaccount.com;privateKey=url-encoded-key;sheetMapping=users:Users,orders:Orders</span>
+</code></pre></div></div>
+
+<h3 id="connection-setup">Connection Setup</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="c1">// Uses DATABASE_URL from the environment</span>
+<span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
+  <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="o">!</span><span class="p">,</span>
+<span class="p">});</span>
+<span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$connect</span><span class="p">();</span>
+</code></pre></div></div>
+
+<h2 id="deployment-options">Deployment Options</h2>
+
+<h3 id="azure-app-service">Azure App Service</h3>
+
+<ol>
+  <li><strong>Create App Service</strong>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>az webapp create <span class="nt">--resource-group</span> myRG <span class="nt">--plan</span> myPlan <span class="nt">--name</span> myApp
+</code></pre></div>    </div>
+  </li>
+  <li><strong>Configure Settings</strong>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>az webapp config appsettings <span class="nb">set</span> <span class="se">\</span>
+  <span class="nt">--resource-group</span> myRG <span class="se">\</span>
+  <span class="nt">--name</span> myApp <span class="se">\</span>
+  <span class="nt">--settings</span> <span class="nv">DATABASE_URL</span><span class="o">=</span><span class="s2">"sqlserver://..."</span>
+</code></pre></div>    </div>
+  </li>
+  <li><strong>Deploy</strong>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push azure main
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="aws-elastic-beanstalk">AWS Elastic Beanstalk</h3>
+
+<ol>
+  <li><strong>Initialize</strong>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eb init <span class="nt">-p</span> node.js my-app
+</code></pre></div>    </div>
+  </li>
+  <li><strong>Create Environment</strong>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eb create production
+</code></pre></div>    </div>
+  </li>
+  <li><strong>Set Environment Variables</strong>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eb setenv <span class="nv">DATABASE_URL</span><span class="o">=</span><span class="s2">"sqlserver://..."</span>
+</code></pre></div>    </div>
+  </li>
+  <li><strong>Deploy</strong>
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eb deploy
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="docker">Docker</h3>
+
+<p><strong>Dockerfile:</strong></p>
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> node:24-alpine</span>
+
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+
+<span class="k">COPY</span><span class="s"> package*.json ./</span>
+<span class="k">RUN </span>npm ci <span class="nt">--only</span><span class="o">=</span>production
+
+<span class="k">COPY</span><span class="s"> . .</span>
+<span class="k">RUN </span>npm run build
+
+<span class="k">EXPOSE</span><span class="s"> 3000</span>
+
+<span class="k">CMD</span><span class="s"> ["node", "dist/index.js"]</span>
+</code></pre></div></div>
+
+<p><strong>docker-compose.yml:</strong></p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">3.8'</span>
+<span class="na">services</span><span class="pi">:</span>
+  <span class="na">app</span><span class="pi">:</span>
+    <span class="na">build</span><span class="pi">:</span> <span class="s">.</span>
+    <span class="na">ports</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s2">"</span><span class="s">3000:3000"</span>
+    <span class="na">environment</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">DATABASE_URL=sqlserver://db:1433;database=mydb;user=sa;password=yourpassword</span>
+    <span class="na">depends_on</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">db</span>
+
+  <span class="na">db</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">mcr.microsoft.com/mssql/server:2022-latest</span>
+    <span class="na">environment</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">ACCEPT_EULA=Y</span>
+      <span class="pi">-</span> <span class="s">SA_PASSWORD=yourpassword</span>
+    <span class="na">volumes</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">mssql-data:/var/opt/mssql</span>
+
+<span class="na">volumes</span><span class="pi">:</span>
+  <span class="na">mssql-data</span><span class="pi">:</span>
+</code></pre></div></div>
+
+<h3 id="kubernetes">Kubernetes</h3>
+
+<p><strong>deployment.yaml:</strong></p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">name</span><span class="pi">:</span> <span class="s">my-app</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">replicas</span><span class="pi">:</span> <span class="m">3</span>
+  <span class="na">selector</span><span class="pi">:</span>
+    <span class="na">matchLabels</span><span class="pi">:</span>
+      <span class="na">app</span><span class="pi">:</span> <span class="s">my-app</span>
+  <span class="na">template</span><span class="pi">:</span>
+    <span class="na">metadata</span><span class="pi">:</span>
+      <span class="na">labels</span><span class="pi">:</span>
+        <span class="na">app</span><span class="pi">:</span> <span class="s">my-app</span>
+    <span class="na">spec</span><span class="pi">:</span>
+      <span class="na">containers</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">my-app</span>
+        <span class="na">image</span><span class="pi">:</span> <span class="s">my-app:latest</span>
+        <span class="na">ports</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">3000</span>
+        <span class="na">env</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">DATABASE_URL</span>
+          <span class="na">valueFrom</span><span class="pi">:</span>
+            <span class="na">secretKeyRef</span><span class="pi">:</span>
+              <span class="na">name</span><span class="pi">:</span> <span class="s">db-secret</span>
+              <span class="na">key</span><span class="pi">:</span> <span class="s">url</span>
+</code></pre></div></div>
+
+<h2 id="database-migrations">Database Migrations</h2>
+
+<p>The migration commands support schema/database comparison, SQL generation, dry-run SQL previews, pending-file apply tracking, latest-migration rollback, multi-step rollback, and rollback through a named applied file.</p>
+
+<h3 id="push-schema">Push Schema</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run db:push   <span class="c"># from an5Orm/</span>
+npm run db:migrate:apply
+npm run db:migrate:rollback
+</code></pre></div></div>
+
+<h3 id="pull-schema-introspection">Pull Schema (Introspection)</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run db:pull   <span class="c"># from an5Orm/</span>
+</code></pre></div></div>
+
+<h2 id="monitoring--health-checks">Monitoring &amp; Health Checks</h2>
+
+<h3 id="health-check-endpoint">Health Check Endpoint</h3>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">app</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/health</span><span class="dl">'</span><span class="p">,</span> <span class="k">async </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">try</span> <span class="p">{</span>
+    <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$queryRawUnsafe</span><span class="p">(</span><span class="dl">'</span><span class="s1">SELECT 1</span><span class="dl">'</span><span class="p">);</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nf">json</span><span class="p">({</span> <span class="na">status</span><span class="p">:</span> <span class="dl">'</span><span class="s1">healthy</span><span class="dl">'</span> <span class="p">});</span>
+  <span class="p">}</span> <span class="k">catch </span><span class="p">(</span><span class="na">error</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nf">status</span><span class="p">(</span><span class="mi">503</span><span class="p">).</span><span class="nf">json</span><span class="p">({</span> <span class="na">status</span><span class="p">:</span> <span class="dl">'</span><span class="s1">unhealthy</span><span class="dl">'</span><span class="p">,</span> <span class="na">error</span><span class="p">:</span> <span class="nx">error</span><span class="p">.</span><span class="nx">message</span> <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h2 id="security">Security</h2>
+
+<h3 id="connection-security">Connection Security</h3>
+
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Use encrypted connection
+</span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">sqlserver://server:1433;database=db;encrypt=true;trustServerCertificate=false</span>
+</code></pre></div></div>
+
+<h3 id="environment-variables-1">Environment Variables</h3>
+
+<ul>
+  <li>Never hardcode credentials</li>
+  <li>Use secret management (Azure Key Vault, AWS Secrets Manager)</li>
+  <li>Rotate credentials regularly</li>
+</ul>
+
+<h3 id="network-security">Network Security</h3>
+
+<ul>
+  <li>Use VNet/VPC for database access</li>
+  <li>Restrict IP whitelist</li>
+  <li>Use private endpoints</li>
+</ul>
