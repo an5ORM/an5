@@ -27,7 +27,7 @@ PyPI does not use npm-style scopes like `@an5/orm`. The Python package names are
 | Proxy model client | Implemented | `db.user.findMany()`, `db.user.create()`, dynamic model access |
 | CRUD operations | Implemented | `findMany`, `findFirst`, `findUnique`, `count`, `create`, `createMany`, `update`, `updateMany`, `delete`, `deleteMany`, `upsert` |
 | Query filters | Implemented | Equality, null, `in`, `notIn`, string filters, comparison filters, nested `not`, `AND`, `OR`, `NOT`, and aggregate `having` filters for `groupBy` |
-| Relations | Implemented, evolving | Relation includes with nested `where`/`orderBy` and per-parent `skip`/`take`, relation `some`/`none`/`every`, multi-level relation selects, `_count`, and common nested writes exist; deeper DB integration coverage is still expanding |
+| Relations | Implemented | Relation includes with nested `where`/`orderBy` and per-parent `skip`/`take`, relation filters (`some`/`none`/`every` for to-many, `is`/`isNot` for to-one) via `EXISTS`/`NOT EXISTS` subqueries, multi-level relation selects, `_count`, and common nested writes exist; deeper DB integration coverage is still expanding |
 | Transactions | Implemented | `$transaction` with automatic commit/rollback, nested callback reuse, and interactive `$begin()` / `tx.$commit()` / `tx.$rollback()` for supported adapters |
 | Raw SQL | Implemented | `$queryRaw`, `$queryRawUnsafe`, `$executeRaw`, `$executeRawUnsafe` |
 | Vector search | Implemented, environment-dependent | SQL Server vector support when available, in-memory fallback for development |
@@ -77,6 +77,19 @@ The `@an5/adapters` package exposes the full public API from the package root (`
 | .NET (C#) | Implemented | Entity classes, config, `An5DbContext` with complete CRUD (`Count`, `CreateMany`, `UpdateMany`, `DeleteMany`, `Upsert`, `ExecuteRaw`, `QueryRaw`); `npm run test:dotnet -w an5Client` compile-checks generated sources |
 | Golang | Implemented | Go structs with tags (`models.go`), generic `TableClient[T]` and `An5DbContext` (`client.go`); `npm run test:go -w an5Client` compile-checks generated sources |
 
+## Example Repository
+
+The [`an5example`](https://github.com/an5ORM/an5example) repository demonstrates the whole ecosystem with a single schema:
+
+| Area | Covers |
+|------|--------|
+| Shared CRUD suite | Dialect-parameterized `crud-suite.js` exercised on SQLite, the browser (sql.js), and live databases via `AN5_DATABASE_URL` |
+| Browser support | In-memory `sql.js` CRUD suite plus an esbuild bundle check that `@an5/adapters/browser` has no Node built-ins |
+| Generated clients | Runnable examples for TypeScript (SQLite), Go (SQLite via `modernc.org/sqlite`), .NET (SQL Server), and Python (postgres/mssql) |
+| Verification | `npm test` runs the full offline matrix (`test:suite`, `test:browser`, `test:example:ts`, `test:go`, `test:dotnet`, `test:example:dotnet`, `test:python`) |
+
+See the [Examples]({{ '/guides/examples/' | relative_url }}) guide for how to run it.
+
 ## AI Agent
 
 | Tool | Actions | Status |
@@ -107,7 +120,7 @@ The default auto-bump package set is `@an5/adapters` and `@an5/orm`. The script 
 | PyPI organization | PyPI orgs are managed through PyPI web UI, not CLI | Create `an5` organization manually and add package owner/manager |
 | PyPI upload | Build artifacts are ready, credentials are not configured | Set `TWINE_USERNAME=__token__` and `TWINE_PASSWORD=<pypi-token>`, then run `python -m twine upload dist-py/*` |
 | Migration workflow | Diff/generate/apply/rollback tracking exists for SQL files; dry-run previews and generated preflight checks are available for risky column changes, required additive columns, field-level unique constraints, new unique columns, and compound unique constraints; mapped index/unique artifact names, index include/filter/options metadata, and default `dbo.` schema table names are normalized during diff/status; stale an5-managed indexes/unique constraints are surfaced as commented drops; generated rollback covers additive operations and column type/nullability reversal | Add live generated migration apply/rollback scenarios for mapped and advanced index metadata |
-| Test coverage | Smoke/unit/compile/package-smoke tests exist; unit coverage includes generated diff SQL for mapped advanced index metadata; live DB integration covers adapter Postgres/SQL Server CRUD/filter/update/groupBy/transaction/vector fallback plus ORM SQL Server nested relation/select/include/count/aggregate/groupBy/transaction/vector fallback and migration apply/rollback flows in CI | Add broader live generated migration apply/rollback scenarios |
+| Test coverage | Smoke/unit/compile/package-smoke tests exist; `an5example` adds a shared multi-dialect CRUD + relations suite (SQLite + sql.js browser + live `AN5_DATABASE_URL` harness) and per-language example checks (Go build/vet, .NET compile, Python import); unit coverage includes generated diff SQL for mapped advanced index metadata; live DB integration covers adapter Postgres/SQL Server CRUD/filter/update/groupBy/transaction/vector fallback plus ORM SQL Server nested relation/select/include/count/aggregate/groupBy/transaction/vector fallback and migration apply/rollback flows in CI | Add broader live generated migration apply/rollback scenarios |
 | Relation edge cases | Common relation flows, multi-level relation selects, and nested writes exist, deeper live-DB combinations need more verification | Add broader relation integration tests and examples |
 | Package build pipeline | Published packages include build artifacts and language sources; `npm run test:full` runs cross-language compile/package-smoke gates, and CI also runs containerized live DB integration | Extend publish gates if live DB checks are desired before release |
 

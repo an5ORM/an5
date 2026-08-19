@@ -112,6 +112,11 @@ const users = await db.user.findMany({
 
 ### Relation Filters
 
+To-many filters (`some`, `none`, `every`) work on one-to-many / many-to-many
+relations; to-one filters (`is`, `isNot`) work on one-to-one / many-to-one
+relations. Both compile to `EXISTS` / `NOT EXISTS` subqueries so they work
+across SQL Server, PostgreSQL, MySQL, and SQLite.
+
 ```typescript
 // Find users with at least one published post
 const users = await db.user.findMany({
@@ -136,6 +141,24 @@ const users = await db.user.findMany({
   where: {
     posts: {
       every: { published: true }
+    }
+  }
+});
+
+// To-one: posts whose author is active
+const posts = await db.post.findMany({
+  where: {
+    author: {
+      is: { isActive: true }
+    }
+  }
+});
+
+// To-one: posts without an author in the moderators group
+const posts = await db.post.findMany({
+  where: {
+    author: {
+      isNot: { role: 'moderator' }
     }
   }
 });

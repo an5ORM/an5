@@ -12,6 +12,7 @@ permalink: pretty
 header_pages:
   - index.md
   - guides/getting-started.md
+  - guides/examples.md
   - guides/feature-status.md
   - guides/schema.md
   - guides/crud.md
