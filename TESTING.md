@@ -13,8 +13,8 @@ This document describes how to run tests for each repository in the MSSQL ORM ec
 
 ```bash
 # Clone workspace with submodules
-git clone --recurse-submodules https://github.com/an5/An5.git
-cd mssql
+git clone --recurse-submodules https://github.com/an5ORM/an5.git
+cd an5
 git submodule update --init --recursive
 
 # Build required repos
@@ -107,10 +107,10 @@ cd an5Schema && npm test && cd ..
 **Test files:**
 | File | Description |
 |------|-------------|
-| `test/smoke.test.js` | 10 smoke tests: instantiation, tools, NL processing, mock queries |
+| `test/smoke.test.js` | Smoke tests: instantiation, 7 consolidated tools, NL processing, mock queries |
 
 **What is tested:**
-- Agent instantiation with 10+ tools
+- Agent instantiation with 7 tools
 - `listModels` — returns schema models
 - `describeModel` — returns model fields
 - `generateQuery` — generates SQL from description
@@ -173,7 +173,7 @@ cd an5Schema && npm test && cd ..
 ## 7. an5Schema
 
 **Location:** `an5Schema/`
-**Language:** `.mssql` schema files
+**Language:** `.an5` schema files
 **Test command:** `npm test`
 **Test files:**
 | File | Description |
@@ -181,7 +181,7 @@ cd an5Schema && npm test && cd ..
 | `test/validate.test.js` | Schema file format and syntax validation |
 
 **What is tested:**
-- `.mssql` file discovery and content validation
+- `.an5` file discovery and content validation
 - Model declaration syntax (`model Name { ... }`)
 - Field type validation (all SQL Server types)
 - Attribute validation (`@id`, `@default()`, `@unique`, `@relation`)
@@ -192,7 +192,36 @@ cd an5Schema && npm test && cd ..
 
 ---
 
-## 8. an5Tasks
+## 8. an5example
+
+**Location:** `an5example/`
+**Languages:** TypeScript, Python, C# (.NET 8 SDK), Go
+**Test command:** `npm test` (builds first, then runs the full offline matrix)
+**Test files:**
+| File | Description |
+|------|-------------|
+| `test/crud.sqlite.test.js` | Shared CRUD + relations suite on SQLite |
+| `test/crud.browser.test.js` | CRUD + relations suite on sql.js (browser, in-memory) |
+| `test/browser-bundle.test.js` | esbuild bundle check: `@an5/adapters/browser` has no Node built-ins |
+| `test/go-example-build.js` | Go client build + vet |
+| `test/dotnet-compile-check.js` | .NET compile check (needs `dotnet` SDK; live example skips without SQL Server) |
+| `examples/python/crud.py` | Python client import/CRUD smoke (live parts need `AN5_DATABASE_URL`) |
+
+**What is tested:**
+- `test:suite` — SQLite CRUD + relations integration
+- `test:browser` — sql.js CRUD + relations integration and bundle check
+- `test:example:ts` — runnable TypeScript (SQLite) example
+- `test:go` — Go client build + vet
+- `test:dotnet` / `test:example:dotnet` — .NET compile (live run skips without SQL Server)
+- `test:python` — Python client import check, full CRUD when `AN5_DATABASE_URL` is set
+
+npm `test:python` scripts accept either `python` or `python3` (tries `python` first).
+
+**Run:** `cd an5example && npm test`
+
+---
+
+## 9. an5Tasks
 
 **Location:** `an5Tasks/`
 **Language:** TypeScript
@@ -217,23 +246,14 @@ cd an5Schema && npm test && cd ..
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `DATABASE_URL` | For DB tests | SQL Server connection string |
+| `AN5_DATABASE_URL` | For example live tests | Postgres/SQL Server connection string for `an5example` live suites |
 | `LLM_PROVIDER` | For LLM tests | `openai`, `gemini`, or `custom` |
 | `LLM_API_KEY` | For LLM tests | API key for LLM provider |
 
-Unit and smoke tests run **without** any environment variables.
+Unit, smoke, browser (sql.js), SQLite, and compile-check tests run **without** any environment variables. Only live-DB suites need a connection string.
 
 ## CI Integration
 
-All repos have `.github/workflows/` for GitHub Actions (where configured):
-
-- **an5Orm**: CI release workflow
-- **an5Agent**: (pending)
-- **an5Cli**: (pending)
-
-To set up CI for a repo, run:
-```bash
-cd <repo>
-mkdir -p .github/workflows
-```
-
-Then configure the workflow to run `npm test` on push/PR.
+Root workflows (`.github/workflows/`): `ci.yml`, `pages.yml` (GitHub Pages deploy), `publish.yml`.
+Per-repo release workflows (`.github/workflows/ci-release.yml`): `an5Orm`, `an5Client`, `an5Adapters`, `an5OrmVScode`.
+No dedicated workflows yet for `an5Agent`, `an5Cli`, `an5Schema`, `an5Tasks`, `an5example` — run their tests locally via `npm test`.
