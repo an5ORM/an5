@@ -11,19 +11,6 @@ an5Schema/     an5OrmVScode/     an5Cli/
       ▼                                  ▼
 an5Orm/ ──► an5Client/ ──metadata──► an5Adapters/ ◄── an5Agent/ ◄── an5Tasks/
 (generator)   (generated)              (runtimes)          (AI tools)       (Genkit flows)
-# MSSQL ORM Ecosystem — Architecture
-
-## Overview
-
-Multi-repository monorepo providing a SQL Server schema-driven development platform with multi-language code generation, provider-based runtime adapters, and AI-powered agent assistance.
-
-```
-an5Schema/     an5OrmVScode/     an5Cli/
-(schema src)     (editor tooling)    (automation)
-      │                                  │
-      ▼                                  ▼
-an5Orm/ ──► an5Client/ ──metadata──► an5Adapters/ ◄── an5Agent/ ◄── an5Tasks/
-(generator)   (generated)              (runtimes)          (AI tools)       (Genkit flows)
 ```
 
 ## Repository Roles

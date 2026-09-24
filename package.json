@@ -32,8 +32,8 @@
     "release":      "node an5Cli/dist/index.js ws . --push",
     "dryrun":       "node an5Cli/dist/index.js ws . --dry-run",
     "ui":           "node an5Cli/dist/index.js ui .",
-    "docs":         "C:\\Ruby33-x64\\bin\\jekyll.bat serve --source docs --livereload",
-    "docs:build":   "C:\\Ruby33-x64\\bin\\jekyll.bat build --source docs"
+    "docs": "jekyll serve --source docs --livereload",
+    "docs:build": "jekyll build --source docs"
   },
   "devDependencies": {
     "typescript": "^7.0.2"

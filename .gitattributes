@@ -1,0 +1,12 @@
+# Enforce LF line endings to avoid CRLF-dirty working tree on Windows checkouts
+* text=auto eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.vsix binary
+*.woff binary
+*.woff2 binary
