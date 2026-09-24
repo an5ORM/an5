@@ -125,6 +125,21 @@ await db.user.delete({ where: { id: user.id } });
 await db.$disconnect();
 ```
 
+> **Type-safe usage (recommended for app code):** bind generated model
+> delegates so `db.user` gets autocomplete and checked arguments:
+> ```typescript
+> import { createAn5Adapter } from "@an5/adapters";
+> import type { UserTableClient } from "./an5Client/typescript/User";
+>
+> const db = createAn5Adapter<{ user: UserTableClient }>({
+>   connectionString: process.env.DATABASE_URL!,
+> });
+> // db.user.findMany({ where: { email: { contains: "@example.com" } } })
+> ```
+> The dynamic form above (`db.user`, untyped) is handy for scripts and infra;
+> generated delegates (`an5Client/`) are the standard ORM path. `db.table("User")`
+> is the escape hatch for model names known only at runtime.
+
 **Python (via `an5-adapters`)**
 
 ```python
