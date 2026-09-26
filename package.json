@@ -2,7 +2,7 @@
   "name": "an5-workspace",
   "version": "1.0.0",
   "private": true,
-  "description": "AN5 ORM monorepo workspace — lightweight, type-safe ORM for TypeScript, Python, .NET, and Go",
+  "description": "AN5 ORM monorepo workspace — lightweight, type-safe ORM for TypeScript, Python, .NET, Go, and Rust",
   "author": "an5ORM",
   "homepage": "https://an5orm.github.io",
   "repository": {
@@ -26,7 +26,7 @@
   "scripts": {
     "build":        "npm run build -w an5Adapters && npm run build -w an5Client && npm run build --workspaces --if-present",
     "test":         "npm run build -w an5Adapters && npm run build -w an5Client && npm run test --workspaces --if-present",
-    "test:full":    "npm run build && npm test && npm run test:generator -w an5Orm && npm run test:package:smoke -w an5Adapters && npm run test:package:smoke -w an5Client && npm run test:python -w an5Adapters && npm run test:dotnet -w an5Adapters && npm run test:go -w an5Adapters && npm run test:python -w an5Client && npm run test:dotnet -w an5Client && npm run test:go -w an5Client",
+    "test:full":    "npm run build && npm test && npm run test:generator -w an5Orm && npm run test:package:smoke -w an5Adapters && npm run test:package:smoke -w an5Client && npm run test:python -w an5Adapters && npm run test:dotnet -w an5Adapters && npm run test:go -w an5Adapters && npm run test:rust -w an5Adapters && npm run test:python -w an5Client && npm run test:dotnet -w an5Client && npm run test:go -w an5Client && npm run test:rust -w an5Client",
     "test:integration:live": "npm run test:integration:live -w an5Adapters && npm run test:integration:live -w an5Orm",
     "sync":         "git submodule update --init --recursive && git submodule foreach \"git checkout main || true\"",
     "generate":     "npm run generate -w an5Orm",

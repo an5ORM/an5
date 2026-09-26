@@ -50,6 +50,14 @@ module.exports = {
       /** Output directory for generated Golang files */
       outputDir: 'an5Client/golang',
     },
+
+    /**
+     * Rust output configuration
+     */
+    rust: {
+      /** Output directory for generated Rust crate (Cargo.toml + src/) */
+      outputDir: 'an5Client/rust',
+    },
   },
 
   /**

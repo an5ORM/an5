@@ -16,10 +16,10 @@
 
 ## Features
 
-| Feature                    | Description                                                                                  |
-| -------------------------- | -------------------------------------------------------------------------------------------- |
-| **Multi-Database Runtime** | Native support for MSSQL, PostgreSQL, MySQL, SQLite, and Google Sheets via `@an5/adapters`   |
-| **Type-Safe Queries**      | Full TypeScript, Python, .NET, and Golang support with autocompletion and type checking      |
+| Feature                    | Description                                                                                                |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Multi-Database Runtime** | Native support for MSSQL, PostgreSQL, MySQL, SQLite, and Google Sheets via `@an5/adapters`                 |
+| **Type-Safe Queries**      | Full TypeScript, Python, .NET, Golang, and Rust support with autocompletion and type checking               |
 | **Model & Table Access**   | `db.user` or `adapter.table('User')` for fluent CRUD, aggregates, groupBy, and vector search |
 | **Schema-First**           | Define models in `.an5` files, generate multi-language clients                               |
 | **Automated Migrations**   | Diff schema against database, generate up/down SQL, apply and rollback migrations            |
@@ -211,13 +211,13 @@ func main() {
 | ------------------------------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------- |
 | **[an5Adapters](an5Adapters/)** (`@an5/adapters`) | Runtime Query Engine & Adapters | MSSQL, PostgreSQL, MySQL, SQLite, Google Sheets, Dynamic Table Client, Query Builder, Transactions |
 | **[an5Orm](an5Orm/)** (`@an5/orm`)                | Schema, Generator & Migrations  | Multi-language code generator, `db:push`, `db:pull`, `db:migrate`, `db:seed`, `db:cleanup`         |
-| **[an5Client](an5Client/)**                       | Generated client code           | Type-safe models for TypeScript, Python, .NET (C#), and Golang                                     |
+| **[an5Client](an5Client/)**                       | Generated client code           | Type-safe models for TypeScript, Python, .NET (C#), Golang, and Rust                                     |
 | **[an5Agent](an5Agent/)** (`@an5/agent`)          | AI Database Agent               | 7 tools: schema, query, database, generateClientCode, analyzeSchema, retrieve, task                |
 | **[an5Cli](an5Cli/)**                             | CLI & Local UI                  | Release automation, LLM commits, documentation                                                     |
 | **[an5Schema](an5Schema/)**                       | Schema definitions              | `.an5` files with types, relations, indexes                                                        |
 | **[an5OrmVScode](an5OrmVScode/)**                 | VS Code extension               | Syntax highlighting, snippets, formatting                                                          |
 | **[an5Tasks](an5Tasks/)**                         | Task management                 | Genkit flows for LLM review parsing                                                                |
-| **[an5example](an5example/)**                     | Example repo                    | Multi-dialect CRUD suite, browser (sql.js) support, TS/Go/.NET/Python examples                     |
+| **[an5example](an5example/)**                     | Example repo                    | Multi-dialect CRUD suite, browser (sql.js) support, TS/Go/.NET/Python/Rust examples                     |
 
 ---
 
@@ -335,7 +335,7 @@ These run as npm scripts from the `an5Orm/` repository:
 | ------------------------------- | ----------------------------------------------------------------------------------- |
 | `npm run build`                 | Build all packages                                                                  |
 | `npm test`                      | Run all tests                                                                       |
-| `npm run test:full`             | Run workspace tests plus generator, package smoke, and Python/.NET/Go compile gates |
+| `npm run test:full`             | Run workspace tests plus generator, package smoke, and Python/.NET/Go/Rust compile gates |
 | `npm run test:integration:live` | Run live adapter Postgres/SQL Server checks                                         |
 | `npm run generate`              | Generate client code (`-w an5Orm`)                                                  |
 | `npm run dryrun`                | Preview workspace release changes                                                   |
@@ -410,7 +410,7 @@ LLM_MODEL=gpt-4o-mini
 │                                                              │
 │  ┌──────────┐    ┌──────────┐    ┌──────────┐               │
 │  │an5Schema │───▶│an5Orm    │───▶│an5Client │               │
-│  │(.an5)    │    │Generator │    │(TS/Py/.NET/Go)│           │
+│  │(.an5)    │    │Generator │    │(TS/Py/.NET/Go/Rust)│           │
 │  └──────────┘    └──────────┘    └──────────┘               │
 │       │                                    │                  │
 │       │                                    ▼                  │
