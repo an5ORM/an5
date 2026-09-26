@@ -35,6 +35,8 @@ an5Orm/ ──► an5Client/ ──(optional metadata)──► an5Adapters/ ◄
 | **an5OrmVScode** | Editor Extension | Syntax highlighting, formatter, snippets for `.an5` files |
 | **an5Schema** | Schema Source | Sample `.an5` model definitions |
 | **an5Tasks** | Task Manager | Genkit v1.39 flows, LLM review parsing, task CRUD, tools for agent integration |
+| **an5example** | Reference Examples | Multi-dialect CRUD suite, browser (sql.js) support, runnable TypeScript/Go/.NET/Python client examples |
+| **an5Site** | Landing Page | Static site source (`index.html` + `style.css` + `main.js`) for https://an5orm.github.io, registered as `an5-site` npm workspace |
 
 ## Data Flow
 

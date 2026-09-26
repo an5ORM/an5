@@ -20,7 +20,8 @@
     "an5OrmVScode",
     "an5Schema",
     "an5Tasks",
-    "an5example"
+    "an5example",
+    "an5Site"
   ],
   "scripts": {
     "build":        "npm run build -w an5Adapters && npm run build -w an5Client && npm run build --workspaces --if-present",

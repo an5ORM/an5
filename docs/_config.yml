@@ -47,6 +47,8 @@ exclude:
   - an5OrmVScode
   - an5Schema
   - an5Tasks
+  - an5example
+  - an5Site
   - lib
   - tasks.json
   - packages
