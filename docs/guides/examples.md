@@ -14,7 +14,7 @@ live database harness.
 ```
 an5example/
 ├── schema/                  # .an5 model definitions
-├── generated/               # Generated clients: typescript/ python/ golang/ dotnet/
+├── generated/               # Generated clients: typescript/ python/ golang/ dotnet/ rust/
 ├── scripts/                 # SQLite setup + per-dialect DDL for the live harness
 ├── test/
 │   ├── crud-suite.js        # Shared, dialect-parameterized CRUD + relations suite
@@ -23,10 +23,12 @@ an5example/
 │   ├── crud.browser.test.js # Suite against in-browser SQLite (sql.js WASM)
 │   ├── browser-bundle.test.js # esbuild verify @an5/adapters/browser is bundler-safe
 │   ├── go-example-build.js  # go build + vet of the generated Go client
+│   ├── rust-example-build.js # cargo build + run of the generated Rust client
 │   └── dotnet-compile-check.js # dotnet build of the generated C# client
 └── examples/
     ├── typescript/crud.ts   # TS runtime example (SQLite, offline-runnable)
     ├── golang/               # Generated Go client CRUD against SQLite
+    ├── rust/                 # Generated Rust client CRUD against SQLite
     ├── dotnet/               # Generated C# client against SQL Server
     └── python/crud.py        # Generated Python client (postgres/mssql)
 ```
@@ -50,6 +52,7 @@ npm test
 | `test:dotnet` | `dotnet build` of the generated C# client |
 | `test:example:dotnet` | .NET example run (skips gracefully when SQL Server is unreachable) |
 | `test:python` | Python example import/syntax check |
+| `test:rust` | `cargo build` of the generated Rust client + run the Rust SQLite CRUD example |
 
 ## Live Database Harness
 
@@ -81,6 +84,11 @@ Each `examples/` language mirrors the generated client for that language:
   `go mod download` (network).
 - **.NET** (`examples/dotnet/`) — console app using the generated `An5DbContext`
   against SQL Server. Builds offline; skips the live run when no SQL Server is reachable.
+- **Rust** (`examples/rust/`) — binary crate that feeds the generated
+  `an5-client` query builders into `rusqlite` (bundled SQLite, so no external
+  database). Demonstrates `StringFilter` / `IntFilter` / `BoolFilter`, nested
+  `AND`/`OR` composition, `orderBy` + `take`, `count_*_sql`, and
+  `set_table_override` for schema-less engines. First run downloads crates.
 - **Python** (`examples/python/crud.py`) — generated Python client; runs a live CRUD
   smoke when `AN5_DATABASE_URL` points at a postgres/mssql database, otherwise an
   import check.

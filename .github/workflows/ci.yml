@@ -17,6 +17,7 @@ env:
   PYTHON_VERSION: '3.11'
   DOTNET_VERSION: '8.0.x'
   GO_VERSION: '1.24.x'
+  RUST_VERSION: 'stable'
 
 jobs:
   # ── Full workspace gate ─────────────────────────────────────────────────────
@@ -40,6 +41,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
       - name: Install workspace dependencies
         run: npm install
       - name: Build all workspaces
@@ -141,6 +145,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
       - run: npm install
       - run: npm run build
       - run: npm test -w an5Adapters
@@ -148,6 +155,7 @@ jobs:
       - run: npm run test:python -w an5Adapters
       - run: npm run test:dotnet -w an5Adapters
       - run: npm run test:go -w an5Adapters
+      - run: npm run test:rust -w an5Adapters
 
   # ── an5Agent ────────────────────────────────────────────────────────────────
   test-agent:
@@ -218,6 +226,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
       - run: npm install
       - run: npm run build
       - run: npm test -w an5Client
@@ -225,6 +236,7 @@ jobs:
       - run: npm run test:python -w an5Client
       - run: npm run test:dotnet -w an5Client
       - run: npm run test:go -w an5Client
+      - run: npm run test:rust -w an5Client
 
   # ── an5Tasks ────────────────────────────────────────────────────────────────
   test-tasks:
