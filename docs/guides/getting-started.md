@@ -13,7 +13,7 @@ For the current implementation and package maturity overview, see [Feature Statu
 ## Prerequisites
 
 - Node.js 18+ (Node 24 recommended)
-- SQL Server, PostgreSQL, MySQL, SQLite, or Google Sheets connection
+- SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, or NBase connection
 - npm or yarn package manager
 
 ## Installation
@@ -36,7 +36,7 @@ cp .env.example .env
 Edit `.env` and configure your database connection:
 
 ```ini
-# Database connection string (SQL Server, PostgreSQL, MySQL, SQLite, or Google Sheets)
+# Database connection string (SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, or NBase)
 DATABASE_URL=sqlserver://localhost:1433;database=mydb;user=sa;password=yourpassword
 ```
 

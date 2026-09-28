@@ -62,6 +62,7 @@ These commands run from the `an5Orm/` repository root, so use `npm run <command>
 | MySQL          | Implemented                  | Dialect engine exists in TypeScript adapter package                                                                                          |
 | SQLite         | Implemented                  | Dialect engine exists in TypeScript adapter package                                                                                          |
 | Google Sheets  | Implemented                  | Spreadsheet-backed CRUD API with sheet auto-create and retry helpers; auto-detected via `googlesheets://` connection strings                 |
+| NBase          | Implemented                  | Neural Vector Database used as a `vectorSearch` backend: `nbase://` connection string, HNSW/LSH/KNN search, rows hydrated from the table by the id in vector metadata |
 | Python adapter | Implemented, packaged source | Source included in `@an5/adapters`; `npm run test:python -w an5Adapters` compile-checks it                                                   |
 | .NET adapter   | Implemented, packaged source | C# source included; `npm run test:dotnet -w an5Adapters` compile-checks SQL Server/Postgres providers with `Microsoft.Data.SqlClient`/Npgsql |
 | Go adapter     | Implemented, packaged source | Go source included under `golang/`; `npm run test:go -w an5Adapters` runs `go test ./...`                                                    |
@@ -79,6 +80,21 @@ The `@an5/adapters` package exposes the full public API from the package root (`
 | Golang     | Implemented | Per-model files with struct + tags and typed `WhereInput`/`OrderBy`/`FindManyArgs` (`<Model>.go`), generic `TableClient[T]` and `An5DbContext` (`client.go`); `npm run test:go -w an5Client` compile-checks generated sources |
 | Rust       | Implemented | Serde structs + typed `WhereInput`/`OrderBy`/`Create`/`Update`/`FindManyArgs` (`models.rs`), `StringFilter`/`IntFilter`/`NumberFilter`/`BoolFilter`/`DateTimeFilter` and typed `BindValue` params (`filters.rs`), `An5Client` backed by the `an5-adapters` runtime with typed per-model handles (`db.user().find_many(..)`) plus dynamic `db.table("User")` and vector math (`client.rs`); `npm run test:rust -w an5Client` runs `cargo check` |
 
+## VS Code Extension
+
+| Area | Status | Notes |
+| ---- | ------ | ----- |
+| Syntax and formatting | Implemented | Grammar, snippets, alignment formatter, `an5Orm.config.js` hover |
+| Commands | Implemented | `generate`, `db:push`, `db:pull`, open config, status bar menu |
+| MCP server | Implemented | 13 tools over stdio, registered with `vscode.lm.registerMcpServerDefinitionProvider`; read-only tools carry `readOnlyHint` and every mutating tool also requires `confirm: true`. Requires VS Code 1.101+; `npm test -w an5OrmVScode` covers the protocol and the tools |
+
+## Shared Schema Parsing
+
+`@an5/orm` owns `.an5` syntax and exposes `SchemaParser` from
+`@an5/orm/generator`. The agent tools, the RAG indexer and the MCP server all
+read schemas through it, so a description or attribute added to the schema is
+reported identically everywhere instead of drifting between private parsers.
+
 ## Example Repository
 
 The [`an5example`](https://github.com/an5ORM/an5example) repository demonstrates the whole ecosystem with a single schema:
@@ -87,7 +103,7 @@ The [`an5example`](https://github.com/an5ORM/an5example) repository demonstrates
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Shared CRUD suite | Dialect-parameterized `crud-suite.js` exercised on SQLite, the browser (sql.js), and live databases via `AN5_DATABASE_URL`                                |
 | Browser support   | In-memory `sql.js` CRUD suite plus an esbuild bundle check that `@an5/adapters/browser` has no Node built-ins                                             |
-| Generated clients | Runnable examples for TypeScript (SQLite), Go (SQLite via `modernc.org/sqlite`), Rust (SQLite via bundled `rusqlite`), .NET (SQL Server), and Python (postgres/mssql) |
+| Generated clients | Runnable examples for TypeScript (SQLite), Go (SQLite via `modernc.org/sqlite`), Rust (SQLite via the adapter runtime and sqlx), .NET (SQL Server), and Python (postgres/mssql) |
 | Verification      | `npm test` runs the full offline matrix (`test:suite`, `test:browser`, `test:example:ts`, `test:go`, `test:dotnet`, `test:example:dotnet`, `test:python`, `test:rust`) |
 
 See the [Examples]({{ '/guides/examples/' | relative_url }}) guide for how to run it.

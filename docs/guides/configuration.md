@@ -74,7 +74,15 @@ DATABASE_URL=sqlite:///path/to/database.db
 
 # Google Sheets
 DATABASE_URL=googlesheets://spreadsheetId;clientEmail=sa@project.iam.gserviceaccount.com;privateKey=your-url-encoded-key
+
+# NBase — vector store, no rows of its own
+DATABASE_URL=nbase://localhost:1307
 ```
+
+`nbase://host:port` may carry options in the query string:
+`?token=…&timeoutMs=500&method=hnsw`. To search NBase while the rows stay in
+another database, pass the same string as `nbase` next to that database's
+connection string — see [Vector Search]({{ '/guides/vector-search/' | relative_url }}).
 
 ### LLM Configuration (for an5-cli release notes & agent features)
 

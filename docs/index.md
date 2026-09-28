@@ -1,7 +1,7 @@
 ---
 layout: default
 title: an5 ORM - Modern SQL Server ORM
-description: A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, and Google Sheets
+description: A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, and NBase
 ---
 
 <div class="hero">
@@ -81,7 +81,7 @@ Install the published package with `npm install @an5/orm`, then use the CLI tool
   <div class="feature-card">
     <div class="feature-icon">🔄</div>
     <h3>Multi-Language</h3>
-    <p>Generate type-safe clients for TypeScript, Python, .NET, and Golang.</p>
+    <p>Generate type-safe clients for TypeScript, Python, .NET, Golang, and Rust.</p>
   </div>
 </div>
 

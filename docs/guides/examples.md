@@ -84,14 +84,52 @@ Each `examples/` language mirrors the generated client for that language:
   `go mod download` (network).
 - **.NET** (`examples/dotnet/`) — console app using the generated `An5DbContext`
   against SQL Server. Builds offline; skips the live run when no SQL Server is reachable.
-- **Rust** (`examples/rust/`) — binary crate that feeds the generated
-  `an5-client` query builders into `rusqlite` (bundled SQLite, so no external
-  database). Demonstrates `StringFilter` / `IntFilter` / `BoolFilter`, nested
-  `AND`/`OR` composition, `orderBy` + `take`, `count_*_sql`, and
-  `set_table_override` for schema-less engines. First run downloads crates.
+- **Rust** (`examples/rust/`) — binary crate that drives the generated
+  `an5-client` model handles against SQLite through the adapter runtime and
+  `sqlx`, so all DML goes through the ORM. Demonstrates `StringFilter` /
+  `IntFilter` / `BoolFilter`, nested `AND`/`OR` composition, `orderBy` + `take`,
+  relation filtering, `count`, `update`, `delete` and the vector helpers. First
+  run downloads crates.
 - **Python** (`examples/python/crud.py`) — generated Python client; runs a live CRUD
   smoke when `AN5_DATABASE_URL` points at a postgres/mssql database, otherwise an
   import check.
+
+## VS Code MCP Server
+
+The [an5OrmVScode](https://github.com/an5ORM/an5OrmVScode) extension ships a
+[Model Context Protocol](https://modelcontextprotocol.io) server, so GitHub
+Copilot and other MCP clients can work with the schema directly instead of
+guessing at it from the file tree.
+
+On VS Code 1.101 or newer the server registers itself and appears in
+`MCP: List Servers`. On older versions run **AN5: Show MCP Server
+Configuration** and paste the result into `.vscode/mcp.json`.
+
+```json
+{
+  "servers": {
+    "an5-orm": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["<extension>/dist/mcp/server.js"],
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}
+```
+
+The server discovers the project from its working directory: `an5Orm.config.js`,
+the `.an5` files, the installed `@an5/orm` and `DATABASE_URL`.
+
+| Tools | Behaviour |
+|-------|-----------|
+| `an5_list_models`, `an5_describe_model`, `an5_get_relations`, `an5_analyze_schema`, `an5_read_schema_file` | Read-only, marked `readOnlyHint` so no confirmation is asked |
+| `an5_query_database` | `SELECT` only; any other statement is rejected |
+| `an5_describe_table`, `an5_database_health` | Read-only |
+| `an5_generate_client`, `an5_push_schema`, `an5_pull_schema`, `an5_migrate`, `an5_seed` | Change the database or write files, so they ask for confirmation **and** require an explicit `confirm: true` |
+
+Read-only tools are also the only ones a model can call freely, so always check
+which tool ran before approving a schema change.
 
 ## Next Steps
 

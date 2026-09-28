@@ -156,14 +156,29 @@ await agent.executeTool('database', {
 
 ## generateClientCode
 
-Generate type-safe client code from schema.
+Generate type-safe client code from schema, for any language the ORM supports:
+`typescript`, `python`, `dotnet`, `golang` or `rust`.
 
 ```typescript
 await agent.executeTool('generateClientCode', {
   schemaPath: 'an5Schema',
-  language: 'typescript'  // or 'python' | 'dotnet' | 'golang'
+  language: 'rust'  // or 'typescript' | 'python' | 'dotnet' | 'golang'
 });
 // Returns: { success: true, files: [...], message: '...' }
+```
+
+The tool runs the real `@an5/orm` generator, so its output matches
+`npm run generate` — the same files, with the same relations, filters and
+metadata. Without `outputDir` it generates into a temporary directory, reads the
+artifacts back and cleans up.
+
+```typescript
+// Write straight into the project
+await agent.executeTool('generateClientCode', {
+  schemaPath: 'an5Schema',
+  language: 'typescript',
+  outputDir: 'an5Client/typescript',
+});
 ```
 
 ---
