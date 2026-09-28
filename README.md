@@ -215,7 +215,7 @@ func main() {
 | **[an5Agent](an5Agent/)** (`@an5/agent`)          | AI Database Agent               | 7 tools: schema, query, database, generateClientCode, analyzeSchema, retrieve, task                |
 | **[an5Cli](an5Cli/)**                             | CLI & Local UI                  | Release automation, LLM commits, documentation                                                     |
 | **[an5Schema](an5Schema/)**                       | Schema definitions              | `.an5` files with types, relations, indexes                                                        |
-| **[an5OrmVScode](an5OrmVScode/)**                 | VS Code extension               | Syntax highlighting, snippets, formatting                                                          |
+| **[an5OrmVScode](an5OrmVScode/)**                 | VS Code extension               | Syntax highlighting, snippets, formatting, MCP server for agentic clients                           |
 | **[an5Tasks](an5Tasks/)**                         | Task management                 | Genkit flows for LLM review parsing                                                                |
 | **[an5example](an5example/)**                     | Example repo                    | Multi-dialect CRUD suite, browser (sql.js) support, TS/Go/.NET/Python/Rust examples                     |
 
