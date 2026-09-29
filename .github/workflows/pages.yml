@@ -27,11 +27,22 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check the .an5 syntax grammar
+        run: npm run test:docs
+
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./docs
           destination: ./_site
+
+      - name: Check internal links
+        run: python3 docs/test/check-links.py ./_site
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

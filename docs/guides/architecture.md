@@ -147,5 +147,5 @@ At runtime the active LLM/embedding config can be read and updated through the
 
 ## Related
 
-- [Getting Started](../guides/getting-started/) - Quick start guide
-- [Package Documentation](../packages/an5Orm/) - Explore individual packages
+- [Getting Started]({{ '/guides/getting-started/' | relative_url }}) - Quick start guide
+- [Package Documentation](https://github.com/an5ORM/an5#readme) - Explore individual packages

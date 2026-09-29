@@ -1,4 +1,9 @@
-# MSSQL ORM Ecosystem — Architecture
+---
+layout: page
+permalink: /architecture/
+title: Architecture
+description: How the an5 packages fit together, from schema parsing to runtime adapters
+---
 
 ## Overview
 

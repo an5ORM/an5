@@ -1,4 +1,9 @@
-# Genkit Integration Guide
+---
+layout: page
+permalink: /genkit/
+title: Genkit Integration
+description: How the AI agent is built on Google Genkit, its tools and its RAG pipeline
+---
 
 This workspace uses [Google Genkit](https://genkit.dev) for AI-powered features across multiple modules.
 

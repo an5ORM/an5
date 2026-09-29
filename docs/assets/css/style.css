@@ -1113,3 +1113,139 @@ pre[class*="language-"] {
     font-size: 1.5rem;
   }
 }
+/* ─── SEARCH ──────────────────────────────────────────────────────────────── */
+.docs-search {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.docs-search input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.docs-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.docs-search input:focus {
+  outline: none;
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+}
+
+.docs-search-hint,
+.docs-search-empty {
+  margin: 0.4rem 0 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.docs-search-empty {
+  color: var(--orange);
+}
+
+.docs-search-hint kbd {
+  padding: 0.05rem 0.3rem;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+}
+
+.docs-search-results {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  right: 0;
+  max-height: 22rem;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.docs-search-results li a {
+  display: block;
+  padding: 0.5rem 0.6rem;
+  border-radius: calc(var(--radius) - 2px);
+  text-decoration: none;
+  transition: background var(--transition);
+}
+
+.docs-search-results li a:hover,
+.docs-search-results li.active a {
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.hit-title {
+  display: block;
+  color: var(--text);
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.hit-snippet {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+/* ─── COPY BUTTON ─────────────────────────────────────────────────────────── */
+.code-window {
+  position: relative;
+}
+
+.copy-code {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  padding: 0.25rem 0.55rem;
+  background: rgba(13, 18, 32, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition), color var(--transition),
+    border-color var(--transition);
+}
+
+.code-window:hover .copy-code,
+.copy-code:focus-visible {
+  opacity: 1;
+}
+
+.copy-code:hover {
+  color: var(--cyan);
+  border-color: var(--border-hover);
+}
+
+.copy-code.copied {
+  color: var(--green);
+  border-color: rgba(34, 197, 94, 0.4);
+  opacity: 1;
+}
+
+/* Keep the button from covering the last line of a short block. */
+.code-window pre {
+  padding-bottom: 2.2rem;
+}
