@@ -7,7 +7,17 @@
 
 module.exports = {
   /**
-   * Schema directory path (relative to project root)
+   * Database connection for db:push, db:pull, db:migrate:* and db:cleanup.
+   *
+   * DATABASE_URL overrides this when set, so a committed config can point at a
+   * development database while CI supplies its own. Leave it out rather than
+   * committing a password — keep secrets in the environment.
+   *
+   * connectionString: 'sqlserver://localhost:1433;database=mydb;user=sa;password=...',
+   */
+
+  /**
+   * Schema directory path (relative to this file)
    * Default: 'an5Schema'
    */
   schemaDir: 'an5Schema',
@@ -18,12 +28,16 @@ module.exports = {
   outputs: {
     /**
      * TypeScript output configuration
+     *
+     * Both keys are required strings. An unknown key here is an error rather
+     * than a silent fallback, so a typo cannot quietly send the client
+     * somewhere else.
      */
     typescript: {
       /** Output directory for generated TypeScript files */
       outputDir: 'an5Client/typescript',
 
-      /** Path for metadata file */
+      /** Path for the generated metadata module */
       metadataFile: 'an5Client/typescript/an5Metadata.ts',
     },
 
@@ -86,13 +100,7 @@ module.exports = {
    */
   generation: {
     /**
-     * Whether to generate JSDoc comments
-     * Default: true
-     */
-    generateComments: true,
-
-    /**
-     * Whether to generate metadata files
+     * Whether to write the generated metadata module.
      * Default: true
      */
     generateMetadata: true,

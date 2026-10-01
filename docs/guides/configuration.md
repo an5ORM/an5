@@ -14,6 +14,11 @@ Create `an5Orm.config.js` in your project root to configure code generation and 
 
 ```javascript
 module.exports = {
+  // Database for db:push, db:pull, db:migrate:* and db:cleanup.
+  // DATABASE_URL overrides this, so commit a development database here and
+  // let CI set its own. Keep passwords in the environment.
+  connectionString: "sqlserver://localhost:1433;database=mydb;user=sa;password=...",
+
   // Schema directory (default: 'an5Schema')
   schemaDir: "an5Schema",
 
@@ -32,6 +37,9 @@ module.exports = {
     golang: {
       outputDir: "an5Client/golang",
     },
+    rust: {
+      outputDir: "an5Client/rust",
+    },
   },
 
   // Database pull options
@@ -39,25 +47,53 @@ module.exports = {
     exclude: ["^__", "^sys\\."], // Exclude system tables
     preserveRelations: true,
   },
+
+  // Code generation options
+  generation: {
+    generateMetadata: true, // Write the generated metadata module
+  },
 };
 ```
+
+### Validation
+
+The file is checked before anything uses it, so a mistyped key or a wrong type
+stops generation instead of quietly changing where the output goes:
+
+```
+❌ Invalid an5Orm.config.js:
+  outputs.typescript.outputDirs  unknown option; did you mean "outputDir"?
+  pull.exclude                   expected an array of strings, received string
+  generation.generateComments    unknown option; expected one of "generateMetadata"
+```
+
+Every problem is reported at once. Each key is known, each value has an expected
+type, and a key that is close to a real one gets a suggestion. The four CLI
+commands and the generator all read the file through this one loader, so they
+cannot disagree about what it means.
 
 ### Configuration Options
 
 | Option                            | Type       | Default                                 | Description                                 |
 | --------------------------------- | ---------- | --------------------------------------- | ------------------------------------------- |
+| `connectionString`                | `string`   | —                                       | Database for the CLI commands; `DATABASE_URL` overrides it |
 | `schemaDir`                       | `string`   | `'an5Schema'`                           | Path to schema files                        |
 | `outputs.typescript.outputDir`    | `string`   | `'an5Client/typescript'`                | TypeScript output directory                 |
 | `outputs.typescript.metadataFile` | `string`   | `'an5Client/typescript/an5Metadata.ts'` | Metadata file path for the generated client |
 | `outputs.python.metadataFile`     | `string`   | `'an5Client/python/an5_metadata.py'`    | Python metadata path                        |
 | `outputs.dotnet.outputDir`        | `string`   | `'an5Client/dotnet'`                    | .NET output directory                       |
 | `outputs.golang.outputDir`        | `string`   | `'an5Client/golang'`                    | Go output directory                         |
+| `outputs.rust.outputDir`          | `string`   | `'an5Client/rust'`                      | Rust output directory                       |
+| `generation.generateMetadata`     | `boolean`  | `true`                                  | Write the generated metadata module         |
 | `pull.exclude`                    | `string[]` | `['^__', '^sys\\.']`                    | Tables to exclude from pull                 |
 | `pull.preserveRelations`          | `boolean`  | `true`                                  | Keep relations in schema                    |
 
 ## Environment Variables
 
 ### Database (`DATABASE_URL`)
+
+`DATABASE_URL` takes precedence over `connectionString` in the config file, so
+the same committed config works locally and in CI.
 
 ```ini
 # SQL Server
@@ -98,6 +134,8 @@ LLM_MODEL=gpt-4o-mini
 import { createAn5Adapter } from "@an5/adapters";
 
 const db = createAn5Adapter({
+  // The runtime reads the environment, not an5Orm.config.js — that file
+  // configures the generator and the CLI commands.
   connectionString: process.env.DATABASE_URL!,
 });
 
