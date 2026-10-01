@@ -84,6 +84,14 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Publish @an5/agent to npm
+        # The agent was already on npm but no job published it, so a v* tag
+        # could never release it and its work stayed in the repo.
+        working-directory: an5Agent
+        run: npm publish --access public --if-present || echo "Version already published on npm, skipping"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
   publish-pypi:
     name: Publish PyPI packages
     needs: build-and-test

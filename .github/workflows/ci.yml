@@ -153,6 +153,10 @@ jobs:
       - run: npm test -w an5Adapters
       - run: npm run test:package:smoke -w an5Adapters
       - run: npm run test:python -w an5Adapters
+      # `test:python` above is a compileall syntax check only. This one creates
+      # a real database and exercises the SQLite provider end to end, so a
+      # provider that never gets imported cannot pass as working.
+      - run: python an5Adapters/test/python/sqlite_smoke.py
       - run: npm run test:dotnet -w an5Adapters
       - run: npm run test:go -w an5Adapters
       - run: npm run test:rust -w an5Adapters
