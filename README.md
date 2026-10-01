@@ -18,7 +18,7 @@
 
 | Feature                    | Description                                                                                                |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **Multi-Database Runtime** | Native support for MSSQL, PostgreSQL, MySQL, SQLite, Google Sheets, and NBase via `@an5/adapters`          |
+| **Multi-Database Runtime** | Native support for MSSQL, PostgreSQL, MySQL, SQLite, Google Sheets, and NBase via `@an5/adapters`, in TypeScript, Python, .NET, Go and Rust |
 | **Type-Safe Queries**      | Full TypeScript, Python, .NET, Golang, and Rust support with autocompletion and type checking               |
 | **Model & Table Access**   | `db.user` or `adapter.table('User')` for fluent CRUD, aggregates, groupBy, and vector search |
 | **Schema-First**           | Define models in `.an5` files, generate multi-language clients                               |
