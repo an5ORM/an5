@@ -38,6 +38,7 @@
 | npm      | [`@an5/agent`](https://www.npmjs.com/package/@an5/agent)       | AI database tools & agent                  | `npm install @an5/agent`    |
 | PyPI     | `an5-adapters`                                                 | Python multi-database adapter runtime      | `pip install an5-adapters`  |
 | PyPI     | `an5-orm`                                                      | Python ORM & schema utilities              | `pip install an5-orm`       |
+| crates.io | [`an5-adapters`](https://crates.io/crates/an5-adapters)       | Rust adapter runtime & query engine        | `cargo add an5-adapters`    |
 
 See [Feature Status](https://an5orm.github.io/an5/guides/feature-status/) for the current maturity level of each module.
 

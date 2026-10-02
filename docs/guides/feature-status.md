@@ -17,8 +17,9 @@ This page summarizes what is currently implemented, published, and still maturin
 | `@an5/agent`    | npm      | `0.1.1`        | Published   | AI database agent with 7 consolidated tools                                   |
 | `an5-adapters`  | PyPI     | `0.2.5` target | Build-ready | Wheel/sdist pass `twine check`; PyPI token / trusted publisher setup          |
 | `an5-orm`       | PyPI     | `1.0.8` target | Build-ready | Wheel/sdist pass `twine check`; PyPI token / trusted publisher setup          |
+| `an5-adapters`  | crates.io | `0.1.0`      | Published   | Rust adapter runtime; `cargo add an5-adapters`, docs on [docs.rs](https://docs.rs/an5-adapters) |
 
-PyPI does not use npm-style scopes like `@an5/orm`. The Python package names are `an5-adapters` and `an5-orm`.
+PyPI does not use npm-style scopes like `@an5/orm`. The Python package names are `an5-adapters` and `an5-orm`. crates.io shares the `an5-adapters` name with PyPI, which is intended: they are the adapter runtime for different language toolchains.
 
 ## Core ORM
 
@@ -66,7 +67,7 @@ These commands run from the `an5Orm/` repository root, so use `npm run <command>
 | Python adapter | Implemented, packaged source | Source included in `@an5/adapters`; `npm run test:python -w an5Adapters` compile-checks it                                                   |
 | .NET adapter   | Implemented, packaged source | C# source included for SQL Server, Postgres and SQLite (`Microsoft.Data.SqlClient`/Npgsql/`Microsoft.Data.Sqlite`); `npm run test:dotnet -w an5Adapters` compile-checks the providers and runs a CRUD test against a real SQLite database |
 | Go adapter     | Implemented, packaged source | Go source included under `golang/`; `npm run test:go -w an5Adapters` runs `go test ./...`                                                    |
-| Rust adapter   | Implemented, packaged source | Rust crate under `rust/`: `An5Adapter` (sqlx pool + dialect detection) and `TableClient` with `find_many`/`find_first`/`find_unique`/`count`/`create`/`create_many`/`update`/`update_many`/`delete_many`/`upsert`/`aggregate`/`group_by`/`vector_search`, plus a `base` module (where/order-by builders, metadata, vector math); `npm run test:rust -w an5Adapters` runs `cargo test` (skips if toolchain missing) |
+| Rust adapter   | Published                   | [`an5-adapters`](https://crates.io/crates/an5-adapters) `0.1.0` on crates.io: `An5Adapter` (sqlx pool + dialect detection) and `TableClient` with `find_many`/`find_first`/`find_unique`/`count`/`create`/`create_many`/`update`/`update_many`/`delete_many`/`upsert`/`aggregate`/`group_by`/`vector_search`, plus a `base` module (where/order-by builders, metadata, vector math); the app picks the driver via `sqlx`'s `any` feature. Source under `rust/`; `npm run test:rust -w an5Adapters` runs `cargo test` (skips if toolchain missing) |
 
 The `@an5/adapters` package exposes the full public API from the package root (`createAn5Adapter`, `An5SheetsAdapter`, `SheetsTableClient`, `createAn5SheetsAdapter`, `parseSheetsConnectionString`) as well as through subpaths (`/browser`, `/googlesheets`, `/config`, `/mssql`, `/postgres`, `/mysql`, `/sqlite`, `/base`, `/python`, `/dotnet`, `/golang`). The runtime config API (`getLlmConfig`/`setLlmConfig`, `getEmbeddingConfig`/`setEmbeddingConfig`, `resetAdapter`) is also exported from the package root.
 
