@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Getting Started | an5 ORM</title>
-  <meta name="description" content="Install and set up an5 in your project">
+  <title>Examples | an5 ORM</title>
+  <meta name="description" content="Run the an5example repository across all languages, dialects, and the browser">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/an5/assets/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="http://localhost:4000/an5/guides/getting-started/">
+  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="http://localhost:4000/an5/guides/examples/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="an5 ORM">
-  <meta property="og:title" content="Getting Started">
-  <meta property="og:description" content="Install and set up an5 in your project">
-  <meta property="og:url" content="http://localhost:4000/an5/guides/getting-started/">
+  <meta property="og:title" content="Examples">
+  <meta property="og:description" content="Run the an5example repository across all languages, dialects, and the browser">
+  <meta property="og:url" content="http://localhost:4000/an5/guides/examples/">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Getting Started">
-  <meta name="twitter:description" content="Install and set up an5 in your project">
+  <meta name="twitter:title" content="Examples">
+  <meta name="twitter:description" content="Run the an5example repository across all languages, dialects, and the browser">
 </head>
 <body>
 
@@ -114,193 +114,188 @@
     <!-- Main Content Area -->
     <main class="docs-content">
       <div class="docs-body card-glass">
-        <h1 id="getting-started">Getting Started</h1>
+        <h1 id="examples">Examples</h1>
 
-<p>This guide will help you set up an5 in your project in under 5 minutes.</p>
+<p>The <a href="https://github.com/an5ORM/an5example"><code class="language-plaintext highlighter-rouge">an5example</code></a> repository is the reference
+example for the an5 ORM ecosystem. It contains the full CRUD + relations integration
+suite, runnable examples for every generated client language, browser support, and a
+live database harness.</p>
 
-<p>For the current implementation and package maturity overview, see <a href="/an5/guides/feature-status/">Feature Status</a>.</p>
-
-<h2 id="prerequisites">Prerequisites</h2>
-
-<ul>
-  <li>Node.js 18+ (Node 24 recommended)</li>
-  <li>SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, or NBase connection</li>
-  <li>npm or yarn package manager</li>
-</ul>
-
-<h2 id="installation">Installation</h2>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm <span class="nb">install</span> @an5/adapters @an5/orm
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>an5example/
+├── schema/                  # .an5 model definitions
+├── generated/               # Generated clients: typescript/ python/ golang/ dotnet/ rust/
+├── scripts/                 # SQLite setup + per-dialect DDL for the live harness
+├── test/
+│   ├── crud-suite.js        # Shared, dialect-parameterized CRUD + relations suite
+│   ├── crud.sqlite.test.js  # Suite against SQLite (better-sqlite3)
+│   ├── crud.live.test.js    # Suite against a live DB via AN5_DATABASE_URL
+│   ├── crud.browser.test.js # Suite against in-browser SQLite (sql.js WASM)
+│   ├── browser-bundle.test.js # esbuild verify @an5/adapters/browser is bundler-safe
+│   ├── go-example-build.js  # go build + vet of the generated Go client
+│   ├── rust-example-build.js # cargo build + run of the generated Rust client
+│   └── dotnet-compile-check.js # dotnet build of the generated C# client
+└── examples/
+    ├── typescript/crud.ts   # TS runtime example (SQLite, offline-runnable)
+    ├── golang/               # Generated Go client CRUD against SQLite
+    ├── rust/                 # Generated Rust client CRUD against SQLite
+    ├── dotnet/               # Generated C# client against SQL Server
+    └── python/crud.py        # Generated Python client (postgres/mssql)
 </code></pre></div></div>
 
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">@an5/adapters</code>: Database runtime, connection handling, dynamic table clients, transactions.</li>
-  <li><code class="language-plaintext highlighter-rouge">@an5/orm</code>: Schema parser, multi-language generator, migrations (<code class="language-plaintext highlighter-rouge">db:push</code>, <code class="language-plaintext highlighter-rouge">db:pull</code>, <code class="language-plaintext highlighter-rouge">db:migrate</code>, <code class="language-plaintext highlighter-rouge">db:seed</code>).</li>
-</ul>
+<h2 id="running-the-full-test-matrix">Running the Full Test Matrix</h2>
 
-<h2 id="configuration">Configuration</h2>
-
-<h3 id="1-set-up-environment-variables">1. Set up Environment Variables</h3>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp</span> .env.example .env
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>an5example
+npm <span class="nb">install
+</span>npm <span class="nb">test</span>
 </code></pre></div></div>
 
-<p>Edit <code class="language-plaintext highlighter-rouge">.env</code> and configure your database connection:</p>
-
-<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Database connection string (SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, or NBase)
-</span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">sqlserver://localhost:1433;database=mydb;user=sa;password=yourpassword</span>
-</code></pre></div></div>
-
-<h3 id="2-define-your-schema">2. Define Your Schema</h3>
-
-<p>Create <code class="language-plaintext highlighter-rouge">.an5</code> files in the <code class="language-plaintext highlighter-rouge">an5Schema/</code> directory:</p>
-
-<pre><code class="language-an5">// an5Schema/User.an5
-model User {
-  id        NVARCHAR(1000) @id @default(uuid())
-  email     NVARCHAR(255)  @unique
-  name      NVARCHAR(255)?
-  createdAt DATETIME2      @default(now())
-  
-  @@map("users")
-}
-</code></pre>
-
-<h3 id="3-generate-client-code">3. Generate Client Code</h3>
-
-<p>Run from the <code class="language-plaintext highlighter-rouge">an5Orm/</code> repository directory:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run generate
-</code></pre></div></div>
-
-<p>This generates type-safe client code in <code class="language-plaintext highlighter-rouge">an5Client/</code>.</p>
-
-<h3 id="4-push-schema-to-database">4. Push Schema to Database</h3>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run db:push
-</code></pre></div></div>
-
-<p>This creates the tables in your database.</p>
-
-<h2 id="your-first-query">Your First Query</h2>
-
-<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
-
-<span class="c1">// Initialize connection</span>
-<span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
-  <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="o">!</span><span class="p">,</span>
-<span class="p">});</span>
-
-<span class="k">async</span> <span class="kd">function</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$connect</span><span class="p">();</span>
-
-  <span class="c1">// Create a user</span>
-  <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
-    <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span><span class="p">,</span>
-      <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John Doe</span><span class="dl">'</span>
-    <span class="p">}</span>
-  <span class="p">});</span>
-  
-  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Created user:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">user</span><span class="p">);</span>
-  
-  <span class="c1">// Find all users</span>
-  <span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">();</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">All users:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">users</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="nf">main</span><span class="p">()</span>
-  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">)</span>
-  <span class="p">.</span><span class="k">finally</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$disconnect</span><span class="p">());</span>
-</code></pre></div></div>
-
-<h2 id="project-structure">Project Structure</h2>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>an5/
-├── an5Schema/           # Schema definitions (.an5 files)
-├── node_modules/@an5/adapters # Database runtime &amp; adapters
-├── node_modules/@an5/orm      # Schema &amp; migrations engine
-├── an5Client/                # Generated client code
-└── .env                 # Configuration
-</code></pre></div></div>
-
-<h2 id="available-commands">Available Commands</h2>
-
-<p>Schema/database commands run from the <code class="language-plaintext highlighter-rouge">an5Orm/</code> repository directory:</p>
+<p><code class="language-plaintext highlighter-rouge">npm test</code> runs the complete offline matrix:</p>
 
 <table>
   <thead>
     <tr>
-      <th>Command</th>
-      <th>Where</th>
-      <th>Description</th>
+      <th>Script</th>
+      <th>Covers</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run generate</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Generate client code from schema</td>
+      <td><code class="language-plaintext highlighter-rouge">test:suite</code></td>
+      <td>Shared CRUD + relations suite on SQLite (better-sqlite3)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:push</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Push schema to database</td>
+      <td><code class="language-plaintext highlighter-rouge">test:browser</code></td>
+      <td>CRUD suite on <code class="language-plaintext highlighter-rouge">sql.js</code> in-memory SQLite + esbuild bundle check</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:pull</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Pull schema from database</td>
+      <td><code class="language-plaintext highlighter-rouge">test:example:ts</code></td>
+      <td>TypeScript runtime example</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:seed</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Seed database with sample data</td>
+      <td><code class="language-plaintext highlighter-rouge">test:go</code></td>
+      <td><code class="language-plaintext highlighter-rouge">go build</code> + <code class="language-plaintext highlighter-rouge">go vet</code> of the generated Go client</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate diff</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Compare schema with database</td>
+      <td><code class="language-plaintext highlighter-rouge">test:dotnet</code></td>
+      <td><code class="language-plaintext highlighter-rouge">dotnet build</code> of the generated C# client</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate:generate</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Generate migration SQL</td>
+      <td><code class="language-plaintext highlighter-rouge">test:example:dotnet</code></td>
+      <td>.NET example run (skips gracefully when SQL Server is unreachable)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate:apply</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Apply pending migration files; pass <code class="language-plaintext highlighter-rouge">-- --dry-run</code> to preview SQL</td>
+      <td><code class="language-plaintext highlighter-rouge">test:python</code></td>
+      <td>Python example import/syntax check</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate:rollback</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Roll back migrations; pass <code class="language-plaintext highlighter-rouge">-- --dry-run</code>, <code class="language-plaintext highlighter-rouge">-- 3</code>, or <code class="language-plaintext highlighter-rouge">-- --to &lt;file&gt;</code></td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate:status</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Show migration status</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run build</code></td>
-      <td>workspace root</td>
-      <td>Build all workspace packages</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm test</code></td>
-      <td>workspace root</td>
-      <td>Run tests across the workspace</td>
+      <td><code class="language-plaintext highlighter-rouge">test:rust</code></td>
+      <td><code class="language-plaintext highlighter-rouge">cargo build</code> of the generated Rust client + run the Rust SQLite CRUD example</td>
     </tr>
   </tbody>
 </table>
 
+<h2 id="live-database-harness">Live Database Harness</h2>
+
+<p>The same suite runs against any database supported by <code class="language-plaintext highlighter-rouge">@an5/adapters</code> (SQL Server,
+PostgreSQL, MySQL, SQLite) by pointing <code class="language-plaintext highlighter-rouge">AN5_DATABASE_URL</code> at a reachable instance.
+Tables are created automatically from <code class="language-plaintext highlighter-rouge">scripts/ddl.cjs</code> and removed afterwards.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">AN5_DATABASE_URL</span><span class="o">=</span><span class="s2">"postgres://user:pass@localhost:5432/db"</span> npm run <span class="nb">test</span>:live
+</code></pre></div></div>
+
+<p>The harness skips gracefully when the database is unreachable, so <code class="language-plaintext highlighter-rouge">npm test</code> stays green offline.</p>
+
+<h2 id="browser-support">Browser Support</h2>
+
+<p><code class="language-plaintext highlighter-rouge">@an5/adapters/browser</code> is a Node-builtin-free entrypoint. The example proves it in
+two ways: the CRUD suite runs against <code class="language-plaintext highlighter-rouge">sql.js</code> (WASM) in memory, and an esbuild
+bundle check verifies the browser build contains no Node built-ins and exposes
+<code class="language-plaintext highlighter-rouge">createBrowserSqliteAdapter</code>, <code class="language-plaintext highlighter-rouge">SqliteBrowserEngine</code>, and the sheets adapters.</p>
+
+<h2 id="language-examples">Language Examples</h2>
+
+<p>Each <code class="language-plaintext highlighter-rouge">examples/</code> language mirrors the generated client for that language:</p>
+
+<ul>
+  <li><strong>TypeScript</strong> (<code class="language-plaintext highlighter-rouge">examples/typescript/crud.ts</code>) — uses <code class="language-plaintext highlighter-rouge">@an5/adapters</code> with generated
+types against an in-memory SQLite database. Offline-runnable after <code class="language-plaintext highlighter-rouge">npm run build</code>.</li>
+  <li><strong>Go</strong> (<code class="language-plaintext highlighter-rouge">examples/golang/</code>) — standalone Go module that runs the generated
+<code class="language-plaintext highlighter-rouge">an5client</code> against SQLite via <code class="language-plaintext highlighter-rouge">modernc.org/sqlite</code>. First run needs
+<code class="language-plaintext highlighter-rouge">go mod download</code> (network).</li>
+  <li><strong>.NET</strong> (<code class="language-plaintext highlighter-rouge">examples/dotnet/</code>) — console app using the generated <code class="language-plaintext highlighter-rouge">An5DbContext</code>
+against SQL Server. Builds offline; skips the live run when no SQL Server is reachable.</li>
+  <li><strong>Rust</strong> (<code class="language-plaintext highlighter-rouge">examples/rust/</code>) — binary crate that drives the generated
+<code class="language-plaintext highlighter-rouge">an5-client</code> model handles against SQLite through the adapter runtime and
+<code class="language-plaintext highlighter-rouge">sqlx</code>, so all DML goes through the ORM. Demonstrates <code class="language-plaintext highlighter-rouge">StringFilter</code> /
+<code class="language-plaintext highlighter-rouge">IntFilter</code> / <code class="language-plaintext highlighter-rouge">BoolFilter</code>, nested <code class="language-plaintext highlighter-rouge">AND</code>/<code class="language-plaintext highlighter-rouge">OR</code> composition, <code class="language-plaintext highlighter-rouge">orderBy</code> + <code class="language-plaintext highlighter-rouge">take</code>,
+relation filtering, <code class="language-plaintext highlighter-rouge">count</code>, <code class="language-plaintext highlighter-rouge">update</code>, <code class="language-plaintext highlighter-rouge">delete</code> and the vector helpers. First
+run downloads crates.</li>
+  <li><strong>Python</strong> (<code class="language-plaintext highlighter-rouge">examples/python/crud.py</code>) — generated Python client; runs a live CRUD
+smoke when <code class="language-plaintext highlighter-rouge">AN5_DATABASE_URL</code> points at a postgres/mssql database, otherwise an
+import check.</li>
+</ul>
+
+<h2 id="vs-code-mcp-server">VS Code MCP Server</h2>
+
+<p>The <a href="https://github.com/an5ORM/an5OrmVScode">an5OrmVScode</a> extension ships a
+<a href="https://modelcontextprotocol.io">Model Context Protocol</a> server, so GitHub
+Copilot and other MCP clients can work with the schema directly instead of
+guessing at it from the file tree.</p>
+
+<p>On VS Code 1.101 or newer the server registers itself and appears in
+<code class="language-plaintext highlighter-rouge">MCP: List Servers</code>. On older versions run <strong>AN5: Show MCP Server
+Configuration</strong> and paste the result into <code class="language-plaintext highlighter-rouge">.vscode/mcp.json</code>.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"servers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"an5-orm"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stdio"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"&lt;extension&gt;/dist/mcp/server.js"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"cwd"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${workspaceFolder}"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The server discovers the project from its working directory: <code class="language-plaintext highlighter-rouge">an5Orm.config.js</code>,
+the <code class="language-plaintext highlighter-rouge">.an5</code> files, the installed <code class="language-plaintext highlighter-rouge">@an5/orm</code> and <code class="language-plaintext highlighter-rouge">DATABASE_URL</code>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tools</th>
+      <th>Behaviour</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5_list_models</code>, <code class="language-plaintext highlighter-rouge">an5_describe_model</code>, <code class="language-plaintext highlighter-rouge">an5_get_relations</code>, <code class="language-plaintext highlighter-rouge">an5_analyze_schema</code>, <code class="language-plaintext highlighter-rouge">an5_read_schema_file</code></td>
+      <td>Read-only, marked <code class="language-plaintext highlighter-rouge">readOnlyHint</code> so no confirmation is asked</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5_query_database</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SELECT</code> only; any other statement is rejected</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5_describe_table</code>, <code class="language-plaintext highlighter-rouge">an5_database_health</code></td>
+      <td>Read-only</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5_generate_client</code>, <code class="language-plaintext highlighter-rouge">an5_push_schema</code>, <code class="language-plaintext highlighter-rouge">an5_pull_schema</code>, <code class="language-plaintext highlighter-rouge">an5_migrate</code>, <code class="language-plaintext highlighter-rouge">an5_seed</code></td>
+      <td>Change the database or write files, so they ask for confirmation <strong>and</strong> require an explicit <code class="language-plaintext highlighter-rouge">confirm: true</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Read-only tools are also the only ones a model can call freely, so always check
+which tool ran before approving a schema change.</p>
+
 <h2 id="next-steps">Next Steps</h2>
 
 <ul>
-  <li><a href="/an5/guides/schema/">Schema Definition</a> - Learn how to define your data models</li>
-  <li><a href="/an5/guides/crud/">CRUD Operations</a> - Create, read, update, and delete data</li>
-  <li><a href="/an5/guides/transactions/">Transactions</a> - Atomic transactions and rollback</li>
+  <li><a href="/an5/guides/getting-started/">Getting Started</a> - Set up an5 in your project</li>
+  <li><a href="/an5/guides/feature-status/">Feature Status</a> - Current implementation maturity</li>
 </ul>
 
 

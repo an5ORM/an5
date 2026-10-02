@@ -241,6 +241,38 @@ npm `test:python` scripts accept either `python` or `python3` (tries `python` fi
 
 ---
 
+## 10. Workspace-wide checks
+
+Two checks span the whole workspace instead of one package. Both run from the repo root.
+
+**Test command:** `npm run test:lang` (also first in `npm test` and therefore in `npm run test:full`)
+
+| File | Description |
+|------|-------------|
+| `scripts/check-english-only.mjs` | English-only guard over every source, config and doc file |
+
+**What is tested:**
+- Every comment, error message, config value and document is English-only
+- Reported per file: `path:line:column [kind] U+XXXX "char" — excerpt`
+- Fails on Vietnamese letters (`đ ơ ư ă`, U+1EA0–U+1EF9), combining marks, letters outside the Latin script, and Latin letters outside the Western/Central European repertoire <!-- an5:allow-non-english -->
+- Skips build output, dependency trees, lockfiles, minified files and the generated `_site`
+- Reports the files it skipped via pragma, so an exemption stays visible
+
+**Exempting intentional non-English text:**
+
+| Marker | Scope |
+|--------|-------|
+| `an5:allow-non-english` | the line it appears on |
+| `an5:allow-non-english-file` | the whole file, but only when it sits in the file header |
+
+Two fixtures carry the file marker because non-English text is their subject: the .NET and Python UTF-8 round-trip tests in `an5Adapters`. The header restriction keeps this page honest — it quotes the marker to describe it, and a mention halfway down a document must not exempt the document.
+
+**Limits:** the check reads orthography, not language. Tone-stripped Vietnamese (`toi yeu ban`) is ASCII and passes; real Vietnamese prose trips the rules because its tone-marked vowels, `đ ơ ư ă`, are unavoidable in it. <!-- an5:allow-non-english -->
+
+**Other workspace checks:** `npm run test:docs` verifies the `.an5` Prism grammar against the schemas (runs in `pages.yml`).
+
+---
+
 ## Environment Variables
 
 | Variable | Required | Description |

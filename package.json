@@ -25,7 +25,7 @@
   ],
   "scripts": {
     "build":        "npm run build -w an5Adapters && npm run build -w an5Client && npm run build --workspaces --if-present",
-    "test":         "npm run build -w an5Adapters && npm run build -w an5Client && npm run test --workspaces --if-present",
+    "test":         "npm run test:lang && npm run build -w an5Adapters && npm run build -w an5Client && npm run test --workspaces --if-present",
     "test:full":    "npm run build && npm test && npm run test:generator -w an5Orm && npm run test:package:smoke -w an5Adapters && npm run test:package:smoke -w an5Client && npm run test:python -w an5Adapters && npm run test:dotnet -w an5Adapters && npm run test:go -w an5Adapters && npm run test:rust -w an5Adapters && npm run test:python -w an5Client && npm run test:dotnet -w an5Client && npm run test:go -w an5Client && npm run test:rust -w an5Client",
     "test:integration:live": "npm run test:integration:live -w an5Adapters && npm run test:integration:live -w an5Orm",
     "sync":         "git submodule update --init --recursive && git submodule foreach \"git checkout main || true\"",
@@ -35,7 +35,8 @@
     "ui":           "node an5Cli/dist/index.js ui .",
     "docs": "jekyll serve --source docs --livereload",
     "docs:build": "jekyll build --source docs",
-    "test:docs": "node docs/test/check-an5-grammar.mjs"
+    "test:docs": "node docs/test/check-an5-grammar.mjs",
+    "test:lang": "node scripts/check-english-only.mjs"
   },
   "devDependencies": {
     "typescript": "^7.0.2"

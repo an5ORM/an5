@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>an5 ORM - Modern SQL Server ORM | an5 ORM</title>
-  <meta name="description" content="A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, and NBase">
+  <title>Page Not Found | an5 ORM</title>
+  <meta name="description" content="That page does not exist">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/an5/assets/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="http://localhost:4000/an5/">
+  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="http://localhost:4000/an5/404.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="an5 ORM">
-  <meta property="og:title" content="an5 ORM - Modern SQL Server ORM">
-  <meta property="og:description" content="A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, and NBase">
-  <meta property="og:url" content="http://localhost:4000/an5/">
+  <meta property="og:title" content="Page Not Found">
+  <meta property="og:description" content="That page does not exist">
+  <meta property="og:url" content="http://localhost:4000/an5/404.html">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="an5 ORM - Modern SQL Server ORM">
-  <meta name="twitter:description" content="A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, and NBase">
+  <meta name="twitter:title" content="Page Not Found">
+  <meta name="twitter:description" content="That page does not exist">
 </head>
 <body>
 
@@ -114,176 +114,19 @@
     <!-- Main Content Area -->
     <main class="docs-content">
       <div class="docs-body card-glass">
-        <div class="hero">
-  <div class="hero-content">
-    <h1>an5 ORM</h1>
-    <p class="hero-subtitle">A modern, type-safe ORM for Every Platform</p>
-    <p class="hero-description">
-      Build data-driven applications with an intuitive API, type-safe queries, 
-      and powerful features like vector search and AI agent integration across TypeScript, Python, .NET &amp; Golang.
-    </p>
-    <div class="hero-buttons">
-      <a href="/an5/guides/getting-started/" class="btn btn-primary">Get Started</a>
-      <a href="/an5/guides/examples/" class="btn btn-secondary">Examples</a>
-      <a href="/an5/guides/feature-status/" class="btn btn-secondary">Feature Status</a>
-      <a href="/an5/guides/schema/" class="btn btn-secondary">Documentation</a>
-      <a href="https://github.com/an5ORM/an5" class="btn btn-outline">
-        <i class="fab fa-github"></i> GitHub
-      </a>
-    </div>
-  </div>
-  <div class="hero-code">
-    <pre><code class="language-typescript">import { createAn5Adapter } from '@an5/adapters';
+        ## That page does not exist
 
-const db = createAn5Adapter({
-connectionString: process.env.DATABASE_URL!,
-});
-await db.$connect();
+The link may be out of date, or the page may have been renamed. These are the
+places people usually want:
 
-// Type-safe model queries
-const users = await db.user.findMany({
-where: { email: { contains: '@example.com' } },
-orderBy: { createdAt: 'desc' },
-take: 10,
-});
+- [Getting Started](/an5/guides/getting-started/) — install and first query
+- [Schema Definition](/an5/guides/schema/) — the `.an5` syntax
+- [CRUD Operations](/an5/guides/crud/) — create, read, update, delete
+- [API Reference](/an5/guides/api-reference/) — every method and type
+- [Troubleshooting](/an5/guides/troubleshooting/) — common problems
 
-// Create record
-const user = await db.user.create({
-data: {
-email: 'john@example.com',
-name: 'John',
-}
-});</code></pre>
-
-  </div>
-</div>
-
-<h2 id="why-an5-orm">Why an5 ORM?</h2>
-
-<p>Install the published package with <code class="language-plaintext highlighter-rouge">npm install @an5/orm</code>, then use the CLI tools for schema generation and database commands.</p>
-
-<div class="features-grid">
-  <div class="feature-card">
-    <div class="feature-icon">🎯</div>
-    <h3>Type-Safe</h3>
-    <p>Full TypeScript support with autocompletion and type checking for all queries.</p>
-  </div>
-  <div class="feature-card">
-    <div class="feature-icon">📝</div>
-    <h3>Intuitive API</h3>
-    <p>Syntax that's easy to learn and powerful enough for complex queries.</p>
-  </div>
-  <div class="feature-card">
-    <div class="feature-icon">🔗</div>
-    <h3>Relations</h3>
-    <p>Define and query relations with nested includes and explicit joins.</p>
-  </div>
-  <div class="feature-card">
-    <div class="feature-icon">🔍</div>
-    <h3>Vector Search</h3>
-    <p>Built-in vector search for AI and ML applications across supported dialects.</p>
-  </div>
-  <div class="feature-card">
-    <div class="feature-icon">🤖</div>
-    <h3>AI Agent</h3>
-    <p>7 intelligent tools for natural language database queries and schema exploration.</p>
-  </div>
-  <div class="feature-card">
-    <div class="feature-icon">🔄</div>
-    <h3>Multi-Language</h3>
-    <p>Generate type-safe clients for TypeScript, Python, .NET, Golang, and Rust.</p>
-  </div>
-</div>
-
-<h2 id="quick-example">Quick Example</h2>
-
-<div class="example-tabs">
-  <div class="example-tabs-header">
-    <button class="tab-btn active" onclick="showTab('schema')">Schema</button>
-    <button class="tab-btn" onclick="showTab('query')">TypeScript</button>
-    <button class="tab-btn" onclick="showTab('golang')">Golang</button>
-    <button class="tab-btn" onclick="showTab('result')">Result</button>
-  </div>
-  <div class="tab-content active" id="schema">
-    <pre><code class="language-an5">model User {
-  id        NVARCHAR(1000) @id @default(uuid())
-  email     NVARCHAR(255)  @unique
-  name      NVARCHAR(255)?
-  createdAt DATETIME2      @default(now())
-  orders    Order[]
-
-@@map("users")
-}
-
-model Order {
-id NVARCHAR(1000) @id @default(uuid())
-total INT @default(0)
-user User @relation(fields: [userId], references: [id])
-userId NVARCHAR(1000)
-
-@@map("orders")
-}</code></pre>
-
-  </div>
-  <div class="tab-content" id="query">
-    <pre><code class="language-typescript">const users = await db.user.findMany({
-  where: { email: { contains: '@example.com' } },
-  include: {
-    orders: {
-      select: { total: true },
-      orderBy: { total: 'desc' }
-    }
-  },
-  take: 10
-});</code></pre>
-  </div>
-  <div class="tab-content" id="golang">
-    <pre><code class="language-go">// Golang ORM client example
-import an5client "github.com/an5ORM/an5Client/golang"
-
-db := an5client.NewAn5DbContextWithConnStr(sqlDB, connStr)
-users, err := db.User.FindMany(ctx, &amp;an5client.UserFindManyArgs{
-Where: &amp;an5client.UserWhereInput{
-Email: &amp;an5client.StringFilter{Contains: an5client.Ptr("@example.com")},
-},
-Take: an5client.IntPtr(10),
-})</code></pre>
-
-  </div>
-  <div class="tab-content" id="result">
-    <pre><code class="language-json">[
-  {
-    "id": "uuid-1",
-    "email": "john@example.com",
-    "name": "John",
-    "createdAt": "2026-01-15T10:30:00Z",
-    "orders": [
-      { "total": 500 },
-      { "total": 150 }
-    ]
-  }
-]</code></pre>
-  </div>
-</div>
-
-<div class="cta-section">
-  <h2>Ready to get started?</h2>
-  <p>Get up and running with an5 ORM in under 5 minutes.</p>
-  <a href="/an5/guides/getting-started/" class="btn btn-primary btn-large">
-    Start Building →
-  </a>
-</div>
-
-<script>
-function showTab(tabId) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  const target = document.getElementById(tabId);
-  if (target) target.classList.add('active');
-  if (event && event.target) event.target.classList.add('active');
-}
-</script>
-
+You can also press <kbd>/</kbd> to search the documentation, or browse the
+sidebar on the left.
 
       </div>
     </main>

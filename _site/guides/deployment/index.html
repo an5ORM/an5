@@ -1,4 +1,120 @@
-<h1 id="deployment">Deployment</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deployment | an5 ORM</title>
+  <meta name="description" content="Deploy your an5 application to production">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/an5/assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="http://localhost:4000/an5/guides/deployment/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="an5 ORM">
+  <meta property="og:title" content="Deployment">
+  <meta property="og:description" content="Deploy your an5 application to production">
+  <meta property="og:url" content="http://localhost:4000/an5/guides/deployment/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Deployment">
+  <meta name="twitter:description" content="Deploy your an5 application to production">
+</head>
+<body>
+
+  <!-- Background Glow FX -->
+  <div class="hero-glow glow-1"></div>
+  <div class="hero-glow glow-2"></div>
+
+  <!-- ─── MAIN LAYOUT ───────────────────────────────────────────────────────── -->
+  <div class="docs-layout container">
+    <!-- Sidebar Navigation -->
+    <aside class="docs-sidebar" id="docsSidebar">
+      <!-- Mobile header: logo + menu toggle on the same row -->
+      <div class="sidebar-header">
+        <a href="/an5/" class="sidebar-logo">
+          <span class="logo-badge">AN5</span>
+          <span class="logo-text">ORM</span>
+        </a>
+        <button type="button" class="sidebar-toggle" id="sidebarToggle"
+                aria-expanded="false" aria-controls="sidebarGroups"
+                aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+
+      <div class="docs-search">
+        <input type="search" id="docsSearch" placeholder="Search docs…  /"
+               autocomplete="off" spellcheck="false"
+               data-index-url="/an5/search.json"
+               aria-label="Search the documentation"
+               aria-describedby="docsSearchHint">
+        <p class="docs-search-empty" id="docsSearchEmpty" hidden>No match.</p>
+      </div>
+
+      <div class="sidebar-groups" id="sidebarGroups">
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Getting Started</div>
+        <ul>
+          <li><a href="/an5/guides/getting-started/"><i class="fas fa-rocket"></i> Overview & Installation</a></li>
+          <li><a href="/an5/guides/configuration/"><i class="fas fa-sliders-h"></i> Configuration</a></li>
+          <li><a href="/an5/guides/cli/"><i class="fas fa-terminal"></i> CLI Commands</a></li>
+          <li><a href="/an5/guides/feature-status/"><i class="fas fa-tasks"></i> Feature Status</a></li>
+          <li><a href="/an5/guides/examples/"><i class="fas fa-code"></i> Examples</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Core Concepts</div>
+        <ul>
+          <li><a href="/an5/guides/schema/"><i class="fas fa-file-code"></i> Schema Definition (.an5)</a></li>
+          <li><a href="/an5/guides/crud/"><i class="fas fa-database"></i> CRUD Operations</a></li>
+          <li><a href="/an5/guides/relations/"><i class="fas fa-project-diagram"></i> Relations & Joins</a></li>
+          <li><a href="/an5/guides/queries/"><i class="fas fa-search"></i> Advanced Queries</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Advanced Features</div>
+        <ul>
+          <li><a href="/an5/guides/browser-support/"><i class="fas fa-globe"></i> Browser Support</a></li>
+          <li><a href="/an5/guides/transactions/"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+          <li><a href="/an5/guides/vector-search/"><i class="fas fa-brain"></i> Vector Search</a></li>
+          <li><a href="/an5/guides/agent-tools/"><i class="fas fa-robot"></i> AI Agent Tools</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Internals</div>
+        <ul>
+          <li><a href="/an5/architecture/"><i class="fas fa-diagram-project"></i> Repository Map</a></li>
+          <li><a href="/an5/genkit/"><i class="fas fa-wand-magic-sparkles"></i> Genkit Integration</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Reference & Ops</div>
+        <ul>
+          <li><a href="/an5/guides/api-reference/"><i class="fas fa-book"></i> API Reference</a></li>
+          <li><a href="/an5/guides/architecture/"><i class="fas fa-sitemap"></i> Architecture</a></li>
+          <li><a href="/an5/guides/deployment/"><i class="fas fa-cloud-upload-alt"></i> Deployment</a></li>
+          <li><a href="/an5/guides/troubleshooting/"><i class="fas fa-wrench"></i> Troubleshooting</a></li>
+        </ul>
+      </div>
+
+      <!-- The header is hidden on mobile, so keep the one action that has no
+           sidebar entry reachable from the menu. -->
+      <a class="sidebar-github" href="https://github.com/an5ORM/an5" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i> GitHub
+      </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="docs-content">
+      <div class="docs-body card-glass">
+        <h1 id="deployment">Deployment</h1>
 
 <p>Deploy an5 applications to various production environments.</p>
 
@@ -36,7 +152,7 @@
 
 <h3 id="connection-setup">Connection Setup</h3>
 
-<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@an5/adapters</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="c1">// Uses DATABASE_URL from the environment</span>
 <span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
@@ -50,18 +166,23 @@
 <h3 id="azure-app-service">Azure App Service</h3>
 
 <ol>
-  <li><strong>Create App Service</strong>
+  <li>
+    <p><strong>Create App Service</strong></p>
+
     <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>az webapp create <span class="nt">--resource-group</span> myRG <span class="nt">--plan</span> myPlan <span class="nt">--name</span> myApp
 </code></pre></div>    </div>
   </li>
-  <li><strong>Configure Settings</strong>
+  <li>
+    <p><strong>Configure Settings</strong></p>
+
     <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>az webapp config appsettings <span class="nb">set</span> <span class="se">\</span>
   <span class="nt">--resource-group</span> myRG <span class="se">\</span>
   <span class="nt">--name</span> myApp <span class="se">\</span>
   <span class="nt">--settings</span> <span class="nv">DATABASE_URL</span><span class="o">=</span><span class="s2">"sqlserver://..."</span>
 </code></pre></div>    </div>
   </li>
-  <li><strong>Deploy</strong>
+  <li>
+    <p><strong>Deploy</strong></p>
     <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push azure main
 </code></pre></div>    </div>
   </li>
@@ -70,19 +191,26 @@
 <h3 id="aws-elastic-beanstalk">AWS Elastic Beanstalk</h3>
 
 <ol>
-  <li><strong>Initialize</strong>
+  <li>
+    <p><strong>Initialize</strong></p>
+
     <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eb init <span class="nt">-p</span> node.js my-app
 </code></pre></div>    </div>
   </li>
-  <li><strong>Create Environment</strong>
+  <li>
+    <p><strong>Create Environment</strong></p>
+
     <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eb create production
 </code></pre></div>    </div>
   </li>
-  <li><strong>Set Environment Variables</strong>
+  <li>
+    <p><strong>Set Environment Variables</strong></p>
+
     <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eb setenv <span class="nv">DATABASE_URL</span><span class="o">=</span><span class="s2">"sqlserver://..."</span>
 </code></pre></div>    </div>
   </li>
-  <li><strong>Deploy</strong>
+  <li>
+    <p><strong>Deploy</strong></p>
     <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eb deploy
 </code></pre></div>    </div>
   </li>
@@ -91,6 +219,7 @@
 <h3 id="docker">Docker</h3>
 
 <p><strong>Dockerfile:</strong></p>
+
 <div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> node:24-alpine</span>
 
 <span class="k">WORKDIR</span><span class="s"> /app</span>
@@ -107,7 +236,8 @@
 </code></pre></div></div>
 
 <p><strong>docker-compose.yml:</strong></p>
-<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">3.8'</span>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">3.8"</span>
 <span class="na">services</span><span class="pi">:</span>
   <span class="na">app</span><span class="pi">:</span>
     <span class="na">build</span><span class="pi">:</span> <span class="s">.</span>
@@ -133,6 +263,7 @@
 <h3 id="kubernetes">Kubernetes</h3>
 
 <p><strong>deployment.yaml:</strong></p>
+
 <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">apps/v1</span>
 <span class="na">kind</span><span class="pi">:</span> <span class="s">Deployment</span>
 <span class="na">metadata</span><span class="pi">:</span>
@@ -148,16 +279,16 @@
         <span class="na">app</span><span class="pi">:</span> <span class="s">my-app</span>
     <span class="na">spec</span><span class="pi">:</span>
       <span class="na">containers</span><span class="pi">:</span>
-      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">my-app</span>
-        <span class="na">image</span><span class="pi">:</span> <span class="s">my-app:latest</span>
-        <span class="na">ports</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">3000</span>
-        <span class="na">env</span><span class="pi">:</span>
-        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">DATABASE_URL</span>
-          <span class="na">valueFrom</span><span class="pi">:</span>
-            <span class="na">secretKeyRef</span><span class="pi">:</span>
-              <span class="na">name</span><span class="pi">:</span> <span class="s">db-secret</span>
-              <span class="na">key</span><span class="pi">:</span> <span class="s">url</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">my-app</span>
+          <span class="na">image</span><span class="pi">:</span> <span class="s">my-app:latest</span>
+          <span class="na">ports</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">3000</span>
+          <span class="na">env</span><span class="pi">:</span>
+            <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">DATABASE_URL</span>
+              <span class="na">valueFrom</span><span class="pi">:</span>
+                <span class="na">secretKeyRef</span><span class="pi">:</span>
+                  <span class="na">name</span><span class="pi">:</span> <span class="s">db-secret</span>
+                  <span class="na">key</span><span class="pi">:</span> <span class="s">url</span>
 </code></pre></div></div>
 
 <h2 id="database-migrations">Database Migrations</h2>
@@ -180,12 +311,12 @@ npm run db:migrate:rollback
 
 <h3 id="health-check-endpoint">Health Check Endpoint</h3>
 
-<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">app</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">/health</span><span class="dl">'</span><span class="p">,</span> <span class="k">async </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">app</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="dl">"</span><span class="s2">/health</span><span class="dl">"</span><span class="p">,</span> <span class="k">async </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
   <span class="k">try</span> <span class="p">{</span>
-    <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$queryRawUnsafe</span><span class="p">(</span><span class="dl">'</span><span class="s1">SELECT 1</span><span class="dl">'</span><span class="p">);</span>
-    <span class="nx">res</span><span class="p">.</span><span class="nf">json</span><span class="p">({</span> <span class="na">status</span><span class="p">:</span> <span class="dl">'</span><span class="s1">healthy</span><span class="dl">'</span> <span class="p">});</span>
+    <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$queryRawUnsafe</span><span class="p">(</span><span class="dl">"</span><span class="s2">SELECT 1</span><span class="dl">"</span><span class="p">);</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nf">json</span><span class="p">({</span> <span class="na">status</span><span class="p">:</span> <span class="dl">"</span><span class="s2">healthy</span><span class="dl">"</span> <span class="p">});</span>
   <span class="p">}</span> <span class="k">catch </span><span class="p">(</span><span class="na">error</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">res</span><span class="p">.</span><span class="nf">status</span><span class="p">(</span><span class="mi">503</span><span class="p">).</span><span class="nf">json</span><span class="p">({</span> <span class="na">status</span><span class="p">:</span> <span class="dl">'</span><span class="s1">unhealthy</span><span class="dl">'</span><span class="p">,</span> <span class="na">error</span><span class="p">:</span> <span class="nx">error</span><span class="p">.</span><span class="nx">message</span> <span class="p">});</span>
+    <span class="nx">res</span><span class="p">.</span><span class="nf">status</span><span class="p">(</span><span class="mi">503</span><span class="p">).</span><span class="nf">json</span><span class="p">({</span> <span class="na">status</span><span class="p">:</span> <span class="dl">"</span><span class="s2">unhealthy</span><span class="dl">"</span><span class="p">,</span> <span class="na">error</span><span class="p">:</span> <span class="nx">error</span><span class="p">.</span><span class="nx">message</span> <span class="p">});</span>
   <span class="p">}</span>
 <span class="p">});</span>
 </code></pre></div></div>
@@ -213,3 +344,172 @@ npm run db:migrate:rollback
   <li>Restrict IP whitelist</li>
   <li>Use private endpoints</li>
 </ul>
+
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ─── FOOTER ────────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="/an5/" class="nav-logo">
+          <span class="logo-badge">AN5</span>
+          <span class="logo-text">ORM</span>
+        </a>
+        <p>Lightweight, type-safe ORM for TypeScript, Python, .NET, Golang, and Rust.</p>
+        <div class="footer-social">
+          <a href="https://github.com/an5ORM" target="_blank" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="https://open-vsx.org/namespace/an5orm" target="_blank" aria-label="Open VSX">
+            <i class="fas fa-puzzle-piece"></i>
+          </a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Getting Started</h4>
+          <ul>
+            <li><a href="/an5/guides/getting-started/">Installation</a></li>
+            <li><a href="/an5/guides/configuration/">Configuration</a></li>
+            <li><a href="/an5/guides/cli/">CLI Tools</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Core Concepts</h4>
+          <ul>
+            <li><a href="/an5/guides/schema/">Schema</a></li>
+            <li><a href="/an5/guides/crud/">CRUD API</a></li>
+            <li><a href="/an5/guides/relations/">Relations</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Ecosystem & Reference</h4>
+          <ul>
+            <li><a href="/an5/guides/api-reference/">API Reference</a></li>
+            <li><a href="/an5/guides/agent-tools/">AI Agent Tools</a></li>
+            <li><a href="https://github.com/an5ORM/an5" target="_blank">GitHub Repository</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 AN5 ORM · Open Source under MIT License</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ini.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-tsx.min.js"></script>
+  <script src="/an5/assets/js/prism-an5.js"></script>
+
+  <script src="/an5/assets/js/docs.js"></script>
+
+  <script>
+    // Highlight the sidebar entry for this page. Compare normalised paths
+    // rather than a substring: '/guides/schema/' must not light up
+    // '/guides/schema-relations/', and the home link must not match every page.
+    (() => {
+      const norm = p => p.replace(/\/index\.html$/, '/').replace(/\/$/, '');
+      const current = norm(window.location.pathname);
+      document.querySelectorAll('.docs-sidebar a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+        const target = norm(new URL(href, window.location.origin).pathname);
+        if (target === current) link.classList.add('active');
+      });
+    })();
+
+    // Mobile docs menu toggle
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarGroups = document.getElementById('sidebarGroups');
+    const sidebar = document.getElementById('docsSidebar');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        const isOpen = sidebarGroups ? sidebarGroups.classList.toggle('open') : false;
+        if (sidebar) sidebar.classList.toggle('menu-open', isOpen);
+        sidebarToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        const icon = sidebarToggle.querySelector('i');
+        if (icon) {
+          icon.className = isOpen ? 'fas fa-xmark' : 'fas fa-bars';
+        }
+      });
+    }
+
+    // Mobile sidebar accordion
+    if (window.innerWidth <= 768) {
+      document.querySelectorAll('.sidebar-group').forEach(group => {
+        const heading = group.querySelector('.sidebar-heading');
+        const hasActiveLink = group.querySelector('a.active');
+        
+        if (hasActiveLink) {
+          group.classList.remove('collapsed');
+        } else {
+          group.classList.add('collapsed');
+        }
+        
+        if (heading) {
+          heading.addEventListener('click', () => {
+            group.classList.toggle('collapsed');
+          });
+        }
+      });
+    }
+
+    // Interactive tabs switcher
+    document.querySelectorAll('.example-tabs').forEach(tabs => {
+      const buttons = tabs.querySelectorAll('.tab-btn');
+      const contents = tabs.querySelectorAll('.tab-content');
+      buttons.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+          buttons.forEach(b => b.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          if (contents[index]) contents[index].classList.add('active');
+        });
+      });
+    });
+
+    // Code window decorator (wraps pre blocks into styled windows with dots)
+    document.querySelectorAll('.docs-body pre').forEach(pre => {
+      if (!pre.parentElement.classList.contains('code-window')) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'code-window';
+        
+        const titlebar = document.createElement('div');
+        titlebar.className = 'code-titlebar';
+        titlebar.innerHTML = '<span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>';
+        
+        const code = pre.querySelector('code');
+        if (code) {
+          const match = code.className.match(/language-(\w+)/);
+          if (match) {
+            const langSpan = document.createElement('span');
+            langSpan.className = 'code-filename';
+            langSpan.textContent = match[1].toUpperCase();
+            titlebar.appendChild(langSpan);
+          }
+        }
+        
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(titlebar);
+        wrapper.appendChild(pre);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -11,7 +11,15 @@
   <link rel="stylesheet" href="/an5/assets/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="http://localhost:4000/an5/guides/browser-support/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="an5 ORM">
+  <meta property="og:title" content="Browser Support & In-Browser Databases">
+  <meta property="og:description" content="Learn how to use AN5 ORM adapters directly in Web Browsers with SQLite WASM, sql.js, OPFS, and Google Sheets.">
+  <meta property="og:url" content="http://localhost:4000/an5/guides/browser-support/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Browser Support & In-Browser Databases">
+  <meta name="twitter:description" content="Learn how to use AN5 ORM adapters directly in Web Browsers with SQLite WASM, sql.js, OPFS, and Google Sheets.">
 </head>
 <body>
 
@@ -19,35 +27,33 @@
   <div class="hero-glow glow-1"></div>
   <div class="hero-glow glow-2"></div>
 
-  <!-- ─── NAV ─────────────────────────────────────────────────────────────── -->
-  <nav class="nav" id="nav">
-    <div class="nav-inner">
-      <a href="/an5/" class="nav-logo">
-        <span class="logo-badge">AN5</span>
-        <span class="logo-text">ORM</span>
-        <span class="logo-docs-tag">Docs</span>
-      </a>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="/an5/">Home</a></li>
-        <li><a href="/an5/guides/getting-started/">Getting Started</a></li>
-        <li><a href="/an5/guides/schema/">Schema</a></li>
-        <li><a href="/an5/guides/crud/">CRUD</a></li>
-        <li><a href="/an5/guides/agent-tools/">AI Agent</a></li>
-        <li><a href="/an5/guides/api-reference/">API</a></li>
-        <li><a href="https://github.com/an5ORM/an5" target="_blank" class="nav-github">
-          <i class="fab fa-github"></i> GitHub
-        </a></li>
-      </ul>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
-
   <!-- ─── MAIN LAYOUT ───────────────────────────────────────────────────────── -->
   <div class="docs-layout container">
     <!-- Sidebar Navigation -->
     <aside class="docs-sidebar" id="docsSidebar">
+      <!-- Mobile header: logo + menu toggle on the same row -->
+      <div class="sidebar-header">
+        <a href="/an5/" class="sidebar-logo">
+          <span class="logo-badge">AN5</span>
+          <span class="logo-text">ORM</span>
+        </a>
+        <button type="button" class="sidebar-toggle" id="sidebarToggle"
+                aria-expanded="false" aria-controls="sidebarGroups"
+                aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+
+      <div class="docs-search">
+        <input type="search" id="docsSearch" placeholder="Search docs…  /"
+               autocomplete="off" spellcheck="false"
+               data-index-url="/an5/search.json"
+               aria-label="Search the documentation"
+               aria-describedby="docsSearchHint">
+        <p class="docs-search-empty" id="docsSearchEmpty" hidden>No match.</p>
+      </div>
+
+      <div class="sidebar-groups" id="sidebarGroups">
       <div class="sidebar-group">
         <div class="sidebar-heading">Getting Started</div>
         <ul>
@@ -55,6 +61,7 @@
           <li><a href="/an5/guides/configuration/"><i class="fas fa-sliders-h"></i> Configuration</a></li>
           <li><a href="/an5/guides/cli/"><i class="fas fa-terminal"></i> CLI Commands</a></li>
           <li><a href="/an5/guides/feature-status/"><i class="fas fa-tasks"></i> Feature Status</a></li>
+          <li><a href="/an5/guides/examples/"><i class="fas fa-code"></i> Examples</a></li>
         </ul>
       </div>
 
@@ -79,6 +86,14 @@
       </div>
 
       <div class="sidebar-group">
+        <div class="sidebar-heading">Internals</div>
+        <ul>
+          <li><a href="/an5/architecture/"><i class="fas fa-diagram-project"></i> Repository Map</a></li>
+          <li><a href="/an5/genkit/"><i class="fas fa-wand-magic-sparkles"></i> Genkit Integration</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
         <div class="sidebar-heading">Reference & Ops</div>
         <ul>
           <li><a href="/an5/guides/api-reference/"><i class="fas fa-book"></i> API Reference</a></li>
@@ -86,6 +101,13 @@
           <li><a href="/an5/guides/deployment/"><i class="fas fa-cloud-upload-alt"></i> Deployment</a></li>
           <li><a href="/an5/guides/troubleshooting/"><i class="fas fa-wrench"></i> Troubleshooting</a></li>
         </ul>
+      </div>
+
+      <!-- The header is hidden on mobile, so keep the one action that has no
+           sidebar entry reachable from the menu. -->
+      <a class="sidebar-github" href="https://github.com/an5ORM/an5" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i> GitHub
+      </a>
       </div>
     </aside>
 
@@ -118,8 +140,8 @@
   <span class="nx">createBrowserSqliteAdapter</span><span class="p">,</span>
   <span class="nx">createAn5SheetsAdapter</span><span class="p">,</span>
   <span class="nx">An5SheetsAdapter</span><span class="p">,</span>
-  <span class="nx">SqliteBrowserEngine</span>
-<span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters/browser</span><span class="dl">'</span><span class="p">;</span>
+  <span class="nx">SqliteBrowserEngine</span><span class="p">,</span>
+<span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@an5/adapters/browser</span><span class="dl">"</span><span class="p">;</span>
 </code></pre></div></div>
 
 <hr />
@@ -139,11 +161,13 @@
 
 <h3 id="quickstart-example-with-sqljs--wasm">Quickstart Example (with <code class="language-plaintext highlighter-rouge">sql.js</code> / WASM)</h3>
 
-<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">initSqlJs</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">sql.js</span><span class="dl">'</span><span class="p">;</span>
-<span class="k">import</span> <span class="p">{</span> <span class="nx">createBrowserSqliteAdapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters/browser</span><span class="dl">'</span><span class="p">;</span>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">initSqlJs</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">sql.js</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">createBrowserSqliteAdapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@an5/adapters/browser</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="c1">// Initialize sql.js WebAssembly instance</span>
-<span class="kd">const</span> <span class="nx">SQL</span> <span class="o">=</span> <span class="k">await</span> <span class="nf">initSqlJs</span><span class="p">({</span> <span class="na">locateFile</span><span class="p">:</span> <span class="nx">file</span> <span class="o">=&gt;</span> <span class="s2">`https://sql.js.org/dist/</span><span class="p">${</span><span class="nx">file</span><span class="p">}</span><span class="s2">`</span> <span class="p">});</span>
+<span class="kd">const</span> <span class="nx">SQL</span> <span class="o">=</span> <span class="k">await</span> <span class="nf">initSqlJs</span><span class="p">({</span>
+  <span class="na">locateFile</span><span class="p">:</span> <span class="p">(</span><span class="nx">file</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="s2">`https://sql.js.org/dist/</span><span class="p">${</span><span class="nx">file</span><span class="p">}</span><span class="s2">`</span><span class="p">,</span>
+<span class="p">});</span>
 <span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SQL</span><span class="p">.</span><span class="nc">Database</span><span class="p">();</span>
 
 <span class="c1">// Create driver bridge</span>
@@ -157,13 +181,13 @@
     <span class="p">}</span>
     <span class="nx">stmt</span><span class="p">.</span><span class="nf">free</span><span class="p">();</span>
     <span class="k">return</span> <span class="nx">rows</span><span class="p">;</span>
-  <span class="p">}</span>
+  <span class="p">},</span>
 <span class="p">};</span>
 
 <span class="c1">// Initialize AN5 Browser Adapter</span>
 <span class="kd">const</span> <span class="nx">adapter</span> <span class="o">=</span> <span class="nf">createBrowserSqliteAdapter</span><span class="p">({</span>
   <span class="na">driver</span><span class="p">:</span> <span class="nx">sqliteDriver</span><span class="p">,</span>
-  <span class="na">dialect</span><span class="p">:</span> <span class="dl">'</span><span class="s1">sqlite</span><span class="dl">'</span>
+  <span class="na">dialect</span><span class="p">:</span> <span class="dl">"</span><span class="s2">sqlite</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">});</span>
 
 <span class="c1">// Setup table schema</span>
@@ -177,29 +201,27 @@
 `</span><span class="p">);</span>
 
 <span class="c1">// Type-safe CRUD</span>
-<span class="kd">const</span> <span class="nx">userClient</span> <span class="o">=</span> <span class="nx">adapter</span><span class="p">.</span><span class="nf">table</span><span class="p">(</span><span class="dl">'</span><span class="s1">users</span><span class="dl">'</span><span class="p">);</span>
-
-<span class="k">await</span> <span class="nx">userClient</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
-  <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">u1</span><span class="dl">'</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Alice</span><span class="dl">'</span><span class="p">,</span> <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">alice@example.com</span><span class="dl">'</span><span class="p">,</span> <span class="na">active</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}</span>
+<span class="k">await</span> <span class="nx">adapter</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="dl">"</span><span class="s2">u1</span><span class="dl">"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Alice</span><span class="dl">"</span><span class="p">,</span> <span class="na">email</span><span class="p">:</span> <span class="dl">"</span><span class="s2">alice@example.com</span><span class="dl">"</span><span class="p">,</span> <span class="na">active</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span>
 <span class="p">});</span>
 
-<span class="kd">const</span> <span class="nx">activeUsers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">userClient</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
+<span class="kd">const</span> <span class="nx">activeUsers</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">adapter</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
   <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">active</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span>
-  <span class="na">orderBy</span><span class="p">:</span> <span class="p">{</span> <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">asc</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="na">orderBy</span><span class="p">:</span> <span class="p">{</span> <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">asc</span><span class="dl">"</span> <span class="p">},</span>
 <span class="p">});</span>
 
-<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Active users:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">activeUsers</span><span class="p">);</span>
+<span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">"</span><span class="s2">Active users:</span><span class="dl">"</span><span class="p">,</span> <span class="nx">activeUsers</span><span class="p">);</span>
 </code></pre></div></div>
 
 <h3 id="in-browser-vector-search">In-Browser Vector Search</h3>
 
 <p><code class="language-plaintext highlighter-rouge">createBrowserSqliteAdapter</code> includes built-in vector similarity search using Cosine, Euclidean, or Dot product metrics:</p>
 
-<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">items</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">adapter</span><span class="p">.</span><span class="nf">table</span><span class="p">(</span><span class="dl">'</span><span class="s1">Product</span><span class="dl">'</span><span class="p">).</span><span class="nf">vectorSearch</span><span class="p">({</span>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">items</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">adapter</span><span class="p">.</span><span class="nx">product</span><span class="p">.</span><span class="nf">vectorSearch</span><span class="p">({</span>
   <span class="na">vector</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.43</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">],</span>
-  <span class="na">vectorField</span><span class="p">:</span> <span class="dl">'</span><span class="s1">embedding</span><span class="dl">'</span><span class="p">,</span>
+  <span class="na">vectorField</span><span class="p">:</span> <span class="dl">"</span><span class="s2">embedding</span><span class="dl">"</span><span class="p">,</span>
   <span class="na">take</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-  <span class="na">distanceMetric</span><span class="p">:</span> <span class="dl">'</span><span class="s1">cosine</span><span class="dl">'</span>
+  <span class="na">distanceMetric</span><span class="p">:</span> <span class="dl">"</span><span class="s2">cosine</span><span class="dl">"</span><span class="p">,</span>
 <span class="p">});</span>
 </code></pre></div></div>
 
@@ -211,27 +233,27 @@
 
 <h3 id="setup-with-oauth-token-or-api-key">Setup with OAuth Token or API Key</h3>
 
-<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5SheetsAdapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters/browser</span><span class="dl">'</span><span class="p">;</span>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5SheetsAdapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@an5/adapters/browser</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="c1">// Initialize with OAuth Access Token or API Key</span>
 <span class="kd">const</span> <span class="nx">sheetsDb</span> <span class="o">=</span> <span class="nf">createAn5SheetsAdapter</span><span class="p">({</span>
-  <span class="na">spreadsheetId</span><span class="p">:</span> <span class="dl">'</span><span class="s1">YOUR_GOOGLE_SPREADSHEET_ID</span><span class="dl">'</span><span class="p">,</span>
-  <span class="na">accessToken</span><span class="p">:</span> <span class="dl">'</span><span class="s1">YOUR_OATH_ACCESS_TOKEN</span><span class="dl">'</span> <span class="c1">// or apiKey: 'YOUR_API_KEY'</span>
+  <span class="na">spreadsheetId</span><span class="p">:</span> <span class="dl">"</span><span class="s2">YOUR_GOOGLE_SPREADSHEET_ID</span><span class="dl">"</span><span class="p">,</span>
+  <span class="na">accessToken</span><span class="p">:</span> <span class="dl">"</span><span class="s2">YOUR_OATH_ACCESS_TOKEN</span><span class="dl">"</span><span class="p">,</span> <span class="c1">// or apiKey: 'YOUR_API_KEY'</span>
 <span class="p">});</span>
 
 <span class="c1">// Read rows (model/tab name)</span>
 <span class="kd">const</span> <span class="nx">products</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">sheetsDb</span><span class="p">.</span><span class="nx">products</span><span class="p">.</span><span class="nf">findMany</span><span class="p">({</span>
-  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">category</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Electronics</span><span class="dl">'</span> <span class="p">}</span>
+  <span class="na">where</span><span class="p">:</span> <span class="p">{</span> <span class="na">category</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Electronics</span><span class="dl">"</span> <span class="p">},</span>
 <span class="p">});</span>
 
 <span class="c1">// Insert new row (auto-creates headers if tab is empty)</span>
 <span class="k">await</span> <span class="nx">sheetsDb</span><span class="p">.</span><span class="nx">products</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
   <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
-    <span class="na">id</span><span class="p">:</span> <span class="dl">'</span><span class="s1">prod_101</span><span class="dl">'</span><span class="p">,</span>
-    <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Wireless Mouse</span><span class="dl">'</span><span class="p">,</span>
+    <span class="na">id</span><span class="p">:</span> <span class="dl">"</span><span class="s2">prod_101</span><span class="dl">"</span><span class="p">,</span>
+    <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Wireless Mouse</span><span class="dl">"</span><span class="p">,</span>
     <span class="na">price</span><span class="p">:</span> <span class="mf">29.99</span><span class="p">,</span>
-    <span class="na">category</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Electronics</span><span class="dl">'</span>
-  <span class="p">}</span>
+    <span class="na">category</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Electronics</span><span class="dl">"</span><span class="p">,</span>
+  <span class="p">},</span>
 <span class="p">});</span>
 </code></pre></div></div>
 
@@ -242,12 +264,12 @@
 <h3 id="vite--react">Vite / React</h3>
 
 <div class="language-tsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// App.tsx</span>
-<span class="k">import</span> <span class="nx">React</span><span class="p">,</span> <span class="p">{</span> <span class="nx">useEffect</span><span class="p">,</span> <span class="nx">useState</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">react</span><span class="dl">'</span><span class="p">;</span>
-<span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5SheetsAdapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters/browser</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="nx">React</span><span class="p">,</span> <span class="p">{</span> <span class="nx">useEffect</span><span class="p">,</span> <span class="nx">useState</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">react</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5SheetsAdapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@an5/adapters/browser</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5SheetsAdapter</span><span class="p">({</span>
   <span class="na">spreadsheetId</span><span class="p">:</span> <span class="k">import</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">VITE_SHEETS_ID</span><span class="p">,</span>
-  <span class="na">apiKey</span><span class="p">:</span> <span class="k">import</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">VITE_GOOGLE_API_KEY</span>
+  <span class="na">apiKey</span><span class="p">:</span> <span class="k">import</span><span class="p">.</span><span class="nx">meta</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">VITE_GOOGLE_API_KEY</span><span class="p">,</span>
 <span class="p">});</span>
 
 <span class="k">export</span> <span class="kd">function</span> <span class="nf">ProductList</span><span class="p">()</span> <span class="p">{</span>
@@ -259,8 +281,10 @@
 
   <span class="k">return </span><span class="p">(</span>
     <span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
-      <span class="si">{</span><span class="nx">items</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span> <span class="p">(</span>
-        <span class="p">&lt;</span><span class="nt">li</span> <span class="na">key</span><span class="p">=</span><span class="si">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="p">&gt;</span><span class="si">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span> - $<span class="si">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">price</span><span class="si">}</span><span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+      <span class="si">{</span><span class="nx">items</span><span class="p">.</span><span class="nf">map</span><span class="p">((</span><span class="nx">item</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">(</span>
+        <span class="p">&lt;</span><span class="nt">li</span> <span class="na">key</span><span class="p">=</span><span class="si">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="si">}</span><span class="p">&gt;</span>
+          <span class="si">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span> - $<span class="si">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">price</span><span class="si">}</span>
+        <span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
       <span class="p">))</span><span class="si">}</span>
     <span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
   <span class="p">);</span>
@@ -271,9 +295,9 @@
 
 <p>Add <code class="language-plaintext highlighter-rouge">'use client';</code> at top of file when importing <code class="language-plaintext highlighter-rouge">@an5/adapters/browser</code>:</p>
 
-<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="dl">'</span><span class="s1">use client</span><span class="dl">'</span><span class="p">;</span>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="dl">"</span><span class="s2">use client</span><span class="dl">"</span><span class="p">;</span>
 
-<span class="k">import</span> <span class="p">{</span> <span class="nx">createBrowserSqliteAdapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters/browser</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">createBrowserSqliteAdapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">@an5/adapters/browser</span><span class="dl">"</span><span class="p">;</span>
 
 <span class="c1">// Safe to use in Client Components and custom hooks</span>
 </code></pre></div></div>
@@ -331,7 +355,7 @@
           <span class="logo-badge">AN5</span>
           <span class="logo-text">ORM</span>
         </a>
-        <p>Lightweight, type-safe ORM for TypeScript, Python, .NET, and Golang.</p>
+        <p>Lightweight, type-safe ORM for TypeScript, Python, .NET, Golang, and Rust.</p>
         <div class="footer-social">
           <a href="https://github.com/an5ORM" target="_blank" aria-label="GitHub">
             <i class="fab fa-github"></i>
@@ -381,24 +405,45 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ini.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-tsx.min.js"></script>
+  <script src="/an5/assets/js/prism-an5.js"></script>
+
+  <script src="/an5/assets/js/docs.js"></script>
 
   <script>
-    // Active sidebar link highlighting
-    const currentPath = window.location.pathname;
-    document.querySelectorAll('.docs-sidebar a').forEach(link => {
-      const href = link.getAttribute('href');
-      if (href && (currentPath.endsWith(href) || currentPath === href || (href !== '/' && currentPath.includes(href)))) {
-        link.classList.add('active');
-      }
-    });
+    // Highlight the sidebar entry for this page. Compare normalised paths
+    // rather than a substring: '/guides/schema/' must not light up
+    // '/guides/schema-relations/', and the home link must not match every page.
+    (() => {
+      const norm = p => p.replace(/\/index\.html$/, '/').replace(/\/$/, '');
+      const current = norm(window.location.pathname);
+      document.querySelectorAll('.docs-sidebar a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+        const target = norm(new URL(href, window.location.origin).pathname);
+        if (target === current) link.classList.add('active');
+      });
+    })();
 
-    // Mobile nav toggle
-    const navToggle = document.getElementById('navToggle');
-    const navLinks = document.getElementById('navLinks');
-    if (navToggle && navLinks) {
-      navToggle.addEventListener('click', () => {
-        navLinks.classList.toggle('open');
-        navToggle.classList.toggle('open');
+    // Mobile docs menu toggle
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarGroups = document.getElementById('sidebarGroups');
+    const sidebar = document.getElementById('docsSidebar');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        const isOpen = sidebarGroups ? sidebarGroups.classList.toggle('open') : false;
+        if (sidebar) sidebar.classList.toggle('menu-open', isOpen);
+        sidebarToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        const icon = sidebarToggle.querySelector('i');
+        if (icon) {
+          icon.className = isOpen ? 'fas fa-xmark' : 'fas fa-bars';
+        }
       });
     }
 
@@ -421,6 +466,20 @@
         }
       });
     }
+
+    // Interactive tabs switcher
+    document.querySelectorAll('.example-tabs').forEach(tabs => {
+      const buttons = tabs.querySelectorAll('.tab-btn');
+      const contents = tabs.querySelectorAll('.tab-content');
+      buttons.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+          buttons.forEach(b => b.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          if (contents[index]) contents[index].classList.add('active');
+        });
+      });
+    });
 
     // Code window decorator (wraps pre blocks into styled windows with dots)
     document.querySelectorAll('.docs-body pre').forEach(pre => {

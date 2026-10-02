@@ -338,6 +338,7 @@ These run as npm scripts from the `an5Orm/` repository:
 | `npm test`                      | Run all tests                                                                       |
 | `npm run test:full`             | Run workspace tests plus generator, package smoke, and Python/.NET/Go/Rust compile gates |
 | `npm run test:integration:live` | Run live adapter Postgres/SQL Server checks                                         |
+| `npm run test:lang`             | Check that every comment, message, and document in the workspace is English-only |
 | `npm run generate`              | Generate client code (`-w an5Orm`)                                                  |
 | `npm run dryrun`                | Preview workspace release changes                                                   |
 | `npm run release`               | Release across the workspace                                                        |

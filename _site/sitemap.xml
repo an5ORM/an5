@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
+    <loc>http://localhost:4000/an5/</loc>
+    <description>A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, and NBase</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/architecture/</loc>
+    <description>How the an5 packages fit together, from schema parsing to runtime adapters</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/genkit/</loc>
+    <description>How the AI agent is built on Google Genkit, its tools and its RAG pipeline</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/agent-tools/</loc>
+    <description>7 intelligent tools for database operations and task management</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/api-reference/</loc>
+    <description>Complete API reference for an5 ORM</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/architecture/</loc>
+    <description>System architecture and data flow of the An5 ORM ecosystem</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/browser-support/</loc>
+    <description>Learn how to use AN5 ORM adapters directly in Web Browsers with SQLite WASM, sql.js, OPFS, and Google Sheets.</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/cli/</loc>
+    <description>Command-line interface for schema management and development</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/configuration/</loc>
+    <description>Configure an5 ORM for your environment</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/crud/</loc>
+    <description>Create, Read, Update, and Delete data with an5 ORM</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/deployment/</loc>
+    <description>Deploy your an5 application to production</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/examples/</loc>
+    <description>Run the an5example repository across all languages, dialects, and the browser</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/feature-status/</loc>
+    <description>Current implementation status and maturity of the an5 ORM ecosystem</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/getting-started/</loc>
+    <description>Install and set up an5 in your project</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/queries/</loc>
+    <description>Complex query patterns with filtering, sorting, and aggregation</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/relations/</loc>
+    <description>Define and query relationships between models</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/schema/</loc>
+    <description>Define your data models with an5 schema syntax</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/transactions/</loc>
+    <description>Execute multiple operations atomically</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/troubleshooting/</loc>
+    <description>Common issues and solutions</description>
+  </url><url>
+    <loc>http://localhost:4000/an5/guides/vector-search/</loc>
+    <description>AI-powered semantic search with NBase, SQL Server, PostgreSQL, or in-memory</description>
+  </url></urlset>

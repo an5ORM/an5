@@ -51,6 +51,24 @@ jobs:
       - name: Run full cross-language gate
         run: npm run test:full
 
+  # ── English-only guard ──────────────────────────────────────────────────────
+  # Prose is the one thing the other suites never assert on, so this runs without
+  # building anything: a translated comment fails in seconds instead of after the
+  # full cross-language gate.
+  english-only:
+    name: 🌐 English-only guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Check the workspace is English-only
+        run: npm run test:lang
+
   # ── Live database integration ───────────────────────────────────────────────
   live-db-integration:
     name: 🧪 Live DB integration
@@ -264,6 +282,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - full-workspace-gate
+      - english-only
       - live-db-integration
       - test-orm
       - test-adapters

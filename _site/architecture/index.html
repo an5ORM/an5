@@ -3,23 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Getting Started | an5 ORM</title>
-  <meta name="description" content="Install and set up an5 in your project">
+  <title>Architecture | an5 ORM</title>
+  <meta name="description" content="How the an5 packages fit together, from schema parsing to runtime adapters">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/an5/assets/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="http://localhost:4000/an5/guides/getting-started/">
+  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="http://localhost:4000/an5/architecture/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="an5 ORM">
-  <meta property="og:title" content="Getting Started">
-  <meta property="og:description" content="Install and set up an5 in your project">
-  <meta property="og:url" content="http://localhost:4000/an5/guides/getting-started/">
+  <meta property="og:title" content="Architecture">
+  <meta property="og:description" content="How the an5 packages fit together, from schema parsing to runtime adapters">
+  <meta property="og:url" content="http://localhost:4000/an5/architecture/">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Getting Started">
-  <meta name="twitter:description" content="Install and set up an5 in your project">
+  <meta name="twitter:title" content="Architecture">
+  <meta name="twitter:description" content="How the an5 packages fit together, from schema parsing to runtime adapters">
 </head>
 <body>
 
@@ -114,194 +114,266 @@
     <!-- Main Content Area -->
     <main class="docs-content">
       <div class="docs-body card-glass">
-        <h1 id="getting-started">Getting Started</h1>
+        <h2 id="overview">Overview</h2>
 
-<p>This guide will help you set up an5 in your project in under 5 minutes.</p>
+<p>Multi-repository monorepo providing a SQL Server schema-driven development platform with multi-language code generation, provider-based runtime adapters, and AI-powered agent assistance.</p>
 
-<p>For the current implementation and package maturity overview, see <a href="/an5/guides/feature-status/">Feature Status</a>.</p>
-
-<h2 id="prerequisites">Prerequisites</h2>
-
-<ul>
-  <li>Node.js 18+ (Node 24 recommended)</li>
-  <li>SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, or NBase connection</li>
-  <li>npm or yarn package manager</li>
-</ul>
-
-<h2 id="installation">Installation</h2>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm <span class="nb">install</span> @an5/adapters @an5/orm
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>an5Schema/     an5OrmVScode/     an5Cli/
+(schema src)     (editor tooling)    (automation)
+      │                                  │
+      ▼                                  ▼
+an5Orm/ ──► an5Client/ ──metadata──► an5Adapters/ ◄── an5Agent/ ◄── an5Tasks/
+(generator)   (generated)              (runtimes)          (AI tools)       (Genkit flows)
 </code></pre></div></div>
 
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">@an5/adapters</code>: Database runtime, connection handling, dynamic table clients, transactions.</li>
-  <li><code class="language-plaintext highlighter-rouge">@an5/orm</code>: Schema parser, multi-language generator, migrations (<code class="language-plaintext highlighter-rouge">db:push</code>, <code class="language-plaintext highlighter-rouge">db:pull</code>, <code class="language-plaintext highlighter-rouge">db:migrate</code>, <code class="language-plaintext highlighter-rouge">db:seed</code>).</li>
-</ul>
+<h2 id="repository-roles">Repository Roles</h2>
 
-<h2 id="configuration">Configuration</h2>
+<p>| Repo | Role | Key Capabilities |
+|——|——|——————|
+| <strong>an5Orm</strong> | Schema, Generator &amp; Migrations | Schema parser, multi-language code generator, database introspection (<code class="language-plaintext highlighter-rouge">pull.ts</code>), schema push (<code class="language-plaintext highlighter-rouge">push.ts</code>), migrations (<code class="language-plaintext highlighter-rouge">migrate.ts</code>), and seeder runner |
+| <strong>an5Client</strong> | Generated artifacts | TypeScript model interfaces + metadata, Python dataclasses + metadata, .NET entity classes, Go structs/client |</p>
+<h2 id="data-flow">Data Flow</h2>
 
-<h3 id="1-set-up-environment-variables">1. Set up Environment Variables</h3>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cp</span> .env.example .env
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Developer writes .an5 ──► an5Orm/generator ──► an5Client/ (TS/Python/C#/Go)
+                                                          │
+                                                          v
+                                               an5Adapters/ (optional metadata injection)
+                                                          │
+                                                          v
+                                               an5Agent/ (7 consolidated tools)
+                                                          │
+                                               an5Cli/ (orchestrate all repos)
 </code></pre></div></div>
 
-<p>Edit <code class="language-plaintext highlighter-rouge">.env</code> and configure your database connection:</p>
-
-<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Database connection string (SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, or NBase)
-</span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">sqlserver://localhost:1433;database=mydb;user=sa;password=yourpassword</span>
-</code></pre></div></div>
-
-<h3 id="2-define-your-schema">2. Define Your Schema</h3>
-
-<p>Create <code class="language-plaintext highlighter-rouge">.an5</code> files in the <code class="language-plaintext highlighter-rouge">an5Schema/</code> directory:</p>
-
-<pre><code class="language-an5">// an5Schema/User.an5
-model User {
-  id        NVARCHAR(1000) @id @default(uuid())
-  email     NVARCHAR(255)  @unique
-  name      NVARCHAR(255)?
-  createdAt DATETIME2      @default(now())
-  
-  @@map("users")
-}
-</code></pre>
-
-<h3 id="3-generate-client-code">3. Generate Client Code</h3>
-
-<p>Run from the <code class="language-plaintext highlighter-rouge">an5Orm/</code> repository directory:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run generate
-</code></pre></div></div>
-
-<p>This generates type-safe client code in <code class="language-plaintext highlighter-rouge">an5Client/</code>.</p>
-
-<h3 id="4-push-schema-to-database">4. Push Schema to Database</h3>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run db:push
-</code></pre></div></div>
-
-<p>This creates the tables in your database.</p>
-
-<h2 id="your-first-query">Your First Query</h2>
-
-<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">createAn5Adapter</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@an5/adapters</span><span class="dl">'</span><span class="p">;</span>
-
-<span class="c1">// Initialize connection</span>
-<span class="kd">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="nf">createAn5Adapter</span><span class="p">({</span>
-  <span class="na">connectionString</span><span class="p">:</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">DATABASE_URL</span><span class="o">!</span><span class="p">,</span>
-<span class="p">});</span>
-
-<span class="k">async</span> <span class="kd">function</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-  <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$connect</span><span class="p">();</span>
-
-  <span class="c1">// Create a user</span>
-  <span class="kd">const</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">create</span><span class="p">({</span>
-    <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
-      <span class="na">email</span><span class="p">:</span> <span class="dl">'</span><span class="s1">john@example.com</span><span class="dl">'</span><span class="p">,</span>
-      <span class="na">name</span><span class="p">:</span> <span class="dl">'</span><span class="s1">John Doe</span><span class="dl">'</span>
-    <span class="p">}</span>
-  <span class="p">});</span>
-  
-  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">Created user:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">user</span><span class="p">);</span>
-  
-  <span class="c1">// Find all users</span>
-  <span class="kd">const</span> <span class="nx">users</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">db</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nf">findMany</span><span class="p">();</span>
-  <span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">All users:</span><span class="dl">'</span><span class="p">,</span> <span class="nx">users</span><span class="p">);</span>
-<span class="p">}</span>
-
-<span class="nf">main</span><span class="p">()</span>
-  <span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">)</span>
-  <span class="p">.</span><span class="k">finally</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">db</span><span class="p">.</span><span class="nf">$disconnect</span><span class="p">());</span>
-</code></pre></div></div>
-
-<h2 id="project-structure">Project Structure</h2>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>an5/
-├── an5Schema/           # Schema definitions (.an5 files)
-├── node_modules/@an5/adapters # Database runtime &amp; adapters
-├── node_modules/@an5/orm      # Schema &amp; migrations engine
-├── an5Client/                # Generated client code
-└── .env                 # Configuration
-</code></pre></div></div>
-
-<h2 id="available-commands">Available Commands</h2>
-
-<p>Schema/database commands run from the <code class="language-plaintext highlighter-rouge">an5Orm/</code> repository directory:</p>
+<h2 id="cross-repo-connections">Cross-Repo Connections</h2>
 
 <table>
   <thead>
     <tr>
-      <th>Command</th>
-      <th>Where</th>
+      <th>Source</th>
+      <th>Target</th>
+      <th>Mechanism</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Agent</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Adapters</code></td>
+      <td>Dynamic <code class="language-plaintext highlighter-rouge">require()</code> via relative path</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Agent</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Tasks</code></td>
+      <td>Dynamic <code class="language-plaintext highlighter-rouge">require()</code> — bridges Genkit tools into agent Tool interface</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Agent</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Client</code></td>
+      <td>Metadata file read for model info</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Agent</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Schema</code></td>
+      <td>Directory scan for <code class="language-plaintext highlighter-rouge">.an5</code> files</td>
+    </tr>
+    <tr>
+      <td>generated clients</td>
+      <td><code class="language-plaintext highlighter-rouge">an5Adapters</code></td>
+      <td>Optional metadata injection for model/table mapping</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Orm</code></td>
+      <td>own <code class="language-plaintext highlighter-rouge">an5Metadata.ts</code></td>
+      <td>Local metadata require — the core never imports the generated client (the client is generated <em>from</em> the ORM)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Orm</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Adapters</code></td>
+      <td><code class="language-plaintext highlighter-rouge">An5Adapter</code> (via <code class="language-plaintext highlighter-rouge">createAn5Adapter</code>) for DB operations</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Orm/generator</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Client/*</code></td>
+      <td><strong>Writes</strong> generated files</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Orm/generator</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Schema/</code></td>
+      <td><strong>Reads</strong> .an5 definitions</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Cli</code></td>
+      <td><code class="language-plaintext highlighter-rouge">an5Tasks</code></td>
+      <td>Dynamic <code class="language-plaintext highlighter-rouge">require()</code> for task operations</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="agent-tools-7-consolidated">Agent Tools (7 consolidated)</h2>
+
+<h3 id="schema-1-tool-with-3-actions">Schema (1 tool with 3 actions)</h3>
+<p>| Tool | Actions | Description |
+|——|———|————-|
+| <code class="language-plaintext highlighter-rouge">schema</code> | list, describe, relations | Explore data models |</p>
+
+<h3 id="query-1-tool-with-3-actions">Query (1 tool with 3 actions)</h3>
+<p>| Tool | Actions | Description |
+|——|———|————-|
+| <code class="language-plaintext highlighter-rouge">query</code> | generate, explain, validate | Work with SQL queries |</p>
+
+<h3 id="database-1-tool-with-3-actions">Database (1 tool with 3 actions)</h3>
+<p>| Tool | Actions | Description |
+|——|———|————-|
+| <code class="language-plaintext highlighter-rouge">database</code> | execute, describe, health | Database operations |</p>
+
+<h3 id="code-generation-2-tools">Code Generation (2 tools)</h3>
+<p>| Tool | Description |
+|——|————-|
+| <code class="language-plaintext highlighter-rouge">generateClientCode</code> | Generate TS/Python/.NET/Go client code |
+| <code class="language-plaintext highlighter-rouge">analyzeSchema</code> | Analyze schema for design issues |</p>
+
+<h3 id="rag-1-tool-with-2-actions">RAG (1 tool with 2 actions)</h3>
+<p>| Tool | Actions | Description |
+|——|———|————-|
+| <code class="language-plaintext highlighter-rouge">retrieve</code> | schema, queries | Semantic search |</p>
+
+<h3 id="task-management-1-tool-with-4-actions">Task Management (1 tool with 4 actions)</h3>
+<p>| Tool | Actions | Description |
+|——|———|————-|
+| <code class="language-plaintext highlighter-rouge">task</code> | create, list, update, delete | Manage tasks |</p>
+
+<h2 id="llm-integration">LLM Integration</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Provider</th>
+      <th>Env Variable</th>
+      <th>Default Model</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>OpenAI</td>
+      <td><code class="language-plaintext highlighter-rouge">OPENAI_API_KEY</code> / <code class="language-plaintext highlighter-rouge">LLM_API_KEY</code></td>
+      <td><code class="language-plaintext highlighter-rouge">gpt-4o-mini</code></td>
+    </tr>
+    <tr>
+      <td>Gemini</td>
+      <td><code class="language-plaintext highlighter-rouge">GEMINI_API_KEY</code> / <code class="language-plaintext highlighter-rouge">LLM_API_KEY</code></td>
+      <td><code class="language-plaintext highlighter-rouge">gemini-2.5-flash</code></td>
+    </tr>
+    <tr>
+      <td>Custom</td>
+      <td><code class="language-plaintext highlighter-rouge">LLM_ENDPOINT</code></td>
+      <td><code class="language-plaintext highlighter-rouge">llama3</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="genkit-integration">Genkit Integration</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Module</th>
+      <th>Role</th>
+      <th>Features</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Tasks</code></td>
+      <td>Tool provider</td>
+      <td><code class="language-plaintext highlighter-rouge">ai.defineTool()</code>, <code class="language-plaintext highlighter-rouge">ai.defineFlow()</code>, <code class="language-plaintext highlighter-rouge">ai.generate()</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">an5Agent</code></td>
+      <td>Tool consumer</td>
+      <td>Bridges Genkit tools into agent <code class="language-plaintext highlighter-rouge">Tool</code> interface via <code class="language-plaintext highlighter-rouge">task-tools.ts</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="genkit-tools-defined-in-an5tasks-used-by-an5agent">Genkit Tools (defined in an5Tasks, used by an5Agent)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tool</th>
+      <th>Input</th>
+      <th>Output</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">createTask</code></td>
+      <td>type, description, file?</td>
+      <td>Task object</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">listTasks</code></td>
+      <td>workspaceDir, status?, priority?</td>
+      <td>Task[]</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">updateTask</code></td>
+      <td>workspaceDir, taskId, status?, priority?</td>
+      <td>Task | null</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">deleteTask</code></td>
+      <td>workspaceDir, taskId</td>
+      <td>boolean</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="genkit-flows">Genkit Flows</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Flow</th>
       <th>Description</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run generate</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Generate client code from schema</td>
+      <td><code class="language-plaintext highlighter-rouge">parseReviewToTasksFlow</code></td>
+      <td>Regex-based task extraction from LLM reviews</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:push</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Push schema to database</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:pull</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Pull schema from database</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:seed</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Seed database with sample data</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate diff</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Compare schema with database</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate:generate</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Generate migration SQL</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate:apply</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Apply pending migration files; pass <code class="language-plaintext highlighter-rouge">-- --dry-run</code> to preview SQL</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate:rollback</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Roll back migrations; pass <code class="language-plaintext highlighter-rouge">-- --dry-run</code>, <code class="language-plaintext highlighter-rouge">-- 3</code>, or <code class="language-plaintext highlighter-rouge">-- --to &lt;file&gt;</code></td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run db:migrate:status</code></td>
-      <td><code class="language-plaintext highlighter-rouge">an5Orm/</code></td>
-      <td>Show migration status</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm run build</code></td>
-      <td>workspace root</td>
-      <td>Build all workspace packages</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">npm test</code></td>
-      <td>workspace root</td>
-      <td>Run tests across the workspace</td>
+      <td><code class="language-plaintext highlighter-rouge">aiParseReviewToTasksFlow</code></td>
+      <td>AI-powered task extraction using <code class="language-plaintext highlighter-rouge">generate()</code></td>
     </tr>
   </tbody>
 </table>
 
-<h2 id="next-steps">Next Steps</h2>
+<h3 id="architecture-genkit-bridge">Architecture: Genkit Bridge</h3>
 
-<ul>
-  <li><a href="/an5/guides/schema/">Schema Definition</a> - Learn how to define your data models</li>
-  <li><a href="/an5/guides/crud/">CRUD Operations</a> - Create, read, update, and delete data</li>
-  <li><a href="/an5/guides/transactions/">Transactions</a> - Atomic transactions and rollback</li>
-</ul>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>an5Tasks/src/index.ts                    an5Agent/src/tools/task-tools.ts
+┌─────────────────────────────┐            ┌──────────────────────────────────┐
+│ ai.defineTool('createTask') │ ◄──require── │ loadTasksModule()               │
+│ ai.defineTool('listTasks')  │            │ task.execute() calls mod         │
+│ ai.defineTool('updateTask') │            │ action param routes to method    │
+│ ai.defineTool('deleteTask') │            │                                  │
+└─────────────────────────────┘            └──────────────────────────────────┘
+         ▲                                                  │
+         │ Genkit v1.39                                     │ Tool interface
+         │                                                  ▼
+         │                                   an5Agent an5Agent class
+         │                                     .addTool(task)
+         │                                     .executeTool('task', {action:'create'})
+</code></pre></div></div>
+
+<p>The bridge works by:</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">an5Tasks</code> defines Genkit tools with <code class="language-plaintext highlighter-rouge">ai.defineTool()</code></li>
+  <li><code class="language-plaintext highlighter-rouge">an5Agent/src/tools/task-tools.ts</code> consolidates 4 tools into 1 <code class="language-plaintext highlighter-rouge">task</code> tool</li>
+  <li><code class="language-plaintext highlighter-rouge">an5Agent</code> registers all 7 tools in <code class="language-plaintext highlighter-rouge">DEFAULT_TOOLS</code></li>
+  <li><code class="language-plaintext highlighter-rouge">process()</code> matches natural language → routes to appropriate tool/action</li>
+</ol>
 
 
       </div>

@@ -52,16 +52,6 @@ database rejected it. Migrating means replacing each type with the provider's ow
 Server but `DATETIME` on SQLite, and so on. The error names the provider and the
 field, so a run over the schema lists everything to change at once.
 
-Types only some providers have:
-
-| Provider       | Types                                                                          |
-| -------------- | ------------------------------------------------------------------------------ |
-| `mssql`        | `NVARCHAR`, `NTEXT`, `DATETIME2`, `SMALLDATETIME`, `DATETIMEOFFSET`, `BIT`, `MONEY`, `UNIQUEIDENTIFIER`, `SQL_VARIANT`, `ROWVERSION`, `HIERARCHYID`, `GEOGRAPHY`, `GEOMETRY`, `VECTOR` |
-| `postgres`     | `INTEGER`, `INT4`, `SERIAL`, `BIGSERIAL`, `BOOLEAN`, `JSONB`, `BYTEA`, `TIMESTAMPTZ`, `INTERVAL`, `TIMESTAMP WITH TIME ZONE`, `DOUBLE PRECISION`, `INET` (PostGIS for `GEOMETRY`/`GEOGRAPHY`, pgvector for `VECTOR`) |
-| `mysql`        | `MEDIUMINT`, `TINYTEXT`, `LONGBLOB`, `ENUM`, `SET`, `JSON`, `YEAR`, `TINYBLOB` (`SERIAL` is an alias for `BIGINT UNSIGNED AUTO_INCREMENT`; no `UUID` type) |
-| `sqlite`       | `INTEGER`, `BOOLEAN`, `BLOB`, `CLOB`, `JSON`, `UUID` (SQLite never enforces the declared name — it derives an affinity from it — so this is the names in common use with a defined affinity, not the engine's five storage classes) |
-| `googlesheets` | The portable subset only (`STRING`, `TEXT`, `VARCHAR`, `INT`, `BIGINT`, `FLOAT`, `BOOLEAN`, `DATE`, `DATETIME`, `BYTES`, …) — Sheets has no column types, so every cell is coerced from the generated TypeScript type and a type the adapter cannot place has nothing to fall back on |
-
 Names that would read as a relation are never types: `USER` and `NAME` are real
 PostgreSQL types but are left out on purpose, so `user User @relation(...)` stays a
 relation.
@@ -72,31 +62,195 @@ syntax — `[dbo].[users]` is invalid in PostgreSQL and fails on SQLite with "no
 table: dbo.users". The adapter quotes the name for whichever dialect it is connected
 to. A model that declares `@@schema("main")` keeps that prefix everywhere.
 
-#### SQL Server
+<div class="example-tabs">
+  <div class="example-tabs-header">
+    <button class="tab-btn active" type="button">SQL Server</button>
+    <button class="tab-btn" type="button">PostgreSQL</button>
+    <button class="tab-btn" type="button">MySQL</button>
+    <button class="tab-btn" type="button">SQLite</button>
+    <button class="tab-btn" type="button">Google Sheets</button>
+  </div>
 
-| Type               | Description                    | Example            | TypeScript         |
-| ------------------ | ------------------------------ | ------------------ | ------------------ |
-| `NVARCHAR(n)`      | Variable-length Unicode string | `NVARCHAR(255)`    | `string`           |
-| `VARCHAR(n)`       | Variable-length ASCII string   | `VARCHAR(100)`     | `string`           |
-| `CHAR(n)`          | Fixed-length string            | `CHAR(10)`         | `string`           |
-| `TEXT`             | Large text field               | `TEXT`             | `string`           |
-| `INT`              | 32-bit integer                 | `INT`              | `number`           |
-| `BIGINT`           | 64-bit integer                 | `BIGINT`           | `number \| bigint` |
-| `SMALLINT`         | 16-bit integer                 | `SMALLINT`         | `number`           |
-| `TINYINT`          | 8-bit integer                  | `TINYINT`          | `number`           |
-| `FLOAT`            | Floating point                 | `FLOAT`            | `number`           |
-| `REAL`             | Single-precision float         | `REAL`             | `number`           |
-| `DECIMAL(p,s)`     | Fixed precision                | `DECIMAL(10,2)`    | `number`           |
-| `NUMERIC(p,s)`     | Fixed precision                | `NUMERIC(10,2)`    | `number`           |
-| `BIT`              | Boolean                        | `BIT`              | `boolean`          |
-| `DATETIME`         | Date and time                  | `DATETIME`         | `Date`             |
-| `DATETIME2`        | High precision datetime        | `DATETIME2`        | `Date`             |
-| `DATE`             | Date only                      | `DATE`             | `Date`             |
-| `TIME`             | Time only                      | `TIME`             | `Date`             |
-| `UNIQUEIDENTIFIER` | UUID/GUID                      | `UNIQUEIDENTIFIER` | `string`           |
-| `VARBINARY(n)`     | Binary data                    | `VARBINARY(255)`   | `Buffer`           |
-| `BINARY(n)`        | Fixed binary data              | `BINARY(16)`       | `Buffer`           |
-| `IMAGE`            | Large binary data              | `IMAGE`            | `Buffer`           |
+  <div class="tab-content active" markdown="1">
+
+| Type | Description | Example | TypeScript |
+| :--- | :--- | :--- | :--- |
+| `NVARCHAR(n)` | Variable-length Unicode string | `NVARCHAR(255)` | `string` |
+| `VARCHAR(n)` | Variable-length ASCII string | `VARCHAR(100)` | `string` |
+| `CHAR(n)` | Fixed-length string | `CHAR(10)` | `string` |
+| `NCHAR(n)` | Fixed-length Unicode string | `NCHAR(10)` | `string` |
+| `TEXT` | Large text field | `TEXT` | `string` |
+| `NTEXT` | Large Unicode text field | `NTEXT` | `string` |
+| `XML` | XML data | `XML` | `string` |
+| `INT` | 32-bit integer | `INT` | `number` |
+| `BIGINT` | 64-bit integer | `BIGINT` | `number \| bigint` |
+| `SMALLINT` | 16-bit integer | `SMALLINT` | `number` |
+| `TINYINT` | 8-bit integer | `TINYINT` | `number` |
+| `FLOAT` | Floating point | `FLOAT` | `number` |
+| `REAL` | Single-precision float | `REAL` | `number` |
+| `DECIMAL(p,s)` | Fixed precision | `DECIMAL(10,2)` | `number` |
+| `NUMERIC(p,s)` | Fixed precision | `NUMERIC(10,2)` | `number` |
+| `MONEY` | Currency amount | `MONEY` | `number` |
+| `SMALLMONEY` | Small currency amount | `SMALLMONEY` | `number` |
+| `BIT` | Boolean | `BIT` | `boolean` |
+| `DATE` | Date only | `DATE` | `Date` |
+| `DATETIME` | Date and time | `DATETIME` | `Date` |
+| `DATETIME2` | High precision datetime | `DATETIME2` | `Date` |
+| `SMALLDATETIME` | Short datetime | `SMALLDATETIME` | `Date` |
+| `DATETIMEOFFSET` | Datetime with timezone | `DATETIMEOFFSET` | `Date` |
+| `TIME` | Time only | `TIME` | `Date` |
+| `UNIQUEIDENTIFIER` | UUID/GUID | `UNIQUEIDENTIFIER` | `string` |
+| `VARBINARY(n)` | Variable binary data | `VARBINARY(255)` | `Buffer` |
+| `BINARY(n)` | Fixed binary data | `BINARY(16)` | `Buffer` |
+| `IMAGE` | Large binary data | `IMAGE` | `Buffer` |
+| `ROWVERSION` | Row version timestamp | `ROWVERSION` | `Buffer` |
+| `VECTOR` | Vector embedding | `VECTOR(1536)` | `number[] \| string` |
+| `GEOGRAPHY` | Spatial data | `GEOGRAPHY` | `string` |
+| `GEOMETRY` | Spatial data | `GEOMETRY` | `string` |
+| `HIERARCHYID` | Hierarchy tree position | `HIERARCHYID` | `string` |
+| `SQL_VARIANT` | Any SQL data type | `SQL_VARIANT` | `any` |
+
+  </div>
+
+  <div class="tab-content" markdown="1">
+
+| Type | Description | Example | TypeScript |
+| :--- | :--- | :--- | :--- |
+| `VARCHAR(n)` | Variable-length string | `VARCHAR(255)` | `string` |
+| `CHAR(n)` | Fixed-length string | `CHAR(10)` | `string` |
+| `TEXT` | Large text field | `TEXT` | `string` |
+| `UUID` | Universally unique identifier | `UUID` | `string` |
+| `INTEGER` | 32-bit signed integer | `INTEGER` | `number` |
+| `INT4` | 32-bit signed integer (alias) | `INT4` | `number` |
+| `BIGINT` | 64-bit signed integer | `BIGINT` | `number \| bigint` |
+| `INT8` | 64-bit signed integer (alias) | `INT8` | `number \| bigint` |
+| `SMALLINT` | 16-bit signed integer | `SMALLINT` | `number` |
+| `INT2` | 16-bit signed integer (alias) | `INT2` | `number` |
+| `SERIAL` | Autoincrementing integer | `SERIAL` | `number` |
+| `BIGSERIAL` | Autoincrementing 64-bit integer | `BIGSERIAL` | `number \| bigint` |
+| `SMALLSERIAL` | Autoincrementing 16-bit integer | `SMALLSERIAL` | `number` |
+| `DECIMAL(p,s)` | Exact numeric | `DECIMAL(10,2)` | `number` |
+| `NUMERIC(p,s)` | Exact numeric (alias) | `NUMERIC(10,2)` | `number` |
+| `REAL` | Single precision float | `REAL` | `number` |
+| `DOUBLE PRECISION` | Double precision float | `DOUBLE PRECISION` | `number` |
+| `MONEY` | Currency amount | `MONEY` | `number` |
+| `BOOLEAN` | Logical boolean | `BOOLEAN` | `boolean` |
+| `BOOL` | Logical boolean (alias) | `BOOL` | `boolean` |
+| `DATE` | Calendar date | `DATE` | `Date` |
+| `TIME` | Time of day | `TIME` | `Date` |
+| `TIMETZ` | Time with time zone | `TIMETZ` | `Date` |
+| `TIMESTAMP` | Date and time | `TIMESTAMP` | `Date` |
+| `TIMESTAMPTZ` | Timestamp with time zone | `TIMESTAMPTZ` | `Date` |
+| `INTERVAL` | Time span | `INTERVAL` | `string` |
+| `JSON` | Textual JSON | `JSON` | `any` |
+| `JSONB` | Binary JSON | `JSONB` | `any` |
+| `BYTEA` | Binary data | `BYTEA` | `Buffer` |
+| `INET` | IPv4 or IPv6 host address | `INET` | `string` |
+| `CIDR` | IPv4 or IPv6 network spec | `CIDR` | `string` |
+| `VECTOR` | pgvector embedding | `VECTOR(1536)` | `number[] \| string` |
+| `GEOGRAPHY` | PostGIS geography | `GEOGRAPHY` | `string` |
+| `GEOMETRY` | PostGIS geometry | `GEOMETRY` | `string` |
+
+  </div>
+
+  <div class="tab-content" markdown="1">
+
+| Type | Description | Example | TypeScript |
+| :--- | :--- | :--- | :--- |
+| `VARCHAR(n)` | Variable-length string | `VARCHAR(255)` | `string` |
+| `CHAR(n)` | Fixed-length string | `CHAR(10)` | `string` |
+| `NVARCHAR(n)` | National variable-length string | `NVARCHAR(255)` | `string` |
+| `TEXT` | Large text field | `TEXT` | `string` |
+| `TINYTEXT` | Small text field | `TINYTEXT` | `string` |
+| `MEDIUMTEXT` | Medium text field | `MEDIUMTEXT` | `string` |
+| `LONGTEXT` | Very large text field | `LONGTEXT` | `string` |
+| `ENUM(...)` | Enumeration set of values | `ENUM('active','inactive')` | `string` |
+| `SET(...)` | Set of permitted values | `SET('read','write')` | `string` |
+| `INT` | 32-bit integer | `INT` | `number` |
+| `INTEGER` | 32-bit integer (alias) | `INTEGER` | `number` |
+| `BIGINT` | 64-bit integer | `BIGINT` | `number \| bigint` |
+| `SMALLINT` | 16-bit integer | `SMALLINT` | `number` |
+| `TINYINT` | 8-bit integer | `TINYINT` | `number` |
+| `MEDIUMINT` | 24-bit integer | `MEDIUMINT` | `number` |
+| `SERIAL` | Bigint auto-increment alias | `SERIAL` | `number \| bigint` |
+| `FLOAT` | Single-precision float | `FLOAT` | `number` |
+| `DOUBLE` | Double-precision float | `DOUBLE` | `number` |
+| `DECIMAL(p,s)` | Exact fixed-point | `DECIMAL(10,2)` | `number` |
+| `NUMERIC(p,s)` | Exact fixed-point | `NUMERIC(10,2)` | `number` |
+| `BOOLEAN` | Boolean (TINYINT(1)) | `BOOLEAN` | `boolean` |
+| `BOOL` | Boolean alias | `BOOL` | `boolean` |
+| `BIT` | Bit-field flag | `BIT` | `boolean` |
+| `DATE` | Date only | `DATE` | `Date` |
+| `DATETIME` | Date and time | `DATETIME` | `Date` |
+| `TIMESTAMP` | Timestamp with timezone conversion | `TIMESTAMP` | `Date` |
+| `TIME` | Time only | `TIME` | `Date` |
+| `YEAR` | 4-digit year | `YEAR` | `number` |
+| `JSON` | Native JSON document | `JSON` | `any` |
+| `BLOB` | Binary large object | `BLOB` | `Buffer` |
+| `TINYBLOB` | Small binary object | `TINYBLOB` | `Buffer` |
+| `MEDIUMBLOB` | Medium binary object | `MEDIUMBLOB` | `Buffer` |
+| `LONGBLOB` | Very large binary object | `LONGBLOB` | `Buffer` |
+| `BINARY(n)` | Fixed-length binary | `BINARY(16)` | `Buffer` |
+| `VARBINARY(n)` | Variable-length binary | `VARBINARY(255)` | `Buffer` |
+
+  </div>
+
+  <div class="tab-content" markdown="1">
+
+| Type | Description | Example | TypeScript |
+| :--- | :--- | :--- | :--- |
+| `INTEGER` | Integer value | `INTEGER` | `number` |
+| `INT` | Integer affinity | `INT` | `number` |
+| `BIGINT` | Large integer | `BIGINT` | `number \| bigint` |
+| `TINYINT` | Small integer | `TINYINT` | `number` |
+| `SMALLINT` | Small integer | `SMALLINT` | `number` |
+| `MEDIUMINT` | Medium integer | `MEDIUMINT` | `number` |
+| `REAL` | Floating point value | `REAL` | `number` |
+| `FLOAT` | Floating point affinity | `FLOAT` | `number` |
+| `DOUBLE` | Double precision affinity | `DOUBLE` | `number` |
+| `DECIMAL(p,s)` | Decimal affinity | `DECIMAL(10,2)` | `number` |
+| `NUMERIC` | Numeric affinity | `NUMERIC` | `number` |
+| `BOOLEAN` | Stored as 0 or 1 | `BOOLEAN` | `boolean` |
+| `BOOL` | Boolean alias | `BOOL` | `boolean` |
+| `TEXT` | Text string | `TEXT` | `string` |
+| `VARCHAR(n)` | Text affinity string | `VARCHAR(255)` | `string` |
+| `NVARCHAR(n)` | Text affinity string | `NVARCHAR(255)` | `string` |
+| `CHAR(n)` | Text affinity string | `CHAR(10)` | `string` |
+| `CLOB` | Character large object | `CLOB` | `string` |
+| `DATE` | Stored as ISO text | `DATE` | `Date` |
+| `DATETIME` | Stored as ISO text | `DATETIME` | `Date` |
+| `TIMESTAMP` | Stored as ISO text | `TIMESTAMP` | `Date` |
+| `TIME` | Stored as ISO text | `TIME` | `Date` |
+| `BLOB` | Binary data | `BLOB` | `Buffer` |
+| `UUID` | UUID string | `UUID` | `string` |
+| `JSON` | JSON string | `JSON` | `any` |
+| `VECTOR` | In-memory vector embedding | `VECTOR(1536)` | `number[] \| string` |
+
+  </div>
+
+  <div class="tab-content" markdown="1">
+
+| Type | Description | Example | TypeScript |
+| :--- | :--- | :--- | :--- |
+| `STRING` | Cell text value | `STRING` | `string` |
+| `VARCHAR` | Text column | `VARCHAR` | `string` |
+| `TEXT` | Long text cell | `TEXT` | `string` |
+| `INT` | Integer cell value | `INT` | `number` |
+| `INTEGER` | Integer cell value | `INTEGER` | `number` |
+| `BIGINT` | Large integer value | `BIGINT` | `number \| bigint` |
+| `FLOAT` | Number cell value | `FLOAT` | `number` |
+| `DOUBLE` | Double number value | `DOUBLE` | `number` |
+| `DECIMAL` | Numeric cell value | `DECIMAL` | `number` |
+| `BOOLEAN` | Checkbox / TRUE/FALSE cell | `BOOLEAN` | `boolean` |
+| `BOOL` | Boolean alias | `BOOL` | `boolean` |
+| `DATE` | Date formatted cell | `DATE` | `Date` |
+| `DATETIME` | Date & time cell | `DATETIME` | `Date` |
+| `BYTES` | Base64 encoded cell | `BYTES` | `Buffer` |
+| `BLOB` | Binary cell data | `BLOB` | `Buffer` |
+| `VECTOR` | Vector embedding string | `VECTOR(1536)` | `number[] \| string` |
+
+  </div>
+</div>
 
 ### Optional Fields
 

@@ -118,6 +118,8 @@ img {
 }
 
 /* ─── Nav ────────────────────────────────────────────────────────────────────── */
+/* The header is hidden on phones only — see the 768px block. Below that the
+   sidebar would just repeat it. */
 .nav {
   position: fixed;
   top: 0;
@@ -257,21 +259,22 @@ img {
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 36px;
-  padding-top: calc(var(--nav-h) + 32px);
-  padding-bottom: 80px;
+  padding-top: 28px;
+  padding-bottom: 60px;
   position: relative;
   z-index: 1;
 }
 
 .docs-sidebar {
   position: sticky;
-  top: calc(var(--nav-h) + 20px);
-  height: calc(100vh - var(--nav-h) - 40px);
+  top: 24px;
+  height: calc(100vh - 48px);
   overflow-y: auto;
   padding-right: 12px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  min-width: 0;
 }
 
 .sidebar-group {
@@ -333,6 +336,62 @@ img {
   color: var(--cyan);
 }
 
+/* Mobile elements. On desktop the top nav owns the brand/links, and groups are
+   always visible, so these are not rendered on desktop. */
+.sidebar-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Sidebar Header (Brand & Mobile Toggle) */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.sidebar-logo:hover {
+  color: var(--text);
+  opacity: 0.9;
+}
+
+.sidebar-toggle {
+  display: none;
+}
+
+/* GitHub button in sidebar (visible on both desktop and mobile) */
+.sidebar-github {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-3);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: var(--transition);
+  margin-top: 8px;
+}
+
+.sidebar-github:hover {
+  border-color: var(--border-hover);
+  color: var(--cyan);
+}
+
 @media (max-width: 920px) {
   .docs-layout {
     grid-template-columns: 1fr;
@@ -357,6 +416,7 @@ img {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow);
+  margin-bottom: 32px;
 }
 
 @media (max-width: 640px) {
@@ -366,6 +426,35 @@ img {
 }
 
 /* ─── Markdown Content Typography ───────────────────────────────────────────── */
+/* Identifiers, URLs and slash-separated API lists (``a`/`b`/`c` ``) have no
+   space to break at, so without this they set the page's min-content width and
+   spill out of the card on narrow screens. `pre` is excluded on purpose: code
+   blocks scroll horizontally instead of reflowing. */
+.docs-body {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.docs-body p,
+.docs-body li,
+.docs-body dd,
+.docs-body dt,
+.docs-body a {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.docs-body :not(pre) > code {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.docs-body th,
+.docs-body td {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
 .docs-body h1 {
   font-size: clamp(1.8rem, 3.5vw, 2.5rem);
   font-weight: 800;
@@ -410,6 +499,54 @@ img {
   margin-bottom: 6px;
 }
 
+/* ─── Task Lists / Checklists ────────────────────────────────────────────────── */
+.docs-body ul.task-list {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.docs-body li.task-list-item {
+  list-style: none;
+  list-style-type: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.docs-body input.task-list-item-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid rgba(148, 163, 184, 0.4);
+  border-radius: 4px;
+  background: rgba(15, 23, 42, 0.6);
+  cursor: default;
+  margin: 3px 0 0 0;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.docs-body input.task-list-item-checkbox:checked {
+  background: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.docs-body input.task-list-item-checkbox:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
 .docs-body inline-code,
 .docs-body p code,
 .docs-body li code,
@@ -420,6 +557,12 @@ img {
   border-radius: 5px;
   border: 1px solid rgba(56, 189, 248, 0.2);
   font-size: 0.88rem;
+}
+
+.docs-body table code,
+.docs-body td code,
+.docs-body th code {
+  white-space: nowrap;
 }
 
 /* ─── Buttons ───────────────────────────────────────────────────────────────── */
@@ -478,6 +621,14 @@ img {
   gap: 32px;
   align-items: center;
   margin-bottom: 48px;
+}
+
+/* Grid children default to `min-width: auto`, i.e. their min-content width.
+   A <pre> keeps that width even with `overflow-x: auto`, so one long code line
+   used to push the whole track past the card and widen the page. */
+.hero > *,
+.features-grid > * {
+  min-width: 0;
 }
 
 @media (max-width: 860px) {
@@ -666,15 +817,28 @@ pre[class*="language-"] {
   display: block;
 }
 
+.example-tabs .tab-content table {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
 /* ─── Markdown Tables ───────────────────────────────────────────────────────── */
 .docs-body table {
+  display: block;
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   margin: 24px 0;
   background: var(--bg-2);
   border-radius: var(--radius);
-  overflow: hidden;
   border: 1px solid var(--border);
+  /* A wide reference table scrolls inside the card rather than widening the
+     page. `overflow-y` stays hidden so the rounded corners still clip. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .docs-body th,
@@ -683,6 +847,9 @@ pre[class*="language-"] {
   text-align: left;
   border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
+  vertical-align: top;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .docs-body th {
@@ -741,6 +908,7 @@ pre[class*="language-"] {
   background: var(--bg-2);
   border-top: 1px solid var(--border);
   padding: 60px 0 30px;
+  margin-top: 32px;
   position: relative;
   z-index: 1;
 }
@@ -750,6 +918,11 @@ pre[class*="language-"] {
   justify-content: space-between;
   gap: 48px;
   flex-wrap: wrap;
+}
+
+.footer-inner > *,
+.footer-links > * {
+  min-width: 0;
 }
 
 .footer-brand {
@@ -837,38 +1010,117 @@ pre[class*="language-"] {
     --nav-h: 60px;
   }
 
+  /* The header duplicates the docs tree and costs 60px before anything is
+     readable. On phones the sidebar becomes the only navigation. */
+  .nav {
+    display: none;
+  }
+
   .container {
     padding: 0 16px;
   }
 
-  .nav-inner {
-    padding: 0 16px;
-  }
-
-  .nav-logo {
-    font-size: 1rem;
-  }
-
-  .logo-docs-tag {
-    display: none;
-  }
-
-  .nav-links a {
-    padding: 12px 16px;
-    font-size: 1rem;
-  }
-
   .docs-layout {
-    padding-top: calc(var(--nav-h) + 16px);
+    padding-top: 12px;
+    padding-bottom: 48px;
     gap: 0;
+  }
+
+  /* The "/" shortcut only means something with a keyboard attached. */
+  .docs-search-hint {
+    display: none;
   }
 
   .docs-sidebar {
     background: var(--bg-2);
     border-bottom: 1px solid var(--border);
-    padding: 12px 0;
-    margin: 0 -16px;
+    padding: 10px 0;
+    margin: 0 -16px 14px;
     overflow-y: visible;
+    gap: 0;
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px 8px;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 0;
+  }
+
+  .sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--transition);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sidebar-toggle:hover,
+  .sidebar-toggle:focus-visible,
+  .sidebar-toggle[aria-expanded="true"] {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(56, 189, 248, 0.08);
+  }
+
+  .docs-search {
+    margin-bottom: 0;
+    padding: 0 16px;
+  }
+
+  .docs-search input {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  /* The tree stays folded until the toggle opens the menu. */
+  .docs-sidebar:not(.menu-open) .sidebar-groups {
+    display: none;
+  }
+
+  .sidebar-groups {
+    gap: 0;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .sidebar-github {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-3);
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .sidebar-github:hover {
+    border-color: var(--border-hover);
+    color: var(--cyan);
   }
 
   .sidebar-group {
@@ -924,7 +1176,7 @@ pre[class*="language-"] {
 
   .card-glass {
     border-radius: var(--radius);
-    margin: 0 -8px;
+    margin: 0 -8px 32px;
   }
 
   .docs-body h1 {
@@ -943,12 +1195,6 @@ pre[class*="language-"] {
   .docs-body p {
     font-size: 0.95rem;
     line-height: 1.6;
-  }
-
-  .docs-body table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
   .docs-body th,
@@ -1112,4 +1358,140 @@ pre[class*="language-"] {
   .feature-icon {
     font-size: 1.5rem;
   }
+}
+/* ─── SEARCH ──────────────────────────────────────────────────────────────── */
+.docs-search {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.docs-search input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.docs-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.docs-search input:focus {
+  outline: none;
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+}
+
+.docs-search-hint,
+.docs-search-empty {
+  margin: 0.4rem 0 0;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.docs-search-empty {
+  color: var(--orange);
+}
+
+.docs-search-hint kbd {
+  padding: 0.05rem 0.3rem;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+}
+
+.docs-search-results {
+  position: absolute;
+  z-index: 40;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  right: 0;
+  max-height: 22rem;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.docs-search-results li a {
+  display: block;
+  padding: 0.5rem 0.6rem;
+  border-radius: calc(var(--radius) - 2px);
+  text-decoration: none;
+  transition: background var(--transition);
+}
+
+.docs-search-results li a:hover,
+.docs-search-results li.active a {
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.hit-title {
+  display: block;
+  color: var(--text);
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.hit-snippet {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--text-muted);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+/* ─── COPY BUTTON ─────────────────────────────────────────────────────────── */
+.code-window {
+  position: relative;
+}
+
+.copy-code {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  padding: 0.25rem 0.55rem;
+  background: rgba(13, 18, 32, 0.9);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition), color var(--transition),
+    border-color var(--transition);
+}
+
+.code-window:hover .copy-code,
+.copy-code:focus-visible {
+  opacity: 1;
+}
+
+.copy-code:hover {
+  color: var(--cyan);
+  border-color: var(--border-hover);
+}
+
+.copy-code.copied {
+  color: var(--green);
+  border-color: rgba(34, 197, 94, 0.4);
+  opacity: 1;
+}
+
+/* Keep the button from covering the last line of a short block. */
+.code-window pre {
+  padding-bottom: 2.2rem;
 }

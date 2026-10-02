@@ -118,6 +118,8 @@ img {
 }
 
 /* ─── Nav ────────────────────────────────────────────────────────────────────── */
+/* The header is hidden on phones only — see the 768px block. Below that the
+   sidebar would just repeat it. */
 .nav {
   position: fixed;
   top: 0;
@@ -257,21 +259,21 @@ img {
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 36px;
-  padding-top: calc(var(--nav-h) + 32px);
-  padding-bottom: 80px;
+  padding-top: 28px;
+  padding-bottom: 60px;
   position: relative;
   z-index: 1;
 }
 
 .docs-sidebar {
   position: sticky;
-  top: calc(var(--nav-h) + 20px);
-  height: calc(100vh - var(--nav-h) - 40px);
+  top: 24px;
+  height: calc(100vh - 48px);
   overflow-y: auto;
   padding-right: 12px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   min-width: 0;
 }
 
@@ -334,6 +336,62 @@ img {
   color: var(--cyan);
 }
 
+/* Mobile elements. On desktop the top nav owns the brand/links, and groups are
+   always visible, so these are not rendered on desktop. */
+.sidebar-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Sidebar Header (Brand & Mobile Toggle) */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.sidebar-logo:hover {
+  color: var(--text);
+  opacity: 0.9;
+}
+
+.sidebar-toggle {
+  display: none;
+}
+
+/* GitHub button in sidebar (visible on both desktop and mobile) */
+.sidebar-github {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-3);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: var(--transition);
+  margin-top: 8px;
+}
+
+.sidebar-github:hover {
+  border-color: var(--border-hover);
+  color: var(--cyan);
+}
+
 @media (max-width: 920px) {
   .docs-layout {
     grid-template-columns: 1fr;
@@ -358,6 +416,7 @@ img {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow);
+  margin-bottom: 32px;
 }
 
 @media (max-width: 640px) {
@@ -373,17 +432,27 @@ img {
    blocks scroll horizontally instead of reflowing. */
 .docs-body {
   overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .docs-body p,
 .docs-body li,
 .docs-body dd,
 .docs-body dt,
-.docs-body th,
-.docs-body td,
-.docs-body a,
+.docs-body a {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
 .docs-body :not(pre) > code {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.docs-body th,
+.docs-body td {
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .docs-body h1 {
@@ -430,6 +499,54 @@ img {
   margin-bottom: 6px;
 }
 
+/* ─── Task Lists / Checklists ────────────────────────────────────────────────── */
+.docs-body ul.task-list {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.docs-body li.task-list-item {
+  list-style: none;
+  list-style-type: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.docs-body input.task-list-item-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid rgba(148, 163, 184, 0.4);
+  border-radius: 4px;
+  background: rgba(15, 23, 42, 0.6);
+  cursor: default;
+  margin: 3px 0 0 0;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.15s ease;
+}
+
+.docs-body input.task-list-item-checkbox:checked {
+  background: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.docs-body input.task-list-item-checkbox:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
 .docs-body inline-code,
 .docs-body p code,
 .docs-body li code,
@@ -440,6 +557,12 @@ img {
   border-radius: 5px;
   border: 1px solid rgba(56, 189, 248, 0.2);
   font-size: 0.88rem;
+}
+
+.docs-body table code,
+.docs-body td code,
+.docs-body th code {
+  white-space: nowrap;
 }
 
 /* ─── Buttons ───────────────────────────────────────────────────────────────── */
@@ -694,6 +817,13 @@ pre[class*="language-"] {
   display: block;
 }
 
+.example-tabs .tab-content table {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
 /* ─── Markdown Tables ───────────────────────────────────────────────────────── */
 .docs-body table {
   display: block;
@@ -717,6 +847,9 @@ pre[class*="language-"] {
   text-align: left;
   border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
+  vertical-align: top;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .docs-body th {
@@ -775,6 +908,7 @@ pre[class*="language-"] {
   background: var(--bg-2);
   border-top: 1px solid var(--border);
   padding: 60px 0 30px;
+  margin-top: 32px;
   position: relative;
   z-index: 1;
 }
@@ -876,38 +1010,117 @@ pre[class*="language-"] {
     --nav-h: 60px;
   }
 
+  /* The header duplicates the docs tree and costs 60px before anything is
+     readable. On phones the sidebar becomes the only navigation. */
+  .nav {
+    display: none;
+  }
+
   .container {
     padding: 0 16px;
   }
 
-  .nav-inner {
-    padding: 0 16px;
-  }
-
-  .nav-logo {
-    font-size: 1rem;
-  }
-
-  .logo-docs-tag {
-    display: none;
-  }
-
-  .nav-links a {
-    padding: 12px 16px;
-    font-size: 1rem;
-  }
-
   .docs-layout {
-    padding-top: calc(var(--nav-h) + 16px);
+    padding-top: 12px;
+    padding-bottom: 48px;
     gap: 0;
+  }
+
+  /* The "/" shortcut only means something with a keyboard attached. */
+  .docs-search-hint {
+    display: none;
   }
 
   .docs-sidebar {
     background: var(--bg-2);
     border-bottom: 1px solid var(--border);
-    padding: 12px 0;
-    margin: 0 -16px;
+    padding: 10px 0;
+    margin: 0 -16px 14px;
     overflow-y: visible;
+    gap: 0;
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px 8px;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    padding: 0;
+  }
+
+  .sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--transition);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sidebar-toggle:hover,
+  .sidebar-toggle:focus-visible,
+  .sidebar-toggle[aria-expanded="true"] {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(56, 189, 248, 0.08);
+  }
+
+  .docs-search {
+    margin-bottom: 0;
+    padding: 0 16px;
+  }
+
+  .docs-search input {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+
+  /* The tree stays folded until the toggle opens the menu. */
+  .docs-sidebar:not(.menu-open) .sidebar-groups {
+    display: none;
+  }
+
+  .sidebar-groups {
+    gap: 0;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .sidebar-github {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 16px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-3);
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .sidebar-github:hover {
+    border-color: var(--border-hover);
+    color: var(--cyan);
   }
 
   .sidebar-group {
@@ -963,7 +1176,7 @@ pre[class*="language-"] {
 
   .card-glass {
     border-radius: var(--radius);
-    margin: 0 -8px;
+    margin: 0 -8px 32px;
   }
 
   .docs-body h1 {
