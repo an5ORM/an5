@@ -72,6 +72,28 @@ type, and a key that is close to a real one gets a suggestion. The four CLI
 commands and the generator all read the file through this one loader, so they
 cannot disagree about what it means.
 
+### Provider
+
+The connection string also picks the database provider, which decides which field
+types the schema may use. `sqlserver://` is SQL Server (also the fallback for
+anything unrecognised), `postgres://`/`postgresql://` PostgreSQL, `mysql://`/
+`mariadb://` MySQL, `sqlite://` or a path ending in `.sqlite`/`.db` SQLite, and
+`googlesheets://` Google Sheets. See [Field Types](schema.md#field-types).
+
+```ini
+# PostgreSQL — `INT` in the schema is now rejected, `INTEGER` is the spelling
+DATABASE_URL=postgres://user:password@localhost:5432/mydb
+```
+
+With no connection string the provider is SQL Server, so generating from a config
+without one keeps validating against SQL Server types.
+
+`db:push` writes the DDL of whichever provider the connection string selects, so it
+works on all of them. `db:pull`, `db:migrate:*` and `db:cleanup` still only speak SQL
+Server — they read `sys.*` catalogs and write T-SQL — so pointed at another provider
+they stop with that message rather than running the wrong SQL. `db:seed` is not
+affected either way: it only runs the project's own script.
+
 ### Configuration Options
 
 | Option                            | Type       | Default                                 | Description                                 |

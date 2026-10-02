@@ -32,12 +32,41 @@ model Post {
   id        NVARCHAR(1000) @id @default(uuid())
   title     NVARCHAR(255)  @description("The post title")
   content   TEXT?
-  published BOOLEAN        @default(false)
+  published BIT            @default(false)
   authorId  NVARCHAR(1000)
 }
 ```
 
 ### Field Types
+
+Valid types depend on the database you are generating for. The provider is read from
+the connection string (`sqlserver://`, `postgres://`, `mysql://`, `sqlite://`,
+`googlesheets://`, or a path ending in `.sqlite`/`.sqlite3`/`.db`); with no connection
+string it is SQL Server. A type the provider does not have stops generation with the
+field that used it, instead of producing SQL the database rejects later.
+
+This is stricter than before, and deliberately: one shared list used to accept
+`INTEGER` for SQL Server and `BIT` for SQLite, so a schema only failed once the
+database rejected it. Migrating means replacing each type with the provider's own —
+`BOOLEAN` → `BIT` on SQL Server, `DATETIME2` → `DATETIME` or `DATETIME2` kept on SQL
+Server but `DATETIME` on SQLite, and so on. The error names the provider and the
+field, so a run over the schema lists everything to change at once.
+
+Types only some providers have:
+
+| Provider       | Types                                                                          |
+| -------------- | ------------------------------------------------------------------------------ |
+| `mssql`        | `NVARCHAR`, `NTEXT`, `DATETIME2`, `SMALLDATETIME`, `DATETIMEOFFSET`, `BIT`, `MONEY`, `UNIQUEIDENTIFIER`, `SQL_VARIANT`, `ROWVERSION`, `HIERARCHYID`, `GEOGRAPHY`, `GEOMETRY`, `VECTOR` |
+| `postgres`     | `INTEGER`, `INT4`, `SERIAL`, `BIGSERIAL`, `BOOLEAN`, `JSONB`, `BYTEA`, `TIMESTAMPTZ`, `INTERVAL`, `TIMESTAMP WITH TIME ZONE`, `DOUBLE PRECISION`, `INET` (PostGIS for `GEOMETRY`/`GEOGRAPHY`, pgvector for `VECTOR`) |
+| `mysql`        | `MEDIUMINT`, `TINYTEXT`, `LONGBLOB`, `ENUM`, `SET`, `JSON`, `YEAR`, `TINYBLOB` (`SERIAL` is an alias for `BIGINT UNSIGNED AUTO_INCREMENT`; no `UUID` type) |
+| `sqlite`       | `INTEGER`, `BOOLEAN`, `BLOB`, `CLOB`, `JSON`, `UUID` (SQLite never enforces the declared name — it derives an affinity from it — so this is the names in common use with a defined affinity, not the engine's five storage classes) |
+| `googlesheets` | The portable subset only (`STRING`, `TEXT`, `VARCHAR`, `INT`, `BIGINT`, `FLOAT`, `BOOLEAN`, `DATE`, `DATETIME`, `BYTES`, …) — Sheets has no column types, so every cell is coerced from the generated TypeScript type and a type the adapter cannot place has nothing to fall back on |
+
+Names that would read as a relation are never types: `USER` and `NAME` are real
+PostgreSQL types but are left out on purpose, so `user User @relation(...)` stays a
+relation.
+
+#### SQL Server
 
 | Type               | Description                    | Example            | TypeScript         |
 | ------------------ | ------------------------------ | ------------------ | ------------------ |
