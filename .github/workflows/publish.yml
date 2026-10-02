@@ -74,13 +74,39 @@ jobs:
 
       - name: Publish @an5/adapters to npm
         working-directory: an5Adapters
-        run: npm publish --access public --if-present || echo "Version already published on npm, skipping"
+        run: |
+          if npm publish --access public --if-present; then
+            echo "published"
+          else
+            status=$?
+            if npm view "@an5/adapters@$(node -p "require('./package.json').version")" version >/dev/null 2>&1; then
+              echo "already on the registry, skipping"
+            else
+              echo "::error::npm publish failed (exit $status) and @an5/adapters this version is not on the registry"
+              exit $status
+            fi
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @an5/orm to npm
         working-directory: an5Orm
-        run: npm publish --access public --if-present || echo "Version already published on npm, skipping"
+        run: |
+          # `--if-present` is what this tolerates: a workspace with nothing to
+          # publish. A 403 or a network error must not be tolerated the same
+          # way, or the job reports success having published nothing — which is
+          # what happened when the npm account was suspended.
+          if npm publish --access public --if-present; then
+            echo "published"
+          else
+            status=$?
+            if npm view "@an5/orm@$(node -p "require('./package.json').version")" version >/dev/null 2>&1; then
+              echo "already on the registry, skipping"
+            else
+              echo "::error::npm publish failed (exit $status) and this version is not on the registry"
+              exit $status
+            fi
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -88,7 +114,18 @@ jobs:
         # The agent was already on npm but no job published it, so a v* tag
         # could never release it and its work stayed in the repo.
         working-directory: an5Agent
-        run: npm publish --access public --if-present || echo "Version already published on npm, skipping"
+        run: |
+          if npm publish --access public --if-present; then
+            echo "published"
+          else
+            status=$?
+            if npm view "@an5/agent@$(node -p "require('./package.json').version")" version >/dev/null 2>&1; then
+              echo "already on the registry, skipping"
+            else
+              echo "::error::npm publish failed (exit $status) and @an5/agent this version is not on the registry"
+              exit $status
+            fi
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -147,27 +184,31 @@ jobs:
         with:
           node-version: 22
       - name: Install & package extension
-        working-directory: an5OrmVScode
+        # Installed from the repository root, not from the workspace member:
+        # `npm install` inside an5OrmVScode left @types/node where tsc could
+        # not see it, and vsce's prepublish compile failed with "Cannot find
+        # type definition file for 'node'". The root install hoists correctly,
+        # which is also what the build-and-test job does.
         run: |
           npm install
-          npm run package
+          npm run package -w an5OrmVScode
       - name: Publish to Open VSX Registry
         working-directory: an5OrmVScode
         run: |
-          if [ -n "$OVSX_PAT" ]; then
-            npx ovsx publish *.vsix -p "$OVSX_PAT" || echo "Open VSX publish skipped or failed"
-          else
+          if [ -z "$OVSX_PAT" ]; then
             echo "OVSX_PAT not provided, skipping Open VSX publish"
+            exit 0
           fi
+          npx ovsx publish *.vsix -p "$OVSX_PAT"
         env:
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
       - name: Publish to VS Code Marketplace
         working-directory: an5OrmVScode
         run: |
-          if [ -n "$VSCE_PAT" ]; then
-            npx @vscode/vsce publish -p "$VSCE_PAT" || echo "Marketplace publish skipped or failed"
-          else
+          if [ -z "$VSCE_PAT" ]; then
             echo "VSCE_PAT not provided, skipping Marketplace publish"
+            exit 0
           fi
+          npx @vscode/vsce publish -p "$VSCE_PAT"
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
