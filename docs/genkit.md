@@ -9,33 +9,133 @@ This workspace uses [Google Genkit](https://genkit.dev) for AI-powered features 
 
 ## Architecture
 
-```
-an5Agent (Genkit v1.39)
-├── RAG Pipeline
-│   ├── embedder.ts        — Custom embedding (OpenAI/Cohere/dummy fallback)
-│   ├── indexer.ts         — Schema + query sample indexing
-│   └── index.ts           — Genkit singleton with vector store
-├── Tools (7 consolidated)
-│   ├── schema-tools.ts     — schema tool: list, describe, relations
-│   ├── query-tools.ts      — query tool: generate, explain, validate
-│   ├── database-tools.ts   — database tool: execute, describe, health
-│   ├── codegen-tools.ts    — generateClientCode, analyzeSchema
-│   ├── rag-tools.ts        — retrieve tool: schema, queries
-│   └── task-tools.ts       — task tool: create, list, update, delete
-└── RAG Data
-    ├── __db_an5-schema.json   — Schema vector index
-    └── __db_an5-queries.json  — Query sample vector index
+<div class="arch-grid-2">
+  <div class="arch-module-card">
+    <div class="arch-module-header">
+      <div class="arch-module-title">
+        <i class="fas fa-robot"></i> an5Agent
+      </div>
+      <span class="arch-module-badge">Genkit v1.39</span>
+    </div>
 
-an5Tasks (Genkit v1.39)
-├── Flows
-│   ├── parseReviewToTasksFlow    — Regex-based task extraction
-│   └── aiParseReviewToTasksFlow  — LLM-powered task extraction
-└── Tools
-    ├── createTaskTool   — Create tasks from review issues
-    ├── listTasksTool    — List/filter tasks
-    ├── updateTaskTool   — Update task status/priority
-    └── deleteTaskTool   — Delete a task
-```
+    <div class="arch-subgroup">
+      <div class="arch-subgroup-title">
+        <i class="fas fa-brain"></i> RAG Pipeline
+      </div>
+      <ul class="arch-item-list">
+        <li class="arch-item">
+          <code>embedder.ts</code>
+          <span class="arch-item-desc">OpenAI / Cohere / fallback</span>
+        </li>
+        <li class="arch-item">
+          <code>indexer.ts</code>
+          <span class="arch-item-desc">Schema + query indexer</span>
+        </li>
+        <li class="arch-item">
+          <code>index.ts</code>
+          <span class="arch-item-desc">Singleton vector store</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="arch-subgroup">
+      <div class="arch-subgroup-title">
+        <i class="fas fa-toolbox"></i> 7 Consolidated Tools
+      </div>
+      <ul class="arch-item-list">
+        <li class="arch-item">
+          <code>schema-tools.ts</code>
+          <span class="arch-item-desc">list, describe, relations</span>
+        </li>
+        <li class="arch-item">
+          <code>query-tools.ts</code>
+          <span class="arch-item-desc">generate, explain, validate</span>
+        </li>
+        <li class="arch-item">
+          <code>database-tools.ts</code>
+          <span class="arch-item-desc">execute, describe, health</span>
+        </li>
+        <li class="arch-item">
+          <code>codegen-tools.ts</code>
+          <span class="arch-item-desc">generateClientCode, analyze</span>
+        </li>
+        <li class="arch-item">
+          <code>rag-tools.ts</code>
+          <span class="arch-item-desc">retrieve schema & queries</span>
+        </li>
+        <li class="arch-item">
+          <code>task-tools.ts</code>
+          <span class="arch-item-desc">create, list, update, delete</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="arch-subgroup">
+      <div class="arch-subgroup-title">
+        <i class="fas fa-database"></i> RAG Persistent Data
+      </div>
+      <ul class="arch-item-list">
+        <li class="arch-item">
+          <code>__db_an5-schema.json</code>
+          <span class="arch-item-desc">Schema vector index</span>
+        </li>
+        <li class="arch-item">
+          <code>__db_an5-queries.json</code>
+          <span class="arch-item-desc">Query sample index</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arch-module-card">
+    <div class="arch-module-header">
+      <div class="arch-module-title">
+        <i class="fas fa-tasks"></i> an5Tasks
+      </div>
+      <span class="arch-module-badge">Genkit v1.39</span>
+    </div>
+
+    <div class="arch-subgroup">
+      <div class="arch-subgroup-title">
+        <i class="fas fa-bolt"></i> Genkit Flows
+      </div>
+      <ul class="arch-item-list">
+        <li class="arch-item">
+          <code>parseReviewToTasksFlow</code>
+          <span class="arch-item-desc">Regex task extraction</span>
+        </li>
+        <li class="arch-item">
+          <code>aiParseReviewToTasksFlow</code>
+          <span class="arch-item-desc">LLM-powered extraction</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="arch-subgroup">
+      <div class="arch-subgroup-title">
+        <i class="fas fa-wrench"></i> Task Tools
+      </div>
+      <ul class="arch-item-list">
+        <li class="arch-item">
+          <code>createTaskTool</code>
+          <span class="arch-item-desc">Create from review issues</span>
+        </li>
+        <li class="arch-item">
+          <code>listTasksTool</code>
+          <span class="arch-item-desc">List & filter tasks</span>
+        </li>
+        <li class="arch-item">
+          <code>updateTaskTool</code>
+          <span class="arch-item-desc">Update status / priority</span>
+        </li>
+        <li class="arch-item">
+          <code>deleteTaskTool</code>
+          <span class="arch-item-desc">Delete a task</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
 
 ## Setup
 
@@ -130,25 +230,85 @@ await updateTask(workspaceDir, 'TASK-1234', { status: 'done' });
 
 ## Cross-Repo Integration
 
-```
-an5Cli (LLM calls)
-  └── uses Genkit generate() for:
-      ├── Commit message generation
-      ├── Changelog generation
-      ├── Code review
-      └── Documentation generation
+<div class="arch-grid-3">
+  <div class="arch-module-card">
+    <div class="arch-module-header">
+      <div class="arch-module-title">
+        <i class="fas fa-terminal"></i> an5Cli
+      </div>
+      <span class="arch-module-badge" style="background: rgba(251, 146, 60, 0.15); color: #fb923c; border-color: rgba(251, 146, 60, 0.3);">LLM Calls</span>
+    </div>
+    <div class="arch-subgroup-title">
+      Uses <code>generate()</code> for:
+    </div>
+    <ul class="arch-item-list">
+      <li class="arch-item">
+        <span>Commit message generation</span>
+      </li>
+      <li class="arch-item">
+        <span>Changelog generation</span>
+      </li>
+      <li class="arch-item">
+        <span>Code review analysis</span>
+      </li>
+      <li class="arch-item">
+        <span>Documentation generation</span>
+      </li>
+    </ul>
+  </div>
 
-an5Agent (RAG + Tools)
-  └── uses Genkit for:
-      ├── Schema/query indexing
-      ├── Semantic retrieval
-      └── Tool execution
+  <div class="arch-module-card">
+    <div class="arch-module-header">
+      <div class="arch-module-title">
+        <i class="fas fa-robot"></i> an5Agent
+      </div>
+      <span class="arch-module-badge">RAG & Tools</span>
+    </div>
+    <div class="arch-subgroup-title">
+      Uses Genkit for:
+    </div>
+    <ul class="arch-item-list">
+      <li class="arch-item">
+        <span>Schema & query indexing</span>
+      </li>
+      <li class="arch-item">
+        <span>Semantic retrieval (RAG)</span>
+      </li>
+      <li class="arch-item">
+        <span>Intelligent tool execution</span>
+      </li>
+      <li class="arch-item">
+        <span>Natural language routing</span>
+      </li>
+    </ul>
+  </div>
 
-an5Tasks (Task Management)
-  └── uses Genkit for:
-      ├── Task extraction flows
-      └── Task management tools
-```
+  <div class="arch-module-card">
+    <div class="arch-module-header">
+      <div class="arch-module-title">
+        <i class="fas fa-tasks"></i> an5Tasks
+      </div>
+      <span class="arch-module-badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">Task Mgmt</span>
+    </div>
+    <div class="arch-subgroup-title">
+      Uses Genkit for:
+    </div>
+    <ul class="arch-item-list">
+      <li class="arch-item">
+        <span>Task extraction flows</span>
+      </li>
+      <li class="arch-item">
+        <span>AI review task parser</span>
+      </li>
+      <li class="arch-item">
+        <span>Task management tools</span>
+      </li>
+      <li class="arch-item">
+        <span>Bridge tool integration</span>
+      </li>
+    </ul>
+  </div>
+</div>
 
 ## Vector Store
 

@@ -565,6 +565,152 @@ img {
   white-space: nowrap;
 }
 
+/* ─── Architecture Visual Diagrams ───────────────────────────────────────────── */
+.arch-diagram-card {
+  background: rgba(13, 18, 32, 0.75);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  margin: 20px 0 24px;
+  overflow-x: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.arch-diagram-card svg {
+  display: block;
+  min-width: 780px;
+  width: 100%;
+  height: auto;
+}
+
+.arch-node {
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.arch-node:hover rect {
+  filter: brightness(1.25) drop-shadow(0 0 12px rgba(56, 189, 248, 0.35));
+}
+
+/* ─── Architecture Module Grid Cards ─────────────────────────────────────────── */
+.arch-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 20px;
+  margin: 20px 0 28px;
+}
+
+.arch-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin: 20px 0 28px;
+}
+
+.arch-module-card {
+  background: rgba(13, 18, 32, 0.75);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.arch-module-card:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  transform: translateY(-2px);
+}
+
+.arch-module-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.arch-module-title {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.arch-module-badge {
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  font-weight: 600;
+}
+
+.arch-subgroup {
+  margin-bottom: 14px;
+}
+
+.arch-subgroup:last-child {
+  margin-bottom: 0;
+}
+
+.arch-subgroup-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.arch-item-list {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.arch-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.88rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  list-style: none !important;
+}
+
+.arch-item code {
+  color: var(--cyan) !important;
+  font-size: 0.84rem;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.arch-item-desc {
+  color: #94a3b8;
+  font-size: 0.8rem;
+  text-align: right;
+}
+
+
 /* ─── Buttons ───────────────────────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
