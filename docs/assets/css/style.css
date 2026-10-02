@@ -272,6 +272,7 @@ img {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-width: 0;
 }
 
 .sidebar-group {
@@ -366,6 +367,25 @@ img {
 }
 
 /* ─── Markdown Content Typography ───────────────────────────────────────────── */
+/* Identifiers, URLs and slash-separated API lists (``a`/`b`/`c` ``) have no
+   space to break at, so without this they set the page's min-content width and
+   spill out of the card on narrow screens. `pre` is excluded on purpose: code
+   blocks scroll horizontally instead of reflowing. */
+.docs-body {
+  overflow-wrap: break-word;
+}
+
+.docs-body p,
+.docs-body li,
+.docs-body dd,
+.docs-body dt,
+.docs-body th,
+.docs-body td,
+.docs-body a,
+.docs-body :not(pre) > code {
+  overflow-wrap: anywhere;
+}
+
 .docs-body h1 {
   font-size: clamp(1.8rem, 3.5vw, 2.5rem);
   font-weight: 800;
@@ -478,6 +498,14 @@ img {
   gap: 32px;
   align-items: center;
   margin-bottom: 48px;
+}
+
+/* Grid children default to `min-width: auto`, i.e. their min-content width.
+   A <pre> keeps that width even with `overflow-x: auto`, so one long code line
+   used to push the whole track past the card and widen the page. */
+.hero > *,
+.features-grid > * {
+  min-width: 0;
 }
 
 @media (max-width: 860px) {
@@ -668,13 +696,19 @@ pre[class*="language-"] {
 
 /* ─── Markdown Tables ───────────────────────────────────────────────────────── */
 .docs-body table {
+  display: block;
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   margin: 24px 0;
   background: var(--bg-2);
   border-radius: var(--radius);
-  overflow: hidden;
   border: 1px solid var(--border);
+  /* A wide reference table scrolls inside the card rather than widening the
+     page. `overflow-y` stays hidden so the rounded corners still clip. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .docs-body th,
@@ -750,6 +784,11 @@ pre[class*="language-"] {
   justify-content: space-between;
   gap: 48px;
   flex-wrap: wrap;
+}
+
+.footer-inner > *,
+.footer-links > * {
+  min-width: 0;
 }
 
 .footer-brand {
@@ -943,12 +982,6 @@ pre[class*="language-"] {
   .docs-body p {
     font-size: 0.95rem;
     line-height: 1.6;
-  }
-
-  .docs-body table {
-    display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
   }
 
   .docs-body th,

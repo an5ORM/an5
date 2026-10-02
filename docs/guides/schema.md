@@ -66,6 +66,12 @@ Names that would read as a relation are never types: `USER` and `NAME` are real
 PostgreSQL types but are left out on purpose, so `user User @relation(...)` stays a
 relation.
 
+Table names follow the provider too. SQL Server is generated as `[dbo].[table]`, as
+before; every other provider gets the bare `table`, because the brackets are SQL Server
+syntax — `[dbo].[users]` is invalid in PostgreSQL and fails on SQLite with "no such
+table: dbo.users". The adapter quotes the name for whichever dialect it is connected
+to. A model that declares `@@schema("main")` keeps that prefix everywhere.
+
 #### SQL Server
 
 | Type               | Description                    | Example            | TypeScript         |
