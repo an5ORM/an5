@@ -10,7 +10,7 @@
 
 > A modern, type-safe ORM ecosystem with multi-database adapters, schema code generation, and AI-agent database capabilities.
 
-**[Documentation](https://an5orm.github.io/an5/)** | **[GitHub](https://github.com/an5ORM/an5)** | **[NPM](https://www.npmjs.com/package/@an5/orm)**
+**[Documentation](https://an5orm.github.io/docs/)** | **[GitHub](https://github.com/an5ORM/an5)** | **[NPM](https://www.npmjs.com/package/@an5/orm)**
 
 ---
 
@@ -42,7 +42,7 @@
 | VS Code Marketplace | [`an5orm.an5-orm-vscode`](https://marketplace.visualstudio.com/items?itemName=an5orm.an5-orm-vscode) | Schema highlighting, formatting, and an MCP server for agentic clients | `code --install-extension an5orm.an5-orm-vscode` |
 | Open VSX | [`an5orm.an5-orm-vscode`](https://open-vsx.org/extension/an5orm/an5-orm-vscode) | Same extension for VSCodium and other VS Code-compatible editors | `ext install an5orm.an5-orm-vscode` |
 
-See [Feature Status](https://an5orm.github.io/an5/guides/feature-status/) for the current maturity level of each module.
+See [Feature Status](https://an5orm.github.io/docs/guides/feature-status/) for the current maturity level of each module.
 
 ---
 
@@ -388,20 +388,22 @@ LLM_MODEL=gpt-4o-mini
 
 ## Documentation
 
+Documentation source and deployment are maintained in [an5ORM/docs](https://github.com/an5ORM/docs).
+
 | Document                                                                | Description                              |
 | ----------------------------------------------------------------------- | ---------------------------------------- |
-| [Getting Started](https://an5orm.github.io/an5/guides/getting-started/) | Installation and setup                   |
-| [Feature Status](https://an5orm.github.io/an5/guides/feature-status/)   | Published packages, maturity, known gaps |
-| [Schema](https://an5orm.github.io/an5/guides/schema/)                   | Define your data models                  |
-| [CRUD Operations](https://an5orm.github.io/an5/guides/crud/)            | Create, read, update, delete             |
-| [Relations](https://an5orm.github.io/an5/guides/relations/)             | Define relationships                     |
-| [Queries](https://an5orm.github.io/an5/guides/queries/)                 | Advanced query patterns                  |
-| [AI Agent Tools](https://an5orm.github.io/an5/guides/agent-tools/)      | 7 intelligent tools                      |
-| [API Reference](https://an5orm.github.io/an5/guides/api-reference/)     | Complete API docs                        |
-| [Configuration](https://an5orm.github.io/an5/guides/configuration/)     | Setup and config                         |
-| [CLI Commands](https://an5orm.github.io/an5/guides/cli/)                | Command reference                        |
-| [Deployment](https://an5orm.github.io/an5/guides/deployment/)           | Production deploy                        |
-| [Troubleshooting](https://an5orm.github.io/an5/guides/troubleshooting/) | Common issues                            |
+| [Getting Started](https://an5orm.github.io/docs/guides/getting-started/) | Installation and setup                   |
+| [Feature Status](https://an5orm.github.io/docs/guides/feature-status/)   | Published packages, maturity, known gaps |
+| [Schema](https://an5orm.github.io/docs/guides/schema/)                   | Define your data models                  |
+| [CRUD Operations](https://an5orm.github.io/docs/guides/crud/)            | Create, read, update, delete             |
+| [Relations](https://an5orm.github.io/docs/guides/relations/)             | Define relationships                     |
+| [Queries](https://an5orm.github.io/docs/guides/queries/)                 | Advanced query patterns                  |
+| [AI Agent Tools](https://an5orm.github.io/docs/guides/agent-tools/)      | 7 intelligent tools                      |
+| [API Reference](https://an5orm.github.io/docs/guides/api-reference/)     | Complete API docs                        |
+| [Configuration](https://an5orm.github.io/docs/guides/configuration/)     | Setup and config                         |
+| [CLI Commands](https://an5orm.github.io/docs/guides/cli/)                | Command reference                        |
+| [Deployment](https://an5orm.github.io/docs/guides/deployment/)           | Production deploy                        |
+| [Troubleshooting](https://an5orm.github.io/docs/guides/troubleshooting/) | Common issues                            |
 
 ---
 

@@ -33,14 +33,9 @@
     "release": "node an5Cli/dist/index.js ws . --push",
     "dryrun": "node an5Cli/dist/index.js ws . --dry-run",
     "ui": "node an5Cli/dist/index.js ui .",
-    "docs": "node docs/build-context-pages.mjs && jekyll serve --source docs --livereload",
-    "docs:build": "node docs/build-context-pages.mjs && jekyll build --source docs --destination ./_site",
-    "test:docs": "node docs/test/check-an5-grammar.mjs && node docs/test/check-svg.mjs",
     "test:lang": "node scripts/check-english-only.mjs",
     "postinstall": "node scripts/apply-security-backports.mjs",
-    "test:security": "node --test scripts/security.test.mjs",
-    "test:docs:browser": "npm run docs:build && node docs/test/mermaid-browser.mjs",
-    "test:seo": "npm run docs:build && node scripts/audit-seo.mjs"
+    "test:security": "node --test scripts/security.test.mjs"
   },
   "devDependencies": {
     "mysql2": "^3.24.5",

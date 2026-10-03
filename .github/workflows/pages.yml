@@ -5,13 +5,13 @@ on:
     branches: ["main"]
     paths:
       - 'docs/**'
-      - 'scripts/audit-seo.mjs'
+      - 'scripts/build-docs-redirects.mjs'
       - '.github/workflows/pages.yml'
   pull_request:
     branches: ["main"]
     paths:
       - 'docs/**'
-      - 'scripts/audit-seo.mjs'
+      - 'scripts/build-docs-redirects.mjs'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -39,29 +39,8 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Check the .an5 syntax grammar & diagrams
-        run: npm run test:docs
-
-      - name: Generate language and provider documentation routes
-        run: node docs/build-context-pages.mjs
-
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./docs
-          destination: ./_site
-
-      - name: Validate Mermaid browser interactions (Mobile & Desktop)
-        run: node docs/test/mermaid-browser.mjs
-
-      - name: Validate language and provider chooser
-        run: node docs/test/context-browser.mjs
-
-      - name: Run Technical SEO Audit
-        run: node scripts/audit-seo.mjs
-
-      - name: Check internal links
-        run: python3 docs/test/check-links.py ./_site
+      - name: Build redirects to the documentation repository
+        run: node scripts/build-docs-redirects.mjs
 
       - name: Upload artifact
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
