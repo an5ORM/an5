@@ -36,7 +36,7 @@
 [submodule "an5example"]
 	path = an5example
 	url = https://github.com/an5ORM/an5example.git
-[submodule "an5docs"]
-	path = an5docs
+[submodule "an5Docs"]
+	path = an5Docs
 	url = https://github.com/an5ORM/docs.git
 	branch = main
