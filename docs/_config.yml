@@ -21,6 +21,7 @@ exclude:
   - node_modules
   # Build-time checks, not part of the site.
   - test
+  - build-context-pages.mjs
   - Makefile
   - package.json
   - package-lock.json

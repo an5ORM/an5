@@ -1,107 +1,257 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
     <loc>https://an5orm.github.io/an5/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/architecture/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/dotnet/googlesheets/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/dotnet/mysql/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/dotnet/nbase/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/dotnet/postgresql/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/dotnet/sqlite/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/dotnet/sqlserver/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/genkit/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/golang/googlesheets/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/golang/mysql/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/golang/nbase/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/golang/postgresql/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/golang/sqlite/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/golang/sqlserver/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/agent-tools/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/api-reference/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/architecture/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/browser-support/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/cli/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/configuration/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/crud/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/deployment/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/examples/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/feature-status/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/getting-started/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/queries/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/relations/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/schema/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/transactions/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/troubleshooting/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/vector-search/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/vscode-mcp/</loc>
-    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/python/googlesheets/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/python/mysql/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/python/nbase/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/python/postgresql/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/python/sqlite/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/python/sqlserver/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/rust/googlesheets/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/rust/mysql/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/rust/nbase/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/rust/postgresql/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/rust/sqlite/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/rust/sqlserver/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/typescript/googlesheets/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/typescript/mysql/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/typescript/nbase/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/typescript/postgresql/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/typescript/sqlite/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/typescript/sqlserver/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:44:15+07:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url></urlset>

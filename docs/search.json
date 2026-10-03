@@ -9,7 +9,7 @@ sitemap: false
   in the results for every dead link.
 {%- endcomment -%}
 {%- assign skip = '/search.json,/404.html,/sitemap.xml,/robots.txt' | split: ',' -%}
-{%- assign corpus = site.pages | where_exp: "p", "p.title" | sort: "url" -%}
+{%- assign corpus = site.pages | where_exp: "p", "p.title and p.docs_variant != true" | sort: "url" -%}
 [
 {%- for p in corpus -%}
 {%- if skip contains p.url -%}{%- continue -%}{%- endif -%}

@@ -218,7 +218,7 @@
 
 <h2 id="choosing-a-backend">Choosing a backend</h2>
 
-<p>an5 tries the backends in this order and uses the first one that works:</p>
+<p>The TypeScript runtime tries the backends in this order and uses the first one that works. Other runtimes have their own provider support; use the examples for your stack below.</p>
 
 <table>
   <thead>
@@ -255,6 +255,47 @@
 <p>Use NBase when the embedding table is too large to scan: the vectors live in the
 vector database and the rows stay in your table, so a search never loads the
 table into memory.</p>
+
+<section class="docs-context" data-baseurl="/an5">
+  <h2>Examples for your stack</h2>
+  <form id="docsContextForm">
+    <label for="docsCode">Language</label>
+    <select id="docsCode" name="code">
+      
+      <option value="typescript" selected="">TypeScript</option><option value="python">Python</option><option value="dotnet">.NET (C#)</option><option value="golang">Go</option><option value="rust">Rust</option>
+    </select>
+    <label for="docsProvider">Database provider</label>
+    <select id="docsProvider" name="provider">
+      
+      <option value="sqlserver">SQL Server</option><option value="postgresql">PostgreSQL</option><option value="mysql">MySQL</option><option value="sqlite" selected="">SQLite</option><option value="googlesheets">Google Sheets</option><option value="nbase">NBase</option>
+    </select>
+    <button type="submit">Load examples</button>
+  </form>
+  <p>Selected: <strong>typescript</strong> / <strong>sqlite</strong>.</p>
+  
+  <p>This provider has no native vector search in AN5. Where supported, the runtime loads matching rows and ranks their embeddings in memory. Limit table size and filter candidates early.</p>
+  
+  
+  
+  
+  
+  
+  <p>Generate the Document model client first and configure its adapter for the selected provider. The snippets assume an initialized runtime table client named <code>table</code> (or a generated TypeScript client named <code>db</code>) and a query embedding with the same dimension as stored embeddings.</p>
+  
+  <pre><code class="language-typescript">const results = await db.document.vectorSearch({
+  vector: queryEmbedding,
+  vectorField: 'embedding',
+  take: 10,
+  distanceMetric: 'cosine'
+});</code></pre>
+  
+  
+  
+</section>
+
+<h2 id="typescript-reference-across-backends">TypeScript reference across backends</h2>
+
+<p>The following sections cover all TypeScript backends, including optional NBase integration. Use the selected-provider example above as your starting point.</p>
 
 <h2 id="setup">Setup</h2>
 
@@ -617,6 +658,7 @@ searches run in the vector database instead of scanning the table</li>
   <script src="/an5/assets/js/prism-an5.js"></script>
 
   <script src="/an5/assets/js/docs.js"></script>
+  <script src="/an5/assets/js/docs-context.js"></script>
 
   <script>
     // Highlight the sidebar entry for this page. Compare normalised paths

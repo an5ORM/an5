@@ -1993,3 +1993,8 @@ pre[class*="language-"] {
     font-size: 0.72rem;
   }
 }
+
+/* Language/provider controls on contextual guides. */
+.docs-context { border: 1px solid var(--border-color, #384155); padding: 1rem; border-radius: 12px; margin: 1.5rem 0; }
+.docs-context form { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+.docs-context select, .docs-context button { font: inherit; padding: .5rem; border-radius: 6px; background: #162035; color: #fff; border: 1px solid #62718e; max-width: 100%; }

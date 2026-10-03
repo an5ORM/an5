@@ -39,3 +39,6 @@ tasks.json
 # Local MCP config: written by "AN5: Install MCP Server" with absolute
 # paths to this machine's extension install.
 .mcp.json
+
+# Generated documentation language/provider routes
+docs/context-pages/

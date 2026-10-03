@@ -19,7 +19,7 @@ Vector search allows you to find similar items based on semantic meaning rather 
 
 ## Choosing a backend
 
-an5 tries the backends in this order and uses the first one that works:
+The TypeScript runtime tries the backends in this order and uses the first one that works. Other runtimes have their own provider support; use the examples for your stack below.
 
 | Order | Backend | Needs |
 |-------|---------|-------|
@@ -31,6 +31,15 @@ an5 tries the backends in this order and uses the first one that works:
 Use NBase when the embedding table is too large to scan: the vectors live in the
 vector database and the rows stay in your table, so a search never loads the
 table into memory.
+
+{% include vector-context.html %}
+
+{% assign selected_code = page.docs_code | default: "typescript" %}
+{% if selected_code == "typescript" %}
+
+## TypeScript reference across backends
+
+The following sections cover all TypeScript backends, including optional NBase integration. Use the selected-provider example above as your starting point.
 
 ## Setup
 
@@ -276,6 +285,8 @@ return {
 2. **Limit results** with `take` to reduce computation
 3. **Filter early** with `where` to narrow candidates
 4. **Cache embeddings** to avoid regenerating them
+
+{% endif %}
 
 ## Next Steps
 
