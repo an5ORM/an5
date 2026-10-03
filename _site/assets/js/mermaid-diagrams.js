@@ -23,12 +23,67 @@
       button.textContent = expanded ? 'Fit to screen' : 'Actual size';
     });
     controls.append(button);
+    const zoomOut = action('−', 'Zoom out');
+    const zoomIn = action('+', 'Zoom in');
+    const download = action('Download SVG', 'Download diagram as SVG');
+    const status = document.createElement('span');
+    status.className = 'diagram-status'; status.setAttribute('aria-live', 'polite');
+    controls.append(zoomOut, zoomIn, status, download);
+    function action(label, title) {
+      const control = document.createElement('button'); control.type = 'button';
+      control.textContent = label; control.setAttribute('aria-label', title);
+      control.disabled = true; return control;
+    }
     const viewport = document.createElement('div');
     viewport.className = 'diagram-viewport'; viewport.tabIndex = 0;
     viewport.setAttribute('role', 'region'); viewport.setAttribute('aria-label', 'Diagram; scroll to explore');
     const diagram = document.createElement('div'); diagram.className = 'mermaid'; diagram.textContent = source;
     viewport.append(diagram); card.append(controls, viewport); pre.replaceWith(card);
-    return {card, diagram, source, button};
+    let scale = 1;
+    let naturalWidth = 0;
+    const zoom = delta => {
+      if (!naturalWidth) return;
+      if (!card.classList.contains('diagram-expanded')) scale = viewport.clientWidth / naturalWidth;
+      scale = Math.max(0.25, Math.min(3, Math.round((scale + delta) * 100) / 100));
+      card.classList.add('diagram-expanded'); card.classList.remove('diagram-fit');
+      button.setAttribute('aria-pressed', 'true'); button.textContent = 'Fit to screen';
+      diagram.style.width = `${naturalWidth * scale}px`;
+      diagram.style.minWidth = '0';
+      status.textContent = `${Math.round(scale * 100)}%`;
+      zoomOut.disabled = scale <= 0.25; zoomIn.disabled = scale >= 3;
+    };
+    zoomOut.addEventListener('click', () => zoom(-0.25));
+    zoomIn.addEventListener('click', () => zoom(0.25));
+    button.addEventListener('click', () => {
+      diagram.style.removeProperty('width'); diagram.style.removeProperty('min-width');
+      scale = 1; status.textContent = ''; zoomOut.disabled = zoomIn.disabled = !naturalWidth;
+    });
+    download.addEventListener('click', () => {
+      const svg = diagram.querySelector('svg'); if (!svg) return;
+      const copy = svg.cloneNode(true);
+      const originals = [svg, ...svg.querySelectorAll('*')];
+      const clones = [copy, ...copy.querySelectorAll('*')];
+      originals.forEach((element, index) => {
+        const style = getComputedStyle(element);
+        for (const property of ['fill', 'stroke', 'stroke-width', 'color', 'font-family', 'font-size', 'font-weight', 'background-color']) {
+          clones[index].style.setProperty(property, style.getPropertyValue(property));
+        }
+      });
+      copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      copy.setAttribute('width', String(svg.viewBox.baseVal.width));
+      copy.setAttribute('height', String(svg.viewBox.baseVal.height));
+      copy.style.removeProperty('max-width'); copy.style.removeProperty('width'); copy.style.removeProperty('height');
+      const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)], {type: 'image/svg+xml;charset=utf-8'}));
+      const link = document.createElement('a'); link.href = url; link.download = `an5-diagram-${cards.indexOf(entry) + 1}.svg`;
+      document.body.append(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
+    const entry = {card, diagram, source, button, controls, ready(width) {
+      naturalWidth = width;
+      button.disabled = false; zoomOut.disabled = zoomIn.disabled = !width; download.disabled = false;
+    }};
+    button.disabled = true;
+    return entry;
   });
   try {
     if (!window.mermaid) await new Promise((resolve, reject) => {
@@ -71,12 +126,13 @@
         if (svg) {
           const width = svg.viewBox.baseVal.width;
           if (width) entry.diagram.style.setProperty('--diagram-width', `${width}px`);
+          entry.ready(width);
         }
       } catch (error) { fallback(entry); console.error('Mermaid render error:', error); }
     }
   } catch (error) { cards.forEach(fallback); console.error('Mermaid load error:', error); }
   function fallback(entry) {
-    entry.button.hidden = true;
+    entry.controls.hidden = true;
     const pre = document.createElement('pre'); pre.textContent = entry.source;
     entry.diagram.replaceChildren(pre);
     const message = document.createElement('p'); message.textContent = 'Diagram unavailable. Source is shown below.';

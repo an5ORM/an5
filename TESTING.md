@@ -39,6 +39,7 @@ cd an5Schema && npm test && cd ..
 **Language:** TypeScript
 **Test command:** `npm test`
 **Test files:**
+
 | File | Description |
 |------|-------------|
 | `test/smoke.test.js` | Package structure, file existence, generator entry point |
@@ -59,6 +60,7 @@ cd an5Schema && npm test && cd ..
 **Languages:** TypeScript, Python, C#
 **Test command:** `npm test`
 **Test files:**
+
 | File | Description |
 |------|-------------|
 | `test/smoke.py` | Directory existence check (Python) |
@@ -82,6 +84,7 @@ cd an5Schema && npm test && cd ..
 **Languages:** TypeScript, Python, C#
 **Test command:** `npm test`
 **Test files:**
+
 | File | Description |
 |------|-------------|
 | `test/smoke.py` | Directory existence check (Python) |
@@ -105,6 +108,7 @@ cd an5Schema && npm test && cd ..
 **Language:** TypeScript
 **Test command:** `npm test` (builds first: `npm run build`)
 **Test files:**
+
 | File | Description |
 |------|-------------|
 | `test/smoke.test.js` | Smoke tests: instantiation, 7 consolidated tools, NL processing, mock queries |
@@ -132,6 +136,7 @@ cd an5Schema && npm test && cd ..
 **Language:** TypeScript
 **Test command:** `npm test` (builds first: `npm run build`)
 **Test files:**
+
 | File | Description |
 |------|-------------|
 | `test/smoke.test.js` | 6 smoke tests: package, CLI help, dry-run, LLM module, config |
@@ -155,6 +160,7 @@ cd an5Schema && npm test && cd ..
 **Language:** TypeScript (VS Code extension)
 **Test command:** `npm test`
 **Test files:**
+
 | File | Description |
 |------|-------------|
 | `test/smoke.test.js` | Package structure, language contribution, grammar/snippet files |
@@ -186,6 +192,7 @@ cd an5Schema && npm test && cd ..
 **Language:** `.an5` schema files
 **Test command:** `npm test`
 **Test files:**
+
 | File | Description |
 |------|-------------|
 | `test/validate.test.js` | Schema file format and syntax validation |
@@ -208,6 +215,7 @@ cd an5Schema && npm test && cd ..
 **Languages:** TypeScript, Python, C# (.NET 8 SDK), Go
 **Test command:** `npm test` (builds first, then runs the full offline matrix)
 **Test files:**
+
 | File | Description |
 |------|-------------|
 | `test/crud.sqlite.test.js` | Shared CRUD + relations suite on SQLite |
@@ -237,6 +245,7 @@ npm `test:python` scripts accept either `python` or `python3` (tries `python` fi
 **Language:** TypeScript
 **Test command:** `npm test` (builds first: `npm run build`)
 **Test files:**
+
 | File | Description |
 |------|-------------|
 | `test/smoke.test.js` | Package structure, source files, Genkit exports |

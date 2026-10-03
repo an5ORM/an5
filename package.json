@@ -38,7 +38,8 @@
     "test:docs": "node docs/test/check-an5-grammar.mjs && node docs/test/check-svg.mjs",
     "test:lang": "node scripts/check-english-only.mjs",
     "postinstall": "node scripts/apply-security-backports.mjs",
-    "test:security": "node --test scripts/security.test.mjs"
+    "test:security": "node --test scripts/security.test.mjs",
+    "test:docs:browser": "npm run docs:build && node docs/test/mermaid-browser.mjs"
   },
   "devDependencies": {
     "mysql2": "^3.24.5",

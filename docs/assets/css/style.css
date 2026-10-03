@@ -1724,7 +1724,10 @@ pre[class*="language-"] {
 
 /* Shared diagram viewer: readable at natural size with contained touch scrolling. */
 .diagram-viewer {display:block;min-width:0;max-width:100%;padding:16px;}
-.diagram-controls {display:flex;justify-content:flex-end;margin-bottom:10px;}
+.diagram-controls {display:flex;flex-wrap:wrap;align-items:center;gap:8px;justify-content:flex-end;margin-bottom:10px;}
+.diagram-controls[hidden] {display:none;}
+.diagram-status {font-size:12px;min-width:3em;text-align:center;}
+.diagram-controls button:disabled {opacity:.45;cursor:default;}
 .diagram-controls button {font:inherit;color:var(--cyan);background:var(--bg-card, #141c2e);border:1px solid var(--border);border-radius:6px;padding:8px 12px;min-height:44px;cursor:pointer;}
 .diagram-viewport {max-width:100%;overflow:auto;overscroll-behavior-x:contain;}
 .diagram-viewport:focus-visible,.diagram-controls button:focus-visible {outline:2px solid var(--cyan);outline-offset:2px;}
