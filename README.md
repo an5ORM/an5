@@ -1,12 +1,12 @@
 # an5 ORM
 
 <p align="center">
-  <img src="an5OrmVScode/icons/an5-128x128.png" width="96" height="96" alt="AN5 ORM Logo" />
+  <img src="https://raw.githubusercontent.com/an5ORM/an5OrmVScode/main/icons/an5-128x128.png" width="96" height="96" alt="AN5 ORM Logo" />
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-blue.svg)](https://www.typescriptlang.org/)
+[![Node.js CI](https://img.shields.io/badge/Node.js-CI%2022-green.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7.0.2-blue.svg)](https://www.typescriptlang.org/)
 
 > A modern, type-safe ORM ecosystem with multi-database adapters, schema code generation, and AI-agent database capabilities.
 
