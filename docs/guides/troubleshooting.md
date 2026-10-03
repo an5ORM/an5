@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Troubleshooting
-description: Common issues and solutions
+description: Solutions and troubleshooting guides for common database connections, schema validation, query execution, and code generation issues in AN5 ORM.
 ---
 
 # Troubleshooting

@@ -5,6 +5,13 @@ on:
     branches: ["main"]
     paths:
       - 'docs/**'
+      - 'scripts/audit-seo.mjs'
+      - '.github/workflows/pages.yml'
+  pull_request:
+    branches: ["main"]
+    paths:
+      - 'docs/**'
+      - 'scripts/audit-seo.mjs'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -32,7 +39,7 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Check the .an5 syntax grammar
+      - name: Check the .an5 syntax grammar & diagrams
         run: npm run test:docs
 
       - name: Build with Jekyll
@@ -41,13 +48,21 @@ jobs:
           source: ./docs
           destination: ./_site
 
+      - name: Validate Mermaid browser interactions (Mobile & Desktop)
+        run: node docs/test/mermaid-browser.mjs
+
+      - name: Run Technical SEO Audit
+        run: node scripts/audit-seo.mjs
+
       - name: Check internal links
         run: python3 docs/test/check-links.py ./_site
 
       - name: Upload artifact
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         uses: actions/upload-pages-artifact@v3
 
   deploy:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

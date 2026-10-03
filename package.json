@@ -39,7 +39,8 @@
     "test:lang": "node scripts/check-english-only.mjs",
     "postinstall": "node scripts/apply-security-backports.mjs",
     "test:security": "node --test scripts/security.test.mjs",
-    "test:docs:browser": "npm run docs:build && node docs/test/mermaid-browser.mjs"
+    "test:docs:browser": "npm run docs:build && node docs/test/mermaid-browser.mjs",
+    "test:seo": "npm run docs:build && node scripts/audit-seo.mjs"
   },
   "devDependencies": {
     "mysql2": "^3.24.5",

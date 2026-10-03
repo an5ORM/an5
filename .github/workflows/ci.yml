@@ -69,6 +69,37 @@ jobs:
       - name: Check the workspace is English-only
         run: npm run test:lang
 
+  # ── Docs, Diagrams & Technical SEO gate ─────────────────────────────────────
+  docs-seo-gate:
+    name: 📚 Docs, Diagrams & Technical SEO
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install workspace dependencies
+        run: npm ci
+      - name: Check the .an5 syntax grammar & diagrams
+        run: npm run test:docs
+      - name: Set up Ruby & Jekyll
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - name: Install Jekyll dependencies
+        run: gem install jekyll kramdown rouge
+      - name: Build documentation site
+        run: npm run docs:build
+      - name: Run Mermaid browser interaction tests (Mobile & Desktop)
+        run: node docs/test/mermaid-browser.mjs
+      - name: Run Technical SEO Audit (Schema.org, Open Graph, Sitemap, Robots, Headings)
+        run: npm run test:seo
+      - name: Validate internal links
+        run: python3 docs/test/check-links.py ./_site
+
   # ── Live database integration ───────────────────────────────────────────────
   live-db-integration:
     name: 🧪 Live DB integration
@@ -296,6 +327,7 @@ jobs:
     needs:
       - full-workspace-gate
       - english-only
+      - docs-seo-gate
       - live-db-integration
       - test-orm
       - test-adapters

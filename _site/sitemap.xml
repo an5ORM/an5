@@ -1,44 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
     <loc>https://an5orm.github.io/an5/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/architecture/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/genkit/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/agent-tools/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/api-reference/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/architecture/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/browser-support/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/cli/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/configuration/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/crud/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/deployment/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/examples/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/feature-status/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/getting-started/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/queries/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/relations/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/schema/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/transactions/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/troubleshooting/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/vector-search/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url><url>
     <loc>https://an5orm.github.io/an5/guides/vscode-mcp/</loc>
+    <lastmod>2026-10-03T23:35:28+07:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url></urlset>

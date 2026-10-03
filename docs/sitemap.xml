@@ -15,6 +15,9 @@ sitemap: false
 {%- if skip contains p.url or p.sitemap == false -%}{%- continue -%}{%- endif -%}
   <url>
     <loc>{{ p.url | absolute_url | xml_escape }}</loc>
+    <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+    <changefreq>{% if p.url == '/' or p.url == '/index.html' %}weekly{% else %}monthly{% endif %}</changefreq>
+    <priority>{% if p.url == '/' or p.url == '/index.html' %}1.0{% else %}0.8{% endif %}</priority>
   </url>
 {%- endfor -%}
 </urlset>
