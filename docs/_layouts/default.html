@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ page.title | default: "AN5 ORM Documentation" }} | {{ site.title }}</title>
-  <meta name="description" content="{{ page.description | default: site.description }}">
+  <title>{{ page.title | default: "AN5 ORM Documentation" | escape }} | {{ site.title }}</title>
+  <meta name="description" content="{{ page.description | default: site.description | escape }}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -16,12 +16,25 @@
   <link rel="canonical" href="{{ page_url | absolute_url }}">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="{{ site.title }}">
-  <meta property="og:title" content="{{ page.title | default: site.title }}">
-  <meta property="og:description" content="{{ page.description | default: site.description }}">
+  <meta property="og:title" content="{{ page.title | default: site.title | escape }}">
+  <meta property="og:description" content="{{ page.description | default: site.description | escape }}">
   <meta property="og:url" content="{{ page_url | absolute_url }}">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="{{ page.title | default: site.title }}">
-  <meta name="twitter:description" content="{{ page.description | default: site.description }}">
+  <meta name="twitter:title" content="{{ page.title | default: site.title | escape }}">
+  <meta name="twitter:description" content="{{ page.description | default: site.description | escape }}">
+  {% if site.google_site_verification %}<meta name="google-site-verification" content="{{ site.google_site_verification | escape }}">{% endif %}
+  {% if page.sitemap == false %}<meta name="robots" content="noindex, follow">{% endif %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": {{ page.title | default: site.title | jsonify }},
+    "description": {{ page.description | default: site.description | jsonify }},
+    "url": {{ page_url | absolute_url | jsonify }},
+    "inLanguage": "en",
+    "isPartOf": {"@type": "WebSite", "name": "AN5 ORM", "url": "https://an5orm.github.io/"}
+  }
+  </script>
 </head>
 <body>
 
@@ -134,8 +147,11 @@
           <a href="https://github.com/an5ORM" target="_blank" aria-label="GitHub">
             <i class="fab fa-github"></i>
           </a>
-          <a href="https://open-vsx.org/namespace/an5orm" target="_blank" aria-label="Open VSX">
+          <a href="https://marketplace.visualstudio.com/items?itemName=an5orm.an5-orm-vscode" target="_blank" aria-label="VS Code Marketplace">
             <i class="fas fa-puzzle-piece"></i>
+          </a>
+          <a href="https://open-vsx.org/namespace/an5orm" target="_blank" aria-label="Open VSX">
+            <i class="fas fa-box-open"></i>
           </a>
         </div>
       </div>

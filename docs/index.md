@@ -1,6 +1,6 @@
 ---
 layout: default
-title: an5 ORM - Modern SQL Server ORM
+title: AN5 ORM Documentation - Type-Safe Database Access
 description: A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, and NBase
 ---
 

@@ -78,7 +78,7 @@ The connection string also picks the database provider, which decides which fiel
 types the schema may use. `sqlserver://` is SQL Server (also the fallback for
 anything unrecognised), `postgres://`/`postgresql://` PostgreSQL, `mysql://`/
 `mariadb://` MySQL, `sqlite://` or a path ending in `.sqlite`/`.db` SQLite, and
-`googlesheets://` Google Sheets. See [Field Types](schema.md#field-types).
+`googlesheets://` Google Sheets. See [Field Types]({{ '/guides/schema/' | relative_url }}#field-types).
 
 ```ini
 # PostgreSQL — `INT` in the schema is now rejected, `INTEGER` is the spelling

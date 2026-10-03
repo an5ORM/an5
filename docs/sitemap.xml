@@ -12,12 +12,9 @@ sitemap: false
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {%- for p in corpus -%}
-{%- if skip contains p.url -%}{%- continue -%}{%- endif -%}
+{%- if skip contains p.url or p.sitemap == false -%}{%- continue -%}{%- endif -%}
   <url>
-    <loc>{{ p.url | absolute_url }}</loc>
-    {%- if p.description %}
-    <description>{{ p.description | xml_escape }}</description>
-    {%- endif %}
+    <loc>{{ p.url | absolute_url | xml_escape }}</loc>
   </url>
 {%- endfor -%}
 </urlset>
