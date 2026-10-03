@@ -9,7 +9,7 @@ import re
 import sys
 import urllib.parse
 
-BASE = "/an5"  # keep in sync with baseurl in docs/_config.yml
+BASE = "/docs"  # keep in sync with baseurl in docs/_config.yml
 SKIP_PREFIXES = ("http://", "https://", "mailto:", "tel:", "#", "data:", "//")
 
 

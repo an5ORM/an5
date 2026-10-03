@@ -8,6 +8,11 @@ description: Complex query patterns with filtering, sorting, and aggregation in 
 
 `@an5/adapters` provides powerful query capabilities for complex data retrieval across SQL dialects (MSSQL, PostgreSQL, MySQL, SQLite) and Google Sheets.
 
+{% include queries-context.html %}
+
+{% if queries_available %}
+{% if code == "typescript" %}
+
 ## Setup
 
 ```typescript
@@ -197,25 +202,23 @@ const users = await db.user.findMany({
 });
 ```
 
+{% unless provider == 'googlesheets' %}
+
 ## Raw SQL Queries
 
 For queries where you need direct SQL execution:
 
 ```typescript
 const users = await db.$queryRawUnsafe(
-  `SELECT u.*, COUNT(p.id) as post_count
-   FROM users u
-   LEFT JOIN posts p ON u.id = p.author_id
-   WHERE u.is_active = @p_0
-   GROUP BY u.id
-   HAVING COUNT(p.id) > @p_1
-   ORDER BY post_count DESC`,
-  1,
-  5
+  'SELECT id, email FROM users WHERE email = @p_0',
+  'reader@example.com'
 );
 ```
 
-## Other client languages
+{% endunless %}
+{% endif %}
+
+## Client query capabilities
 
 The examples above use `@an5/adapters` for TypeScript. The generated clients cover
 the same ground for the other languages, but **not evenly** — each one is generated
@@ -236,6 +239,8 @@ from the same schema and the query surface differs:
 The examples below use the fields of the generated example schema — `User` with
 `id`, `email`, `name`, `createdAt`, and `Order` with `userId`, `total` — so the
 queries line up across languages.
+
+{% if code == "python" %}
 
 ### Python
 
@@ -300,6 +305,10 @@ rows = db.query_raw(
 There is no `@p_0` rewriting, so write the placeholders your dialect expects:
 `%s` on PostgreSQL, `?` on SQL Server and SQLite.
 
+{% endif %}
+
+{% if code == "dotnet" %}
+
 ### .NET (C#)
 
 The generated .NET client takes a **SQL predicate**, not a filter object, and has
@@ -323,7 +332,7 @@ var users = db.User.FindMany(
 // SQL Server: OFFSET/FETCH does not accept parameters, so the page numbers are
 // inlined. PostgreSQL and SQLite use "LIMIT @take OFFSET @skip".
 var page = db.User.FindMany(
-    "email LIKE @email ORDER BY createdAt DESC OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY",
+    "email LIKE @email ORDER BY createdAt DESC {% if provider == 'sqlserver' %}OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY{% else %}LIMIT 10 OFFSET 20{% endif %}",
     new Dictionary<string, object> { ["email"] = "%@example.com%" });
 
 var activeCount = db.User.Count("email LIKE @email",
@@ -341,11 +350,15 @@ var revenue = db.Order.QueryRaw(
 
 The client is synchronous throughout — there is no `FindManyAsync`.
 
+{% endif %}
+
+{% if code == "golang" %}
+
 ### Go
 
 ```go
 connStr := an5.GetDefaultConnectionString()
-conn, err := sql.Open("sqlserver", connStr)  // driver: mssql | postgres | sqlite
+conn, err := sql.Open("{% case provider %}{% when 'postgresql' %}postgres{% when 'sqlite' %}sqlite3{% else %}sqlserver{% endcase %}", connStr)  // register the selected database/sql driver first
 if err != nil {
 	log.Fatal(err)
 }
@@ -392,6 +405,10 @@ Two things to know about the Go client:
 - It writes columns in `snake_case` (`created_at`), whatever the schema declares.
 - `NotIn` is declared on the filter types but never turned into SQL, so setting it
   silently does nothing. `In` works.
+
+{% endif %}
+
+{% if code == "rust" %}
 
 ### Rust
 
@@ -451,6 +468,9 @@ Two things to know about the Rust client:
 - `in_list` on the filter types serializes to `inList`, which is not an operator the
   query builder knows, so it is dropped. Use `not_in`, or pass the filter as JSON:
   `json!({ "email": { "in": ["a@b.test", "c@d.test"] } })`.
+
+{% endif %}
+{% endif %}
 
 ## Next Steps
 

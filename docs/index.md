@@ -17,7 +17,7 @@ description: A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, 
       <a href="{{ '/guides/examples/' | relative_url }}" class="btn btn-secondary">Examples</a>
       <a href="{{ '/guides/feature-status/' | relative_url }}" class="btn btn-secondary">Feature Status</a>
       <a href="{{ '/guides/schema/' | relative_url }}" class="btn btn-secondary">Documentation</a>
-      <a href="https://github.com/an5ORM/an5" class="btn btn-outline">
+      <a href="https://github.com/an5ORM/" class="btn btn-outline">
         <i class="fab fa-github"></i> GitHub
       </a>
     </div>

@@ -7,6 +7,6 @@
     event.preventDefault();
     var code = document.getElementById('docsCode').value;
     var provider = document.getElementById('docsProvider').value;
-    window.location.assign(section.dataset.baseurl + '/' + code + '/' + provider + '/guides/vector-search/' + window.location.hash);
+    window.location.assign(section.dataset.baseurl + '/' + code + '/' + provider + '/guides/' + section.dataset.guide + '/' + window.location.hash);
   });
 })();

@@ -1,7 +1,7 @@
 title: "an5 ORM"
 description: "A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, and NBase"
 url: "https://an5orm.github.io"
-baseurl: "/an5"
+baseurl: "/docs"
 google_site_verification: "YPl9-lLljuNKiIdvvjlQomRtiXDxEnY8twmu1QIPFis"
 
 # Build settings
