@@ -2,7 +2,7 @@
   "name": "an5-workspace",
   "version": "1.0.0",
   "private": true,
-  "description": "AN5 ORM monorepo workspace — lightweight, type-safe ORM for TypeScript, Python, .NET, Go, and Rust",
+  "description": "AN5 ORM monorepo workspace \u2014 lightweight, type-safe ORM for TypeScript, Python, .NET, Go, and Rust",
   "author": "an5ORM",
   "homepage": "https://an5orm.github.io",
   "repository": {
@@ -24,21 +24,37 @@
     "an5Site"
   ],
   "scripts": {
-    "build":        "npm run build -w an5Adapters && npm run build -w an5Client && npm run build --workspaces --if-present",
-    "test":         "npm run test:lang && npm run build -w an5Adapters && npm run build -w an5Client && npm run test --workspaces --if-present",
-    "test:full":    "npm run build && npm test && npm run test:generator -w an5Orm && npm run test:package:smoke -w an5Adapters && npm run test:package:smoke -w an5Client && npm run test:python -w an5Adapters && npm run test:dotnet -w an5Adapters && npm run test:go -w an5Adapters && npm run test:rust -w an5Adapters && npm run test:python -w an5Client && npm run test:dotnet -w an5Client && npm run test:go -w an5Client && npm run test:rust -w an5Client",
+    "build": "npm run build -w an5Adapters && npm run build -w an5Client && npm run build --workspaces --if-present",
+    "test": "npm run test:lang && npm run test:security && npm run build -w an5Adapters && npm run build -w an5Client && npm run test --workspaces --if-present",
+    "test:full": "npm run build && npm test && npm run test:generator -w an5Orm && npm run test:package:smoke -w an5Adapters && npm run test:package:smoke -w an5Client && npm run test:python -w an5Adapters && npm run test:dotnet -w an5Adapters && npm run test:go -w an5Adapters && npm run test:rust -w an5Adapters && npm run test:python -w an5Client && npm run test:dotnet -w an5Client && npm run test:go -w an5Client && npm run test:rust -w an5Client",
     "test:integration:live": "npm run test:integration:live -w an5Adapters && npm run test:integration:live -w an5Orm",
-    "sync":         "git submodule update --init --recursive && git submodule foreach \"git checkout main || true\"",
-    "generate":     "npm run generate -w an5Orm",
-    "release":      "node an5Cli/dist/index.js ws . --push",
-    "dryrun":       "node an5Cli/dist/index.js ws . --dry-run",
-    "ui":           "node an5Cli/dist/index.js ui .",
+    "sync": "git submodule update --init --recursive && git submodule foreach \"git checkout main || true\"",
+    "generate": "npm run generate -w an5Orm",
+    "release": "node an5Cli/dist/index.js ws . --push",
+    "dryrun": "node an5Cli/dist/index.js ws . --dry-run",
+    "ui": "node an5Cli/dist/index.js ui .",
     "docs": "jekyll serve --source docs --livereload",
-    "docs:build": "jekyll build --source docs",
+    "docs:build": "jekyll build --source docs --destination ./_site",
     "test:docs": "node docs/test/check-an5-grammar.mjs && node docs/test/check-svg.mjs",
-    "test:lang": "node scripts/check-english-only.mjs"
+    "test:lang": "node scripts/check-english-only.mjs",
+    "postinstall": "node scripts/apply-security-backports.mjs",
+    "test:security": "node --test scripts/security.test.mjs"
   },
   "devDependencies": {
+    "mysql2": "^3.24.5",
     "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "uuid": "^11.1.1",
+    "@opentelemetry/core": "^2.11.0",
+    "@opentelemetry/sdk-node": "^0.222.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.80.0",
+    "@opentelemetry/propagator-jaeger": "^2.11.0",
+    "@opentelemetry/sdk-trace-base": "^2.11.0",
+    "@opentelemetry/sdk-trace-node": "^2.11.0",
+    "@opentelemetry/sdk-metrics": "^2.11.0",
+    "@opentelemetry/sdk-logs": "^0.222.0",
+    "@opentelemetry/api-logs": "^0.222.0",
+    "@opentelemetry/context-async-hooks": "^2.11.0"
   }
 }
