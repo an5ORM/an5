@@ -565,7 +565,7 @@ img {
   white-space: nowrap;
 }
 
-/* ─── Architecture Visual Diagrams ───────────────────────────────────────────── */
+/* ─── Architecture Visual & Mermaid Diagrams ───────────────────────────────── */
 .arch-diagram-card {
   background: rgba(13, 18, 32, 0.75);
   border: 1px solid var(--border);
@@ -576,13 +576,93 @@ img {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .arch-diagram-card svg {
   display: block;
-  min-width: 780px;
+  max-width: 100%;
+  width: auto !important;
+  height: auto !important;
+  min-width: unset;
+  margin: 0 auto;
+}
+
+/* ─── Mermaid Diagram Theme Integration ─────────────────────────────────────── */
+.arch-diagram-card.mermaid,
+.mermaid {
   width: 100%;
-  height: auto;
+  box-sizing: border-box;
+}
+
+.mermaid svg {
+  font-family: var(--font) !important;
+}
+
+.mermaid .node rect,
+.mermaid .node polygon,
+.mermaid .node circle {
+  fill: #141c2e !important;
+  stroke: rgba(56, 189, 248, 0.35) !important;
+  stroke-width: 1.5px !important;
+  rx: 8px !important;
+  ry: 8px !important;
+  transition: all var(--transition);
+}
+
+.mermaid .node:hover rect,
+.mermaid .node:hover polygon,
+.mermaid .node:hover circle {
+  stroke: var(--cyan) !important;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.45)) !important;
+}
+
+.mermaid .node .label {
+  color: #f1f5f9 !important;
+  font-family: var(--font) !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+}
+
+.mermaid .cluster rect {
+  fill: rgba(10, 15, 29, 0.7) !important;
+  stroke: rgba(56, 189, 248, 0.22) !important;
+  stroke-width: 1px !important;
+  rx: 12px !important;
+  ry: 12px !important;
+}
+
+.mermaid .cluster-label text,
+.mermaid .cluster-label span {
+  fill: var(--cyan) !important;
+  color: var(--cyan) !important;
+  font-family: var(--font) !important;
+  font-weight: 600 !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0.02em;
+}
+
+.mermaid .edgePath .path {
+  stroke: #6366f1 !important;
+  stroke-width: 1.8px !important;
+}
+
+.mermaid .arrowheadPath {
+  fill: #6366f1 !important;
+  stroke: #6366f1 !important;
+}
+
+.mermaid .edgeLabel {
+  background-color: #070b14 !important;
+  color: #94a3b8 !important;
+  font-family: var(--mono) !important;
+  font-size: 0.75rem !important;
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .arch-node {
@@ -1640,4 +1720,21 @@ pre[class*="language-"] {
 /* Keep the button from covering the last line of a short block. */
 .code-window pre {
   padding-bottom: 2.2rem;
+}
+
+/* Shared diagram viewer: readable at natural size with contained touch scrolling. */
+.diagram-viewer {display:block;min-width:0;max-width:100%;padding:16px;}
+.diagram-controls {display:flex;justify-content:flex-end;margin-bottom:10px;}
+.diagram-controls button {font:inherit;color:var(--cyan);background:var(--bg-card, #141c2e);border:1px solid var(--border);border-radius:6px;padding:8px 12px;min-height:44px;cursor:pointer;}
+.diagram-viewport {max-width:100%;overflow:auto;overscroll-behavior-x:contain;}
+.diagram-viewport:focus-visible,.diagram-controls button:focus-visible {outline:2px solid var(--cyan);outline-offset:2px;}
+.diagram-viewer .mermaid svg {width:100% !important;max-width:100%;height:auto !important;}
+.diagram-expanded .mermaid {width:var(--diagram-width, 900px);min-width:100%;}
+.diagram-expanded .mermaid svg {max-width:none;}
+@media(max-width:768px) {
+  .diagram-viewer {padding:12px;}
+  .diagram-viewer .mermaid {width:var(--diagram-width, 600px);min-width:100%;}
+  .diagram-viewer .mermaid svg {max-width:none;}
+  .diagram-viewer.diagram-fit .mermaid {width:100%;}
+  .arch-grid-2 {grid-template-columns:minmax(0,1fr);}
 }

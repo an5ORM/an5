@@ -35,3 +35,7 @@ __pycache__/
 # Temp
 *.tmp
 tasks.json
+
+# Local MCP config: written by "AN5: Install MCP Server" with absolute
+# paths to this machine's extension install.
+.mcp.json

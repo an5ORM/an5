@@ -14,80 +14,29 @@ This server bridges your database models, SQL execution engine, and schema workf
 
 ## Architecture & Integration Flow
 
-<div class="arch-diagram-card">
-<svg viewBox="0 0 940 260" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <marker id="mcp-arrow-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8"/>
-    </marker>
-    <marker id="mcp-arrow-indigo" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1 L 9 5 L 0 9 z" fill="#818cf8"/>
-    </marker>
-    <marker id="mcp-arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1 L 9 5 L 0 9 z" fill="#c084fc"/>
-    </marker>
-    <linearGradient id="mcp-grad-client" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0284c7" stop-opacity="0.25"/>
-      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.08"/>
-    </linearGradient>
-    <linearGradient id="mcp-grad-server" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.25"/>
-      <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.08"/>
-    </linearGradient>
-    <linearGradient id="mcp-grad-backend" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#9333ea" stop-opacity="0.25"/>
-      <stop offset="100%" stop-color="#9333ea" stop-opacity="0.08"/>
-    </linearGradient>
-  </defs>
+```mermaid
+flowchart TD
+  subgraph Clients["1. AI Agent Clients"]
+    Copilot["GitHub Copilot (VS Code)"]
+    Cursor["Cursor IDE (MCP)"]
+    Claude["Claude Desktop"]
+  end
 
-  <!-- Connectors -->
-  <path d="M 230 130 L 330 130" stroke="#38bdf8" stroke-width="2" marker-end="url(#mcp-arrow-cyan)"/>
-  <text x="280" y="118" font-family="'Inter', sans-serif" font-size="11" fill="#38bdf8" text-anchor="middle">JSON-RPC (stdio)</text>
+  subgraph Server["2. AN5 ORM MCP Server (dist/mcp/server.js)"]
+    RO["8 Read-Only Inspection Tools<br/>(readOnlyHint: true)"]
+    Mut["5 Mutating Operations<br/>(confirm: true required)"]
+    Safety["Safety Guards: Path Traversal & SQL Read Guard"]
+  end
 
-  <path d="M 610 90 L 710 65" stroke="#818cf8" stroke-width="2" marker-end="url(#mcp-arrow-indigo)"/>
-  <path d="M 610 170 L 710 195" stroke="#c084fc" stroke-width="2" marker-end="url(#mcp-arrow-purple)"/>
+  subgraph Runtime["3. Workspace & Database Execution"]
+    Workspace["Workspace Context<br/>(an5Schema/*.an5 · an5Orm.config.js)"]
+    Engine["Database & Engine<br/>(@an5/adapters · @an5/orm)"]
+  end
 
-  <!-- Left: AI Clients -->
-  <g class="arch-node">
-    <rect x="20" y="50" width="210" height="160" rx="12" fill="url(#mcp-grad-client)" stroke="#38bdf8" stroke-width="1.5"/>
-    <text x="125" y="80" font-family="'Inter', sans-serif" font-size="14" font-weight="700" fill="#38bdf8" text-anchor="middle">AI Agent Clients</text>
-    <rect x="36" y="98" width="178" height="24" rx="5" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.08)"/>
-    <text x="125" y="114" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">GitHub Copilot (VS Code)</text>
-    <rect x="36" y="128" width="178" height="24" rx="5" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.08)"/>
-    <text x="125" y="144" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">Cursor IDE (MCP)</text>
-    <rect x="36" y="158" width="178" height="24" rx="5" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.08)"/>
-    <text x="125" y="174" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">Claude Desktop</text>
-  </g>
-
-  <!-- Center: AN5 MCP Server -->
-  <g class="arch-node">
-    <rect x="330" y="40" width="280" height="180" rx="12" fill="url(#mcp-grad-server)" stroke="#818cf8" stroke-width="1.5"/>
-    <text x="470" y="68" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700" fill="#818cf8" text-anchor="middle">AN5 ORM MCP Server</text>
-    <text x="470" y="88" font-family="'Inter', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">dist/mcp/server.js</text>
-    <rect x="346" y="104" width="248" height="26" rx="5" fill="rgba(56, 189, 248, 0.1)" stroke="rgba(56, 189, 248, 0.25)"/>
-    <text x="470" y="121" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#38bdf8" text-anchor="middle">8 Read-Only Inspection Tools</text>
-    <rect x="346" y="136" width="248" height="26" rx="5" fill="rgba(249, 115, 22, 0.1)" stroke="rgba(249, 115, 22, 0.25)"/>
-    <text x="470" y="153" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#fb923c" text-anchor="middle">5 Mutating Schema Operations</text>
-    <text x="470" y="184" font-family="'Inter', sans-serif" font-size="10.5" fill="#cbd5e1" text-anchor="middle">Path Traversal Safe &bull; SQL Read Guard</text>
-  </g>
-
-  <!-- Right Top: Workspace & Schema -->
-  <g class="arch-node">
-    <rect x="710" y="25" width="210" height="90" rx="10" fill="url(#mcp-grad-client)" stroke="#38bdf8" stroke-width="1.5"/>
-    <text x="815" y="50" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700" fill="#38bdf8" text-anchor="middle">Workspace Context</text>
-    <text x="815" y="72" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">&bull; an5Schema/*.an5</text>
-    <text x="815" y="90" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">&bull; an5Orm.config.js / .env</text>
-  </g>
-
-  <!-- Right Bottom: DB & Engine -->
-  <g class="arch-node">
-    <rect x="710" y="145" width="210" height="95" rx="10" fill="url(#mcp-grad-backend)" stroke="#c084fc" stroke-width="1.5"/>
-    <text x="815" y="170" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700" fill="#c084fc" text-anchor="middle">Database &amp; Engine</text>
-    <text x="815" y="192" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">&bull; @an5/adapters (Live DB)</text>
-    <text x="815" y="210" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">&bull; @an5/orm (Push/Migrate)</text>
-  </g>
-</svg>
-</div>
+  Clients -->|"JSON-RPC (stdio)"| Server
+  Server --> Workspace
+  Server --> Engine
+```
 
 ---
 

@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
   <link rel="icon" type="image/svg+xml" href="{{ '/favicon.svg' | relative_url }}">
+  <script defer src="{{ "/assets/js/mermaid-diagrams.js" | relative_url }}"></script>
   {%- assign page_url = page.url | replace:'index.html','' -%}
   <link rel="canonical" href="{{ page_url | absolute_url }}">
   <meta property="og:type" content="website">
@@ -274,6 +275,7 @@
 
     // Code window decorator (wraps pre blocks into styled windows with dots)
     document.querySelectorAll('.docs-body pre').forEach(pre => {
+      if (pre.querySelector('code.language-mermaid')) return;
       if (!pre.parentElement.classList.contains('code-window')) {
         const wrapper = document.createElement('div');
         wrapper.className = 'code-window';

@@ -26,3 +26,6 @@ exclude:
   - package-lock.json
   - README.md
   - vendor
+  # Internal review records. Kept in the repository, deliberately not built:
+  # they have no front matter, so Jekyll would copy them as raw .md/.json.
+  - reviews

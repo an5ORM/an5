@@ -11,7 +11,8 @@
   <link rel="stylesheet" href="/an5/assets/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="https://an5orm.github.io/an5/">
+  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg">
+  <script defer src="/an5/assets/js/mermaid-diagrams.js"></script><link rel="canonical" href="https://an5orm.github.io/an5/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="an5 ORM">
   <meta property="og:title" content="AN5 ORM Documentation - Type-Safe Database Access">
@@ -442,6 +443,7 @@ function showTab(tabId) {
 
     // Code window decorator (wraps pre blocks into styled windows with dots)
     document.querySelectorAll('.docs-body pre').forEach(pre => {
+      if (pre.querySelector('code.language-mermaid')) return;
       if (!pre.parentElement.classList.contains('code-window')) {
         const wrapper = document.createElement('div');
         wrapper.className = 'code-window';
