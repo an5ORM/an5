@@ -11,15 +11,28 @@
   <link rel="stylesheet" href="/an5/assets/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="http://localhost:4000/an5/guides/examples/">
+  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="https://an5orm.github.io/an5/guides/examples/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="an5 ORM">
   <meta property="og:title" content="Examples">
   <meta property="og:description" content="Run the an5example repository across all languages, dialects, and the browser">
-  <meta property="og:url" content="http://localhost:4000/an5/guides/examples/">
+  <meta property="og:url" content="https://an5orm.github.io/an5/guides/examples/">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Examples">
   <meta name="twitter:description" content="Run the an5example repository across all languages, dialects, and the browser">
+  <meta name="google-site-verification" content="YPl9-lLljuNKiIdvvjlQomRtiXDxEnY8twmu1QIPFis">
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Examples",
+    "description": "Run the an5example repository across all languages, dialects, and the browser",
+    "url": "https://an5orm.github.io/an5/guides/examples/",
+    "inLanguage": "en",
+    "isPartOf": {"@type": "WebSite", "name": "AN5 ORM", "url": "https://an5orm.github.io/"}
+  }
+  </script>
 </head>
 <body>
 
@@ -82,6 +95,7 @@
           <li><a href="/an5/guides/transactions/"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
           <li><a href="/an5/guides/vector-search/"><i class="fas fa-brain"></i> Vector Search</a></li>
           <li><a href="/an5/guides/agent-tools/"><i class="fas fa-robot"></i> AI Agent Tools</a></li>
+          <li><a href="/an5/guides/vscode-mcp/"><i class="fas fa-plug"></i> VS Code MCP Server</a></li>
         </ul>
       </div>
 
@@ -242,21 +256,39 @@ import check.</li>
 Copilot and other MCP clients can work with the schema directly instead of
 guessing at it from the file tree.</p>
 
-<p>On VS Code 1.101 or newer the server registers itself and appears in
-<code class="language-plaintext highlighter-rouge">MCP: List Servers</code>. On older versions run <strong>AN5: Show MCP Server
-Configuration</strong> and paste the result into <code class="language-plaintext highlighter-rouge">.vscode/mcp.json</code>.</p>
+<p>Install it from the Extensions view, or:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>code <span class="nt">--install-extension</span> an5orm.an5-orm-vscode
+</code></pre></div></div>
+
+<p>The extension id is the same on the
+<a href="https://marketplace.visualstudio.com/items?itemName=an5orm.an5-orm-vscode">VS Code Marketplace</a>
+and on <a href="https://open-vsx.org/extension/an5orm/an5-orm-vscode">Open VSX</a>, so the
+command works in VSCodium and other VS Code-compatible editors too.</p>
+
+<p>On VS Code 1.101 or newer the server registers itself: open <code class="language-plaintext highlighter-rouge">MCP: List Servers</code>
+and start <strong>AN5 ORM</strong>.</p>
+
+<p>If it does not appear — an older build, or an editor such as Cursor or VSCodium
+that predates the API — run <strong>AN5: Install MCP Server</strong>. It writes the entry into
+the open workspace with the extension path already resolved, choosing between
+<code class="language-plaintext highlighter-rouge">.mcp.json</code> (portable) and <code class="language-plaintext highlighter-rouge">.vscode/mcp.json</code>. Your other servers are preserved,
+and a config file it cannot parse is reported rather than overwritten.</p>
 
 <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"servers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nl">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nl">"an5-orm"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stdio"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"&lt;extension&gt;/dist/mcp/server.js"</span><span class="p">],</span><span class="w">
-      </span><span class="nl">"cwd"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${workspaceFolder}"</span><span class="w">
+      </span><span class="nl">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/path/to/node"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"/path/to/an5orm.an5-orm-vscode/dist/mcp/server.js"</span><span class="p">],</span><span class="w">
+      </span><span class="nl">"cwd"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/path/to/project"</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div></div>
+
+<p><strong>AN5: Show MCP Server Configuration</strong> prints that configuration without writing
+it, which is what another MCP client needs.</p>
 
 <p>The server discovers the project from its working directory: <code class="language-plaintext highlighter-rouge">an5Orm.config.js</code>,
 the <code class="language-plaintext highlighter-rouge">.an5</code> files, the installed <code class="language-plaintext highlighter-rouge">@an5/orm</code> and <code class="language-plaintext highlighter-rouge">DATABASE_URL</code>.</p>
@@ -291,6 +323,8 @@ the <code class="language-plaintext highlighter-rouge">.an5</code> files, the in
 <p>Read-only tools are also the only ones a model can call freely, so always check
 which tool ran before approving a schema change.</p>
 
+<p>For detailed configuration (Cursor, Claude Desktop), security policies, and parameter specifications for all 13 tools, see the <a href="/an5/guides/vscode-mcp/">VS Code MCP Server Guide</a>.</p>
+
 <h2 id="next-steps">Next Steps</h2>
 
 <ul>
@@ -316,8 +350,11 @@ which tool ran before approving a schema change.</p>
           <a href="https://github.com/an5ORM" target="_blank" aria-label="GitHub">
             <i class="fab fa-github"></i>
           </a>
-          <a href="https://open-vsx.org/namespace/an5orm" target="_blank" aria-label="Open VSX">
+          <a href="https://marketplace.visualstudio.com/items?itemName=an5orm.an5-orm-vscode" target="_blank" aria-label="VS Code Marketplace">
             <i class="fas fa-puzzle-piece"></i>
+          </a>
+          <a href="https://open-vsx.org/namespace/an5orm" target="_blank" aria-label="Open VSX">
+            <i class="fas fa-box-open"></i>
           </a>
         </div>
       </div>

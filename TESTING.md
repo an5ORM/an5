@@ -158,13 +158,23 @@ cd an5Schema && npm test && cd ..
 | File | Description |
 |------|-------------|
 | `test/smoke.test.js` | Package structure, language contribution, grammar/snippet files |
-| `test/grammar.test.js` | SQL Server type coverage in TextMate grammar |
+| `test/grammar.test.js` | Type coverage in the TextMate grammar for every provider |
 | `test/snippets.test.js` | Snippet contribution validation |
+| `test/mcp.test.js` | MCP protocol, the 13 tools, the schema fallback parser, the spawned server, and the config merge (42 tests) |
 
 **What is tested:**
-- Extension package.json contributions (languages, snippets)
-- Grammar file exists and covers 30+ SQL Server types
+- Extension package.json contributions (languages, snippets, MCP provider)
+- Grammar file exists and covers the types of every provider (mssql, postgres, mysql, sqlite, googlesheets)
 - Snippet file exists and is properly configured
+- MCP: JSON-RPC framing, `initialize`/`ping`/`tools/list`/`tools/call`, notifications, error responses, `readOnlyHint` and `confirm` on the tools, argument validation
+- The schema reader used when `@an5/orm` is not installed in the workspace
+- The server as a real child process over stdio, and how it degrades when the project has no schema
+- The stdio server definition VS Code is given: resolved entry path, absolute node binary,
+  `cwd`, and the version taken from the manifest — the shape is asserted because an
+  options object here silently produced a server that never started
+- Merging the server into `mcp.json` and `.mcp.json`: keeps existing servers and other
+  settings, is idempotent, rewrites a stale path, and refuses to overwrite a file it
+  cannot parse
 
 **Run:** `cd an5OrmVScode && npm test`
 

@@ -101,22 +101,41 @@ The [an5OrmVScode](https://github.com/an5ORM/an5OrmVScode) extension ships a
 Copilot and other MCP clients can work with the schema directly instead of
 guessing at it from the file tree.
 
-On VS Code 1.101 or newer the server registers itself and appears in
-`MCP: List Servers`. On older versions run **AN5: Show MCP Server
-Configuration** and paste the result into `.vscode/mcp.json`.
+Install it from the Extensions view, or:
+
+```bash
+code --install-extension an5orm.an5-orm-vscode
+```
+
+The extension id is the same on the
+[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=an5orm.an5-orm-vscode)
+and on [Open VSX](https://open-vsx.org/extension/an5orm/an5-orm-vscode), so the
+command works in VSCodium and other VS Code-compatible editors too.
+
+On VS Code 1.101 or newer the server registers itself: open `MCP: List Servers`
+and start **AN5 ORM**.
+
+If it does not appear — an older build, or an editor such as Cursor or VSCodium
+that predates the API — run **AN5: Install MCP Server**. It writes the entry into
+the open workspace with the extension path already resolved, choosing between
+`.mcp.json` (portable) and `.vscode/mcp.json`. Your other servers are preserved,
+and a config file it cannot parse is reported rather than overwritten.
 
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "an5-orm": {
       "type": "stdio",
-      "command": "node",
-      "args": ["<extension>/dist/mcp/server.js"],
-      "cwd": "${workspaceFolder}"
+      "command": "/path/to/node",
+      "args": ["/path/to/an5orm.an5-orm-vscode/dist/mcp/server.js"],
+      "cwd": "/path/to/project"
     }
   }
 }
 ```
+
+**AN5: Show MCP Server Configuration** prints that configuration without writing
+it, which is what another MCP client needs.
 
 The server discovers the project from its working directory: `an5Orm.config.js`,
 the `.an5` files, the installed `@an5/orm` and `DATABASE_URL`.
@@ -130,6 +149,8 @@ the `.an5` files, the installed `@an5/orm` and `DATABASE_URL`.
 
 Read-only tools are also the only ones a model can call freely, so always check
 which tool ran before approving a schema change.
+
+For detailed configuration (Cursor, Claude Desktop), security policies, and parameter specifications for all 13 tools, see the [VS Code MCP Server Guide]({{ '/guides/vscode-mcp/' | relative_url }}).
 
 ## Next Steps
 

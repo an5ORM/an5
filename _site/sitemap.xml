@@ -1,62 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
-    <loc>http://localhost:4000/an5/</loc>
-    <description>A modern, type-safe ORM for SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, and NBase</description>
+    <loc>https://an5orm.github.io/an5/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/architecture/</loc>
-    <description>How the an5 packages fit together, from schema parsing to runtime adapters</description>
+    <loc>https://an5orm.github.io/an5/architecture/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/genkit/</loc>
-    <description>How the AI agent is built on Google Genkit, its tools and its RAG pipeline</description>
+    <loc>https://an5orm.github.io/an5/genkit/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/agent-tools/</loc>
-    <description>7 intelligent tools for database operations and task management</description>
+    <loc>https://an5orm.github.io/an5/guides/agent-tools/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/api-reference/</loc>
-    <description>Complete API reference for an5 ORM</description>
+    <loc>https://an5orm.github.io/an5/guides/api-reference/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/architecture/</loc>
-    <description>System architecture and data flow of the An5 ORM ecosystem</description>
+    <loc>https://an5orm.github.io/an5/guides/architecture/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/browser-support/</loc>
-    <description>Learn how to use AN5 ORM adapters directly in Web Browsers with SQLite WASM, sql.js, OPFS, and Google Sheets.</description>
+    <loc>https://an5orm.github.io/an5/guides/browser-support/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/cli/</loc>
-    <description>Command-line interface for schema management and development</description>
+    <loc>https://an5orm.github.io/an5/guides/cli/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/configuration/</loc>
-    <description>Configure an5 ORM for your environment</description>
+    <loc>https://an5orm.github.io/an5/guides/configuration/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/crud/</loc>
-    <description>Create, Read, Update, and Delete data with an5 ORM</description>
+    <loc>https://an5orm.github.io/an5/guides/crud/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/deployment/</loc>
-    <description>Deploy your an5 application to production</description>
+    <loc>https://an5orm.github.io/an5/guides/deployment/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/examples/</loc>
-    <description>Run the an5example repository across all languages, dialects, and the browser</description>
+    <loc>https://an5orm.github.io/an5/guides/examples/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/feature-status/</loc>
-    <description>Current implementation status and maturity of the an5 ORM ecosystem</description>
+    <loc>https://an5orm.github.io/an5/guides/feature-status/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/getting-started/</loc>
-    <description>Install and set up an5 in your project</description>
+    <loc>https://an5orm.github.io/an5/guides/getting-started/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/queries/</loc>
-    <description>Complex query patterns with filtering, sorting, and aggregation</description>
+    <loc>https://an5orm.github.io/an5/guides/queries/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/relations/</loc>
-    <description>Define and query relationships between models</description>
+    <loc>https://an5orm.github.io/an5/guides/relations/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/schema/</loc>
-    <description>Define your data models with an5 schema syntax</description>
+    <loc>https://an5orm.github.io/an5/guides/schema/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/transactions/</loc>
-    <description>Execute multiple operations atomically</description>
+    <loc>https://an5orm.github.io/an5/guides/transactions/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/troubleshooting/</loc>
-    <description>Common issues and solutions</description>
+    <loc>https://an5orm.github.io/an5/guides/troubleshooting/</loc>
   </url><url>
-    <loc>http://localhost:4000/an5/guides/vector-search/</loc>
-    <description>AI-powered semantic search with NBase, SQL Server, PostgreSQL, or in-memory</description>
+    <loc>https://an5orm.github.io/an5/guides/vector-search/</loc>
+  </url><url>
+    <loc>https://an5orm.github.io/an5/guides/vscode-mcp/</loc>
   </url></urlset>

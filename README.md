@@ -39,6 +39,8 @@
 | PyPI     | `an5-adapters`                                                 | Python multi-database adapter runtime      | `pip install an5-adapters`  |
 | PyPI     | `an5-orm`                                                      | Python ORM & schema utilities              | `pip install an5-orm`       |
 | crates.io | [`an5-adapters`](https://crates.io/crates/an5-adapters)       | Rust adapter runtime & query engine        | `cargo add an5-adapters`    |
+| VS Code Marketplace | [`an5orm.an5-orm-vscode`](https://marketplace.visualstudio.com/items?itemName=an5orm.an5-orm-vscode) | Schema highlighting, formatting, and an MCP server for agentic clients | `code --install-extension an5orm.an5-orm-vscode` |
+| Open VSX | [`an5orm.an5-orm-vscode`](https://open-vsx.org/extension/an5orm/an5-orm-vscode) | Same extension for VSCodium and other VS Code-compatible editors | `ext install an5orm.an5-orm-vscode` |
 
 See [Feature Status](https://an5orm.github.io/an5/guides/feature-status/) for the current maturity level of each module.
 

@@ -11,15 +11,28 @@
   <link rel="stylesheet" href="/an5/assets/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
-  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="http://localhost:4000/an5/guides/configuration/">
+  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="https://an5orm.github.io/an5/guides/configuration/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="an5 ORM">
   <meta property="og:title" content="Configuration">
   <meta property="og:description" content="Configure an5 ORM for your environment">
-  <meta property="og:url" content="http://localhost:4000/an5/guides/configuration/">
+  <meta property="og:url" content="https://an5orm.github.io/an5/guides/configuration/">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Configuration">
   <meta name="twitter:description" content="Configure an5 ORM for your environment">
+  <meta name="google-site-verification" content="YPl9-lLljuNKiIdvvjlQomRtiXDxEnY8twmu1QIPFis">
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Configuration",
+    "description": "Configure an5 ORM for your environment",
+    "url": "https://an5orm.github.io/an5/guides/configuration/",
+    "inLanguage": "en",
+    "isPartOf": {"@type": "WebSite", "name": "AN5 ORM", "url": "https://an5orm.github.io/"}
+  }
+  </script>
 </head>
 <body>
 
@@ -82,6 +95,7 @@
           <li><a href="/an5/guides/transactions/"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
           <li><a href="/an5/guides/vector-search/"><i class="fas fa-brain"></i> Vector Search</a></li>
           <li><a href="/an5/guides/agent-tools/"><i class="fas fa-robot"></i> AI Agent Tools</a></li>
+          <li><a href="/an5/guides/vscode-mcp/"><i class="fas fa-plug"></i> VS Code MCP Server</a></li>
         </ul>
       </div>
 
@@ -186,7 +200,7 @@ cannot disagree about what it means.</p>
 types the schema may use. <code class="language-plaintext highlighter-rouge">sqlserver://</code> is SQL Server (also the fallback for
 anything unrecognised), <code class="language-plaintext highlighter-rouge">postgres://</code>/<code class="language-plaintext highlighter-rouge">postgresql://</code> PostgreSQL, <code class="language-plaintext highlighter-rouge">mysql://</code>/
 <code class="language-plaintext highlighter-rouge">mariadb://</code> MySQL, <code class="language-plaintext highlighter-rouge">sqlite://</code> or a path ending in <code class="language-plaintext highlighter-rouge">.sqlite</code>/<code class="language-plaintext highlighter-rouge">.db</code> SQLite, and
-<code class="language-plaintext highlighter-rouge">googlesheets://</code> Google Sheets. See <a href="schema.md#field-types">Field Types</a>.</p>
+<code class="language-plaintext highlighter-rouge">googlesheets://</code> Google Sheets. See <a href="/an5/guides/schema/#field-types">Field Types</a>.</p>
 
 <div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># PostgreSQL — `INT` in the schema is now rejected, `INTEGER` is the spelling
 </span><span class="py">DATABASE_URL</span><span class="p">=</span><span class="s">postgres://user:password@localhost:5432/mydb</span>
@@ -401,8 +415,11 @@ connection string — see <a href="/an5/guides/vector-search/">Vector Search</a>
           <a href="https://github.com/an5ORM" target="_blank" aria-label="GitHub">
             <i class="fab fa-github"></i>
           </a>
-          <a href="https://open-vsx.org/namespace/an5orm" target="_blank" aria-label="Open VSX">
+          <a href="https://marketplace.visualstudio.com/items?itemName=an5orm.an5-orm-vscode" target="_blank" aria-label="VS Code Marketplace">
             <i class="fas fa-puzzle-piece"></i>
+          </a>
+          <a href="https://open-vsx.org/namespace/an5orm" target="_blank" aria-label="Open VSX">
+            <i class="fas fa-box-open"></i>
           </a>
         </div>
       </div>

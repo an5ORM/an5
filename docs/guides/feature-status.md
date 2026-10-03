@@ -87,7 +87,7 @@ The `@an5/adapters` package exposes the full public API from the package root (`
 | ---- | ------ | ----- |
 | Syntax and formatting | Implemented | Grammar, snippets, alignment formatter, `an5Orm.config.js` hover |
 | Commands | Implemented | `generate`, `db:push`, `db:pull`, open config, status bar menu |
-| MCP server | Implemented | 13 tools over stdio, registered with `vscode.lm.registerMcpServerDefinitionProvider`; read-only tools carry `readOnlyHint` and every mutating tool also requires `confirm: true`. Requires VS Code 1.101+; `npm test -w an5OrmVScode` covers the protocol and the tools |
+| MCP server | Implemented | 13 tools over stdio, registered with `vscode.lm.registerMcpServerDefinitionProvider`; read-only tools carry `readOnlyHint` and every mutating tool also requires `confirm: true`. Registers on startup, and `AN5: Install MCP Server` writes the config file for builds without the API. Requires VS Code 1.101+; `npm test -w an5OrmVScode` covers the protocol, the tools and the config merge |
 
 ## Shared Schema Parsing
 

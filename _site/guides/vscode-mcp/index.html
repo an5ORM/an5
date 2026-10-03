@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VS Code MCP Server | an5 ORM</title>
+  <meta name="description" content="Model Context Protocol (MCP) server for AN5 ORM in VS Code, GitHub Copilot, Cursor, and Claude Desktop">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/an5/assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="icon" type="image/svg+xml" href="/an5/favicon.svg"><link rel="canonical" href="https://an5orm.github.io/an5/guides/vscode-mcp/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="an5 ORM">
+  <meta property="og:title" content="VS Code MCP Server">
+  <meta property="og:description" content="Model Context Protocol (MCP) server for AN5 ORM in VS Code, GitHub Copilot, Cursor, and Claude Desktop">
+  <meta property="og:url" content="https://an5orm.github.io/an5/guides/vscode-mcp/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="VS Code MCP Server">
+  <meta name="twitter:description" content="Model Context Protocol (MCP) server for AN5 ORM in VS Code, GitHub Copilot, Cursor, and Claude Desktop">
+  <meta name="google-site-verification" content="YPl9-lLljuNKiIdvvjlQomRtiXDxEnY8twmu1QIPFis">
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "VS Code MCP Server",
+    "description": "Model Context Protocol (MCP) server for AN5 ORM in VS Code, GitHub Copilot, Cursor, and Claude Desktop",
+    "url": "https://an5orm.github.io/an5/guides/vscode-mcp/",
+    "inLanguage": "en",
+    "isPartOf": {"@type": "WebSite", "name": "AN5 ORM", "url": "https://an5orm.github.io/"}
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Background Glow FX -->
+  <div class="hero-glow glow-1"></div>
+  <div class="hero-glow glow-2"></div>
+
+  <!-- ─── MAIN LAYOUT ───────────────────────────────────────────────────────── -->
+  <div class="docs-layout container">
+    <!-- Sidebar Navigation -->
+    <aside class="docs-sidebar" id="docsSidebar">
+      <!-- Mobile header: logo + menu toggle on the same row -->
+      <div class="sidebar-header">
+        <a href="/an5/" class="sidebar-logo">
+          <span class="logo-badge">AN5</span>
+          <span class="logo-text">ORM</span>
+        </a>
+        <button type="button" class="sidebar-toggle" id="sidebarToggle"
+                aria-expanded="false" aria-controls="sidebarGroups"
+                aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+
+      <div class="docs-search">
+        <input type="search" id="docsSearch" placeholder="Search docs…  /"
+               autocomplete="off" spellcheck="false"
+               data-index-url="/an5/search.json"
+               aria-label="Search the documentation"
+               aria-describedby="docsSearchHint">
+        <p class="docs-search-empty" id="docsSearchEmpty" hidden>No match.</p>
+      </div>
+
+      <div class="sidebar-groups" id="sidebarGroups">
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Getting Started</div>
+        <ul>
+          <li><a href="/an5/guides/getting-started/"><i class="fas fa-rocket"></i> Overview & Installation</a></li>
+          <li><a href="/an5/guides/configuration/"><i class="fas fa-sliders-h"></i> Configuration</a></li>
+          <li><a href="/an5/guides/cli/"><i class="fas fa-terminal"></i> CLI Commands</a></li>
+          <li><a href="/an5/guides/feature-status/"><i class="fas fa-tasks"></i> Feature Status</a></li>
+          <li><a href="/an5/guides/examples/"><i class="fas fa-code"></i> Examples</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Core Concepts</div>
+        <ul>
+          <li><a href="/an5/guides/schema/"><i class="fas fa-file-code"></i> Schema Definition (.an5)</a></li>
+          <li><a href="/an5/guides/crud/"><i class="fas fa-database"></i> CRUD Operations</a></li>
+          <li><a href="/an5/guides/relations/"><i class="fas fa-project-diagram"></i> Relations & Joins</a></li>
+          <li><a href="/an5/guides/queries/"><i class="fas fa-search"></i> Advanced Queries</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Advanced Features</div>
+        <ul>
+          <li><a href="/an5/guides/browser-support/"><i class="fas fa-globe"></i> Browser Support</a></li>
+          <li><a href="/an5/guides/transactions/"><i class="fas fa-exchange-alt"></i> Transactions</a></li>
+          <li><a href="/an5/guides/vector-search/"><i class="fas fa-brain"></i> Vector Search</a></li>
+          <li><a href="/an5/guides/agent-tools/"><i class="fas fa-robot"></i> AI Agent Tools</a></li>
+          <li><a href="/an5/guides/vscode-mcp/"><i class="fas fa-plug"></i> VS Code MCP Server</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Internals</div>
+        <ul>
+          <li><a href="/an5/architecture/"><i class="fas fa-diagram-project"></i> Repository Map</a></li>
+          <li><a href="/an5/genkit/"><i class="fas fa-wand-magic-sparkles"></i> Genkit Integration</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-heading">Reference & Ops</div>
+        <ul>
+          <li><a href="/an5/guides/api-reference/"><i class="fas fa-book"></i> API Reference</a></li>
+          <li><a href="/an5/guides/architecture/"><i class="fas fa-sitemap"></i> Architecture</a></li>
+          <li><a href="/an5/guides/deployment/"><i class="fas fa-cloud-upload-alt"></i> Deployment</a></li>
+          <li><a href="/an5/guides/troubleshooting/"><i class="fas fa-wrench"></i> Troubleshooting</a></li>
+        </ul>
+      </div>
+
+      <!-- The header is hidden on mobile, so keep the one action that has no
+           sidebar entry reachable from the menu. -->
+      <a class="sidebar-github" href="https://github.com/an5ORM/an5" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i> GitHub
+      </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="docs-content">
+      <div class="docs-body card-glass">
+        <h1 id="vs-code-mcp-server">VS Code MCP Server</h1>
+
+<p>The <a href="https://marketplace.visualstudio.com/items?itemName=an5orm.an5-orm-vscode">AN5 ORM Schema Tooling extension</a> (<code class="language-plaintext highlighter-rouge">an5-orm-vscode</code>) ships a native <a href="https://modelcontextprotocol.io">Model Context Protocol (MCP)</a> server over standard I/O (stdio).</p>
+
+<p>This server bridges your database models, SQL execution engine, and schema workflows directly to AI agent assistants—including <strong>GitHub Copilot in VS Code</strong>, <strong>Cursor</strong>, <strong>Claude Desktop</strong>, and any standard MCP client.</p>
+
+<hr />
+
+<h2 id="architecture--integration-flow">Architecture &amp; Integration Flow</h2>
+
+<div class="arch-diagram-card">
+<svg viewBox="0 0 940 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="mcp-arrow-cyan" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+    <marker id="mcp-arrow-indigo" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#818cf8" />
+    </marker>
+    <marker id="mcp-arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#c084fc" />
+    </marker>
+    <linearGradient id="mcp-grad-client" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0284c7" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.08" />
+    </linearGradient>
+    <linearGradient id="mcp-grad-server" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.08" />
+    </linearGradient>
+    <linearGradient id="mcp-grad-backend" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9333ea" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#9333ea" stop-opacity="0.08" />
+    </linearGradient>
+  </defs>
+
+  <!-- Connectors -->
+  <path d="M 230 130 L 330 130" stroke="#38bdf8" stroke-width="2" marker-end="url(#mcp-arrow-cyan)" />
+  <text x="280" y="118" font-family="'Inter', sans-serif" font-size="11" fill="#38bdf8" text-anchor="middle">JSON-RPC (stdio)</text>
+
+  <path d="M 610 90 L 710 65" stroke="#818cf8" stroke-width="2" marker-end="url(#mcp-arrow-indigo)" />
+  <path d="M 610 170 L 710 195" stroke="#c084fc" stroke-width="2" marker-end="url(#mcp-arrow-purple)" />
+
+  <!-- Left: AI Clients -->
+  <g class="arch-node">
+    <rect x="20" y="50" width="210" height="160" rx="12" fill="url(#mcp-grad-client)" stroke="#38bdf8" stroke-width="1.5" />
+    <text x="125" y="80" font-family="'Inter', sans-serif" font-size="14" font-weight="700" fill="#38bdf8" text-anchor="middle">AI Agent Clients</text>
+    <rect x="36" y="98" width="178" height="24" rx="5" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.08)" />
+    <text x="125" y="114" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">GitHub Copilot (VS Code)</text>
+    <rect x="36" y="128" width="178" height="24" rx="5" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.08)" />
+    <text x="125" y="144" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">Cursor IDE (MCP)</text>
+    <rect x="36" y="158" width="178" height="24" rx="5" fill="rgba(255, 255, 255, 0.04)" stroke="rgba(255, 255, 255, 0.08)" />
+    <text x="125" y="174" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">Claude Desktop</text>
+  </g>
+
+  <!-- Center: AN5 MCP Server -->
+  <g class="arch-node">
+    <rect x="330" y="40" width="280" height="180" rx="12" fill="url(#mcp-grad-server)" stroke="#818cf8" stroke-width="1.5" />
+    <text x="470" y="68" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700" fill="#818cf8" text-anchor="middle">AN5 ORM MCP Server</text>
+    <text x="470" y="88" font-family="'Inter', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">dist/mcp/server.js</text>
+    <rect x="346" y="104" width="248" height="26" rx="5" fill="rgba(56, 189, 248, 0.1)" stroke="rgba(56, 189, 248, 0.25)" />
+    <text x="470" y="121" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#38bdf8" text-anchor="middle">8 Read-Only Inspection Tools</text>
+    <rect x="346" y="136" width="248" height="26" rx="5" fill="rgba(249, 115, 22, 0.1)" stroke="rgba(249, 115, 22, 0.25)" />
+    <text x="470" y="153" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#fb923c" text-anchor="middle">5 Mutating Schema Operations</text>
+    <text x="470" y="184" font-family="'Inter', sans-serif" font-size="10.5" fill="#cbd5e1" text-anchor="middle">Path Traversal Safe &bull; SQL Read Guard</text>
+  </g>
+
+  <!-- Right Top: Workspace & Schema -->
+  <g class="arch-node">
+    <rect x="710" y="25" width="210" height="90" rx="10" fill="url(#mcp-grad-client)" stroke="#38bdf8" stroke-width="1.5" />
+    <text x="815" y="50" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700" fill="#38bdf8" text-anchor="middle">Workspace Context</text>
+    <text x="815" y="72" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">&bull; an5Schema/*.an5</text>
+    <text x="815" y="90" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">&bull; an5Orm.config.js / .env</text>
+  </g>
+
+  <!-- Right Bottom: DB & Engine -->
+  <g class="arch-node">
+    <rect x="710" y="145" width="210" height="95" rx="10" fill="url(#mcp-grad-backend)" stroke="#c084fc" stroke-width="1.5" />
+    <text x="815" y="170" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700" fill="#c084fc" text-anchor="middle">Database &amp; Engine</text>
+    <text x="815" y="192" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">&bull; @an5/adapters (Live DB)</text>
+    <text x="815" y="210" font-family="'Inter', sans-serif" font-size="11" fill="#e2e8f0" text-anchor="middle">&bull; @an5/orm (Push/Migrate)</text>
+  </g>
+</svg>
+</div>
+
+<hr />
+
+<h2 id="1-quick-setup--discovery">1. Quick Setup &amp; Discovery</h2>
+
+<div class="arch-grid-2">
+  <div class="arch-module-card">
+    <div class="arch-module-header">
+      <div class="arch-module-title">
+        <i class="fas fa-magic"></i> Automatic Discovery
+      </div>
+      <span class="arch-module-badge">VS Code 1.101+</span>
+    </div>
+    <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 12px;">
+      The extension registers an automatic <code>mcpServerDefinitionProviders</code> handler. No configuration file needed.
+    </p>
+    <ul class="arch-item-list">
+      <li class="arch-item">
+        <code>Ctrl+Shift+P</code>
+        <span class="arch-item-desc">Open Command Palette</span>
+      </li>
+      <li class="arch-item">
+        <code>MCP: List Servers</code>
+        <span class="arch-item-desc">Browse available servers</span>
+      </li>
+      <li class="arch-item">
+        <code>Start AN5 ORM</code>
+        <span class="arch-item-desc">Click to run immediately</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="arch-module-card">
+    <div class="arch-module-header">
+      <div class="arch-module-title">
+        <i class="fas fa-terminal"></i> Workspace Install
+      </div>
+      <span class="arch-module-badge">Cursor / Portable</span>
+    </div>
+    <p style="font-size: 0.9rem; color: #cbd5e1; margin-bottom: 12px;">
+      Writes resolved execution paths into <code>.mcp.json</code> or <code>.vscode/mcp.json</code> preserving other servers.
+    </p>
+    <ul class="arch-item-list">
+      <li class="arch-item">
+        <code>AN5: Install MCP Server</code>
+        <span class="arch-item-desc">Generate workspace config</span>
+      </li>
+      <li class="arch-item">
+        <code>AN5: Show MCP Server Config</code>
+        <span class="arch-item-desc">Inspect JSON definition</span>
+      </li>
+      <li class="arch-item">
+        <code>Status Bar &gt; AN5 ORM</code>
+        <span class="arch-item-desc">One-click quick actions</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<h3 id="sample-generated-workspace-configuration">Sample Generated Workspace Configuration</h3>
+
+<p>When running <strong>AN5: Install MCP Server</strong> or inspecting via <strong>AN5: Show MCP Server Configuration</strong>, the server outputs the exact path to the active extension bundle:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"an5-orm"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"stdio"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/usr/bin/node"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"~/.vscode/extensions/an5orm.an5-orm-vscode-1.0.6/dist/mcp/server.js"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"cwd"</span><span class="p">:</span><span class="w"> </span><span class="s2">"${workspaceFolder}"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<blockquote>
+  <p><strong>Runtime Execution Note</strong>: The server uses Node.js to launch the script. System Node and version manager binaries (<code class="language-plaintext highlighter-rouge">nvm</code>, <code class="language-plaintext highlighter-rouge">fnm</code>, <code class="language-plaintext highlighter-rouge">volta</code>, <code class="language-plaintext highlighter-rouge">asdf</code>) are fully supported.</p>
+</blockquote>
+
+<hr />
+
+<h2 id="2-workspace-context-discovery">2. Workspace Context Discovery</h2>
+
+<p>When started, the MCP server analyzes your repository environment without requiring manual CLI arguments:</p>
+
+<ol>
+  <li><strong>Configuration</strong>: Evaluates <code class="language-plaintext highlighter-rouge">an5Orm.config.js</code> or <code class="language-plaintext highlighter-rouge">an5Orm.config.cjs</code> to locate <code class="language-plaintext highlighter-rouge">schemaDir</code> (defaults to <code class="language-plaintext highlighter-rouge">an5Schema/</code>).</li>
+  <li><strong>Schema Files</strong>: Scans <code class="language-plaintext highlighter-rouge">.an5</code> files up to 4 directory levels deep, filtering out <code class="language-plaintext highlighter-rouge">node_modules</code>, <code class="language-plaintext highlighter-rouge">.git</code>, <code class="language-plaintext highlighter-rouge">dist</code>, and <code class="language-plaintext highlighter-rouge">target</code>. If <code class="language-plaintext highlighter-rouge">an5Schema/</code> is empty, it falls back to scanning the project root.</li>
+  <li><strong>Database URL</strong>: Automatically reads <code class="language-plaintext highlighter-rouge">DATABASE_URL</code> from active process environment variables or parses the workspace <code class="language-plaintext highlighter-rouge">.env</code> file.</li>
+  <li><strong>Local Engine</strong>: Detects the project’s installed <code class="language-plaintext highlighter-rouge">@an5/orm</code> and <code class="language-plaintext highlighter-rouge">@an5/adapters</code> packages to ensure scripts run against the project’s exact dependency versions.</li>
+</ol>
+
+<hr />
+
+<h2 id="3-tool-reference-13-tools">3. Tool Reference (13 Tools)</h2>
+
+<p>Tools are organized into two distinct safety tiers:</p>
+
+<div class="arch-grid-2">
+  <div class="arch-module-card">
+    <div class="arch-module-header">
+      <div class="arch-module-title">
+        <i class="fas fa-eye"></i> Tier 1: Read-Only
+      </div>
+      <span class="arch-module-badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">Autonomous</span>
+    </div>
+    <div class="arch-subgroup">
+      <div class="arch-subgroup-title">
+        <i class="fas fa-shield-alt"></i> Safe &bull; readOnlyHint: true
+      </div>
+      <ul class="arch-item-list">
+        <li class="arch-item"><code>an5_list_models</code> <span class="arch-item-desc">Overview of all models</span></li>
+        <li class="arch-item"><code>an5_describe_model</code> <span class="arch-item-desc">Fields, types, relations</span></li>
+        <li class="arch-item"><code>an5_get_relations</code> <span class="arch-item-desc">Relation graph (FK/LK)</span></li>
+        <li class="arch-item"><code>an5_analyze_schema</code> <span class="arch-item-desc">Audit keys, indexes, audit</span></li>
+        <li class="arch-item"><code>an5_read_schema_file</code> <span class="arch-item-desc">Read raw .an5 file</span></li>
+        <li class="arch-item"><code>an5_describe_table</code> <span class="arch-item-desc">Columns &amp; constraints</span></li>
+        <li class="arch-item"><code>an5_database_health</code> <span class="arch-item-desc">Latency &amp; connection check</span></li>
+        <li class="arch-item"><code>an5_query_database</code> <span class="arch-item-desc">Read-only SELECT / CTE</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="arch-module-card">
+    <div class="arch-module-header">
+      <div class="arch-module-title">
+        <i class="fas fa-pen-nib"></i> Tier 2: Mutating
+      </div>
+      <span class="arch-module-badge" style="background: rgba(249, 115, 22, 0.15); color: #fb923c; border-color: rgba(249, 115, 22, 0.3);">confirm: true</span>
+    </div>
+    <div class="arch-subgroup">
+      <div class="arch-subgroup-title">
+        <i class="fas fa-user-shield"></i> Requires User Approval
+      </div>
+      <ul class="arch-item-list">
+        <li class="arch-item"><code>an5_generate_client</code> <span class="arch-item-desc">TS/Python/.NET/Go/Rust</span></li>
+        <li class="arch-item"><code>an5_push_schema</code> <span class="arch-item-desc">Additive DDL push to DB</span></li>
+        <li class="arch-item"><code>an5_pull_schema</code> <span class="arch-item-desc">Introspect DB into .an5</span></li>
+        <li class="arch-item"><code>an5_migrate</code> <span class="arch-item-desc">diff, apply, rollback</span></li>
+        <li class="arch-item"><code>an5_seed</code> <span class="arch-item-desc">Execute db:seed script</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<h3 id="detailed-tool-specifications">Detailed Tool Specifications</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Tool</th>
+      <th style="text-align: left">Parameters</th>
+      <th style="text-align: left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_list_models</code></td>
+      <td style="text-align: left"><em>(none)</em></td>
+      <td style="text-align: left">Returns the total count, physical table mapping, and field/relation summaries for every declared model.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_describe_model</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">model: string</code></td>
+      <td style="text-align: left">Returns full field metadata (<code class="language-plaintext highlighter-rouge">sqlType</code>, <code class="language-plaintext highlighter-rouge">optional</code>, <code class="language-plaintext highlighter-rouge">primaryKey</code>, <code class="language-plaintext highlighter-rouge">unique</code>, <code class="language-plaintext highlighter-rouge">hasDefault</code>, <code class="language-plaintext highlighter-rouge">description</code>) and relation connections.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_get_relations</code></td>
+      <td style="text-align: left"><em>(none)</em></td>
+      <td style="text-align: left">Returns an edge array representing foreign-key and local-key links between models (<code class="language-plaintext highlighter-rouge">one-to-many</code>, <code class="language-plaintext highlighter-rouge">many-to-one</code>).</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_analyze_schema</code></td>
+      <td style="text-align: left"><em>(none)</em></td>
+      <td style="text-align: left">Runs automated static analysis: flags missing primary keys, unindexed foreign keys, and missing audit timestamps (<code class="language-plaintext highlighter-rouge">createdAt</code>, <code class="language-plaintext highlighter-rouge">updatedAt</code>).</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_read_schema_file</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">file: string</code></td>
+      <td style="text-align: left">Returns full raw text of a <code class="language-plaintext highlighter-rouge">.an5</code> file. Validates that the target path is strictly within the workspace root to prevent path traversal.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_describe_table</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">table: string</code></td>
+      <td style="text-align: left">Checks the schema model first; if absent, inspects physical database metadata directly.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_database_health</code></td>
+      <td style="text-align: left"><em>(none)</em></td>
+      <td style="text-align: left">Performs a round-trip connection probe, reporting connection state and latency in milliseconds.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_query_database</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">sql: string</code></td>
+      <td style="text-align: left">Executes read-only queries. Permits single-statement <code class="language-plaintext highlighter-rouge">SELECT</code> and read-only CTEs (<code class="language-plaintext highlighter-rouge">WITH ... SELECT</code>). Rejects multi-statements and mutation keywords (<code class="language-plaintext highlighter-rouge">INTO</code>, <code class="language-plaintext highlighter-rouge">INSERT</code>, <code class="language-plaintext highlighter-rouge">UPDATE</code>, <code class="language-plaintext highlighter-rouge">DELETE</code>, <code class="language-plaintext highlighter-rouge">DROP</code>, <code class="language-plaintext highlighter-rouge">ALTER</code>, <code class="language-plaintext highlighter-rouge">CREATE</code>, <code class="language-plaintext highlighter-rouge">TRUNCATE</code>, <code class="language-plaintext highlighter-rouge">EXEC</code>).</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_generate_client</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">language: string</code>, <code class="language-plaintext highlighter-rouge">outputDir?: string</code>, <code class="language-plaintext highlighter-rouge">confirm: boolean</code></td>
+      <td style="text-align: left">Triggers the code generator for <code class="language-plaintext highlighter-rouge">typescript</code>, <code class="language-plaintext highlighter-rouge">python</code>, <code class="language-plaintext highlighter-rouge">dotnet</code>, <code class="language-plaintext highlighter-rouge">golang</code>, or <code class="language-plaintext highlighter-rouge">rust</code>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_push_schema</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">confirm: boolean</code></td>
+      <td style="text-align: left">Executes an additive schema sync (<code class="language-plaintext highlighter-rouge">db:push</code>) to create tables and add missing columns.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_pull_schema</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">confirm: boolean</code></td>
+      <td style="text-align: left">Overwrites local <code class="language-plaintext highlighter-rouge">.an5</code> schemas with introspected database structure (<code class="language-plaintext highlighter-rouge">db:pull</code>).</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_migrate</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">action: string</code>, <code class="language-plaintext highlighter-rouge">steps?: number</code>, <code class="language-plaintext highlighter-rouge">dryRun?: boolean</code>, <code class="language-plaintext highlighter-rouge">confirm: boolean</code></td>
+      <td style="text-align: left">Manages schema migrations: <code class="language-plaintext highlighter-rouge">diff</code>, <code class="language-plaintext highlighter-rouge">generate</code>, <code class="language-plaintext highlighter-rouge">apply</code>, <code class="language-plaintext highlighter-rouge">rollback</code>, or <code class="language-plaintext highlighter-rouge">status</code>.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">an5_seed</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">confirm: boolean</code></td>
+      <td style="text-align: left">Populates the connected database using the project seed script (<code class="language-plaintext highlighter-rouge">db:seed</code>).</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="4-cursor--claude-desktop-setup">4. Cursor &amp; Claude Desktop Setup</h2>
+
+<h3 id="claude-desktop">Claude Desktop</h3>
+
+<p>Open <code class="language-plaintext highlighter-rouge">claude_desktop_config.json</code>:</p>
+<ul>
+  <li><strong>macOS</strong>: <code class="language-plaintext highlighter-rouge">~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
+  <li><strong>Windows</strong>: <code class="language-plaintext highlighter-rouge">%APPDATA%\Claude\claude_desktop_config.json</code></li>
+  <li><strong>Linux</strong>: <code class="language-plaintext highlighter-rouge">~/.config/Claude/claude_desktop_config.json</code></li>
+</ul>
+
+<p>Add the server definition:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"an5-orm"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"/absolute/path/to/an5orm.an5-orm-vscode/dist/mcp/server.js"</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nl">"cwd"</span><span class="p">:</span><span class="w"> </span><span class="s2">"/path/to/your/project"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"env"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"DATABASE_URL"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sqlserver://localhost:1433;database=mydb;user=sa;password=secret"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="cursor-ide">Cursor IDE</h3>
+
+<ol>
+  <li>Open <strong>Settings</strong> → <strong>Features</strong> → <strong>MCP</strong>.</li>
+  <li>Click <strong>+ Add New MCP Server</strong>.</li>
+  <li>Select <strong>Type</strong>: <code class="language-plaintext highlighter-rouge">command</code> (stdio).</li>
+  <li>Paste the command and argument values obtained from <strong>AN5: Show MCP Server Configuration</strong>.</li>
+</ol>
+
+<hr />
+
+<h2 id="5-security--isolation-guarantees">5. Security &amp; Isolation Guarantees</h2>
+
+<ul>
+  <li><strong>Path Traversal Protection</strong>: File operations in <code class="language-plaintext highlighter-rouge">an5_read_schema_file</code> verify that canonical paths remain strictly within the workspace boundary. Relative escapes (<code class="language-plaintext highlighter-rouge">../</code>) and external symlinks are rejected.</li>
+  <li><strong>SQL Guardrails</strong>: <code class="language-plaintext highlighter-rouge">an5_query_database</code> blocks schema-altering statements, chained semicolons, and write queries.</li>
+  <li><strong>Protocol Separation</strong>: Standard output (<code class="language-plaintext highlighter-rouge">stdout</code>) is strictly reserved for JSON-RPC MCP messages. Diagnostic outputs and warnings are redirected to <code class="language-plaintext highlighter-rouge">stderr</code> (<code class="language-plaintext highlighter-rouge">[an5-orm-mcp]</code>) to prevent protocol corruption.</li>
+  <li><strong>Mandatory Human Confirmation</strong>: Destructive operations cannot be executed autonomously by an AI agent; the parameter <code class="language-plaintext highlighter-rouge">confirm: true</code> must be explicitly approved.</li>
+</ul>
+
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ─── FOOTER ────────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <a href="/an5/" class="nav-logo">
+          <span class="logo-badge">AN5</span>
+          <span class="logo-text">ORM</span>
+        </a>
+        <p>Lightweight, type-safe ORM for TypeScript, Python, .NET, Golang, and Rust.</p>
+        <div class="footer-social">
+          <a href="https://github.com/an5ORM" target="_blank" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="https://marketplace.visualstudio.com/items?itemName=an5orm.an5-orm-vscode" target="_blank" aria-label="VS Code Marketplace">
+            <i class="fas fa-puzzle-piece"></i>
+          </a>
+          <a href="https://open-vsx.org/namespace/an5orm" target="_blank" aria-label="Open VSX">
+            <i class="fas fa-box-open"></i>
+          </a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Getting Started</h4>
+          <ul>
+            <li><a href="/an5/guides/getting-started/">Installation</a></li>
+            <li><a href="/an5/guides/configuration/">Configuration</a></li>
+            <li><a href="/an5/guides/cli/">CLI Tools</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Core Concepts</h4>
+          <ul>
+            <li><a href="/an5/guides/schema/">Schema</a></li>
+            <li><a href="/an5/guides/crud/">CRUD API</a></li>
+            <li><a href="/an5/guides/relations/">Relations</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Ecosystem & Reference</h4>
+          <ul>
+            <li><a href="/an5/guides/api-reference/">API Reference</a></li>
+            <li><a href="/an5/guides/agent-tools/">AI Agent Tools</a></li>
+            <li><a href="https://github.com/an5ORM/an5" target="_blank">GitHub Repository</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 AN5 ORM · Open Source under MIT License</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-rust.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ini.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-docker.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-tsx.min.js"></script>
+  <script src="/an5/assets/js/prism-an5.js"></script>
+
+  <script src="/an5/assets/js/docs.js"></script>
+
+  <script>
+    // Highlight the sidebar entry for this page. Compare normalised paths
+    // rather than a substring: '/guides/schema/' must not light up
+    // '/guides/schema-relations/', and the home link must not match every page.
+    (() => {
+      const norm = p => p.replace(/\/index\.html$/, '/').replace(/\/$/, '');
+      const current = norm(window.location.pathname);
+      document.querySelectorAll('.docs-sidebar a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+        const target = norm(new URL(href, window.location.origin).pathname);
+        if (target === current) link.classList.add('active');
+      });
+    })();
+
+    // Mobile docs menu toggle
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarGroups = document.getElementById('sidebarGroups');
+    const sidebar = document.getElementById('docsSidebar');
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        const isOpen = sidebarGroups ? sidebarGroups.classList.toggle('open') : false;
+        if (sidebar) sidebar.classList.toggle('menu-open', isOpen);
+        sidebarToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        const icon = sidebarToggle.querySelector('i');
+        if (icon) {
+          icon.className = isOpen ? 'fas fa-xmark' : 'fas fa-bars';
+        }
+      });
+    }
+
+    // Mobile sidebar accordion
+    if (window.innerWidth <= 768) {
+      document.querySelectorAll('.sidebar-group').forEach(group => {
+        const heading = group.querySelector('.sidebar-heading');
+        const hasActiveLink = group.querySelector('a.active');
+        
+        if (hasActiveLink) {
+          group.classList.remove('collapsed');
+        } else {
+          group.classList.add('collapsed');
+        }
+        
+        if (heading) {
+          heading.addEventListener('click', () => {
+            group.classList.toggle('collapsed');
+          });
+        }
+      });
+    }
+
+    // Interactive tabs switcher
+    document.querySelectorAll('.example-tabs').forEach(tabs => {
+      const buttons = tabs.querySelectorAll('.tab-btn');
+      const contents = tabs.querySelectorAll('.tab-content');
+      buttons.forEach((btn, index) => {
+        btn.addEventListener('click', () => {
+          buttons.forEach(b => b.classList.remove('active'));
+          contents.forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          if (contents[index]) contents[index].classList.add('active');
+        });
+      });
+    });
+
+    // Code window decorator (wraps pre blocks into styled windows with dots)
+    document.querySelectorAll('.docs-body pre').forEach(pre => {
+      if (!pre.parentElement.classList.contains('code-window')) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'code-window';
+        
+        const titlebar = document.createElement('div');
+        titlebar.className = 'code-titlebar';
+        titlebar.innerHTML = '<span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>';
+        
+        const code = pre.querySelector('code');
+        if (code) {
+          const match = code.className.match(/language-(\w+)/);
+          if (match) {
+            const langSpan = document.createElement('span');
+            langSpan.className = 'code-filename';
+            langSpan.textContent = match[1].toUpperCase();
+            titlebar.appendChild(langSpan);
+          }
+        }
+        
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(titlebar);
+        wrapper.appendChild(pre);
+      }
+    });
+  </script>
+</body>
+</html>

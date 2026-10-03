@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: http://localhost:4000/an5/sitemap.xml
+Sitemap: https://an5orm.github.io/an5/sitemap.xml

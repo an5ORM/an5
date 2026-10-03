@@ -8,6 +8,8 @@ description: 7 intelligent tools for database operations and task management
 
 an5 Agent provides **7 consolidated tools** for schema exploration, query generation, database operations, and task management.
 
+In VS Code, the same capabilities are reachable without writing any integration code: the [an5OrmVScode](https://github.com/an5ORM/an5OrmVScode) extension ships an [MCP server]({{ '/guides/vscode-mcp/' | relative_url }}) exposing schema tools, read-only queries and the schema operations to Copilot and other MCP clients. It registers itself — run `MCP: List Servers` and start **AN5 ORM** — or run **AN5: Install MCP Server** to write the config file.
+
 ## Tool Overview
 
 | Tool | Actions | Description |
