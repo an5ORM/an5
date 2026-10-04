@@ -1,0 +1,4 @@
+interface:
+  display_name: "AN5 Auto Release"
+  short_description: "Review diffs, sync docs, commit, push and release"
+  default_prompt: "Use $an5-release to review the current code changes, update changelogs and documentation, run checks, then commit, push and release the affected repositories."

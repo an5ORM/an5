@@ -139,12 +139,12 @@ cd an5Schema && npm test && cd ..
 
 | File | Description |
 |------|-------------|
-| `test/smoke.test.js` | 6 smoke tests: package, CLI help, dry-run, LLM module, config |
+| `test/smoke.test.js` | 6 smoke tests: package, CLI help, preview, LLM module, config |
 
 **What is tested:**
 - Package structure (`bin` entry, source files, dist files)
 - CLI help output (commands: `release`, `ws`)
-- CLI dry-run execution on default target
+- CLI preview execution on default target
 - LLM module exports (`generateCommitMessage`, `getGitDiff`, `getGitLog`)
 - WS command documentation in help text
 - `.an5Cli.json` config file

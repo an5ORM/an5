@@ -10,7 +10,7 @@
  *   node scripts/auto-bump-version.js                 # patch bump if needed
  *   node scripts/auto-bump-version.js minor
  *   node scripts/auto-bump-version.js major
- *   node scripts/auto-bump-version.js --dry-run
+ *   node scripts/auto-bump-version.js --preview
  *   node scripts/auto-bump-version.js --packages an5Adapters,an5Orm
  */
 
@@ -21,7 +21,10 @@ const path = require('path');
 const ROOT = process.cwd();
 const args = process.argv.slice(2);
 const bumpType = args.find((arg) => ['patch', 'minor', 'major'].includes(arg)) || 'patch';
-const dryRun = args.includes('--dry-run');
+for (const arg of args) {
+  if (arg.startsWith('--') && !['--preview', '--packages'].includes(arg)) throw new Error(`Unknown option: ${arg}; use --preview to inspect without changes`);
+}
+const preview = args.includes('--preview');
 const packageArgIndex = args.indexOf('--packages');
 const packagePaths = packageArgIndex >= 0 && args[packageArgIndex + 1]
   ? args[packageArgIndex + 1].split(',').map((value) => value.trim()).filter(Boolean)
@@ -101,7 +104,7 @@ function updateDependencyRange(packageJson, dependencyName, version) {
 const packages = collectPackages(packagePaths);
 const versionMap = new Map();
 
-console.log(`\nAN5 auto version bump (${bumpType})${dryRun ? ' [dry-run]' : ''}\n`);
+console.log(`\nAN5 auto version bump (${bumpType})${preview ? ' [preview]' : ''}\n`);
 
 for (const entry of packages) {
   const { name, version } = entry.packageJson;
@@ -113,7 +116,7 @@ for (const entry of packages) {
   const latestLabel = latest || 'not published';
   console.log(`${name}: local ${version}, npm ${latestLabel} -> ${next}`);
 
-  if (!dryRun) {
+  if (!preview) {
     entry.packageJson.version = next;
   }
 }
@@ -124,7 +127,7 @@ for (const entry of packages) {
       updateDependencyRange(entry.packageJson, dependencyName, version);
     }
   }
-  if (!dryRun) {
+  if (!preview) {
     writeJson(entry.packageJsonPath, entry.packageJson);
 
     const pyprojectPath = path.join(entry.fullPath, 'pyproject.toml');
@@ -137,7 +140,7 @@ for (const entry of packages) {
   }
 }
 
-if (dryRun) {
+if (preview) {
   console.log('\nNo files changed.');
 } else {
   console.log('\nUpdated package.json & pyproject.toml files:');

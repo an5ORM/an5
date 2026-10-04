@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.0] - 2026-10-04
+
+### Added
+- Add the repository-local an5-release skill for reviewed changelogs, documentation checks, selected-file delivery and release verification.
+- Publish npm adapters, ORM, client, agent and CLI, plus Python adapters, ORM and client, through the workspace tag workflow, and create a version manifest in the GitHub Release.
+### Changed
+- Use --preview/preview throughout workspace scripts and migration examples; remove the old preview flag/name.
+- Build and publish the exact submodule commits pinned by the release tag. The extension uses its own tested VSIX/Open VSX workflow; Marketplace upload remains manual.
+- Include shared brand assets and updated site/documentation pointers.
+
 ## [1.0.1] - 2026-08-19
 
 - chore: update misc
@@ -67,4 +77,3 @@
 - `an5Schema` — SQL Server native schema definitions
 - `an5Tasks` — Genkit-powered task manager for code review analysis
 - Documentation, build automation, CI/CD workflows
-

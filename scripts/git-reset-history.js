@@ -9,7 +9,7 @@
  *
  * Usage:
  *   node scripts/git-reset-history.js
- *   node scripts/git-reset-history.js --dry-run   # preview only
+ *   node scripts/git-reset-history.js --preview   # preview only
  *
  * WARNING: Destructive! All previous commits are permanently lost.
  */
@@ -19,14 +19,17 @@ const fs = require("fs");
 const path = require("path");
 
 const ROOT = process.cwd();
-const DRY_RUN = process.argv.includes("--dry-run");
+for (const arg of process.argv.slice(2)) {
+  if (arg.startsWith('--') && !['--preview'].includes(arg)) throw new Error(`Unknown option: ${arg}; use --preview to inspect without changes`);
+}
+const PREVIEW = process.argv.includes("--preview");
 const BRANCH = "main";
 
 function run(cmd, opts = {}) {
   const cwd = opts.cwd || ROOT;
   const label = cwd === ROOT ? "" : `[${path.basename(cwd)}] `;
   console.log(`  ${label}$ ${cmd}`);
-  if (DRY_RUN) return "";
+  if (PREVIEW) return "";
   try {
     return execSync(cmd, { cwd, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }).trim();
   } catch (e) {
@@ -63,11 +66,11 @@ function resetRepo(cwd, name) {
 
 const submodules = getSubmodules();
 
-console.log(DRY_RUN ? "🔍 DRY RUN — no changes will be made\n" : "⚠️  WARNING: This will PERMANENTLY delete ALL git history!\n");
+console.log(PREVIEW ? "🔍 PREVIEW — no changes will be made\n" : "⚠️  WARNING: This will PERMANENTLY delete ALL git history!\n");
 console.log(`Root: ${ROOT}`);
 console.log(`Submodules: ${submodules.length > 0 ? submodules.join(", ") : "(none)"}\n`);
 
-if (!DRY_RUN) {
+if (!PREVIEW) {
   console.log("Starting in 5 seconds... Press Ctrl+C to abort.\n");
   Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 5000);
 }

@@ -7,11 +7,11 @@ on:
   workflow_dispatch:
     inputs:
       publish-npm:
-        description: 'Publish npm packages (@an5/adapters, @an5/orm)'
+        description: 'Publish all public npm workspace packages'
         type: boolean
         default: true
       publish-pypi:
-        description: 'Publish PyPI packages (an5-adapters, an5-orm)'
+        description: 'Publish PyPI packages (adapters, ORM and client)'
         type: boolean
         default: true
 
@@ -28,8 +28,6 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Sync submodules to latest main
-        run: git submodule update --init --recursive --remote || true
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -59,8 +57,6 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Sync submodules to latest main
-        run: git submodule update --init --recursive --remote || true
 
       - uses: actions/setup-node@v4
         with:
@@ -129,6 +125,33 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Publish an5Client to npm
+        working-directory: an5Client
+        run: |
+          package_name=$(node -p 'require("./package.json").name')
+          package_version=$(node -p 'require("./package.json").version')
+          if npm view "$package_name@$package_version" version >/dev/null 2>&1; then
+            echo "Release already exists."
+          else
+            npm publish --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish an5Cli to npm
+        working-directory: an5Cli
+        run: |
+          package_name=$(node -p 'require("./package.json").name')
+          package_version=$(node -p 'require("./package.json").version')
+          if npm view "$package_name@$package_version" version >/dev/null 2>&1; then
+            echo "Release already exists."
+          else
+            npm publish --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+
   publish-pypi:
     name: Publish PyPI packages
     needs: build-and-test
@@ -139,8 +162,6 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Sync submodules to latest main
-        run: git submodule update --init --recursive --remote || true
 
       - uses: actions/setup-python@v5
         with:
@@ -171,44 +192,39 @@ jobs:
           packages-dir: an5Orm/dist-py/
           skip-existing: true
 
-  publish-vscode:
-    name: Publish VS Code Extension
-    needs: build-and-test
+      - name: Build an5-client
+        working-directory: an5Client
+        run: python -m build --outdir dist-py
+
+      - name: Publish an5-client to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_TOKEN }}
+          packages-dir: an5Client/dist-py/
+          skip-existing: true
+
+  release:
+    name: Publish workspace release manifest
+    needs: [build-and-test, publish-npm, publish-pypi]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
-    if: (github.event_name == 'workflow_dispatch') || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Install & package extension
-        # Installed from the repository root, not from the workspace member:
-        # `npm install` inside an5OrmVScode left @types/node where tsc could
-        # not see it, and vsce's prepublish compile failed with "Cannot find
-        # type definition file for 'node'". The root install hoists correctly,
-        # which is also what the build-and-test job does.
+      - name: Write exact package versions
         run: |
-          npm install
-          npm run package -w an5OrmVScode
-      - name: Publish to Open VSX Registry
-        working-directory: an5OrmVScode
-        run: |
-          if [ -z "$OVSX_PAT" ]; then
-            echo "OVSX_PAT not provided, skipping Open VSX publish"
-            exit 0
-          fi
-          npx ovsx publish *.vsix -p "$OVSX_PAT"
+          node - <<'JS' > release-notes.md
+          console.log('Packages built and tested from the submodule commits pinned by this release.\n');
+          for (const directory of ['an5Adapters', 'an5Orm', 'an5Client', 'an5Agent', 'an5Cli', 'an5OrmVScode']) {
+            const pkg = require(`./${directory}/package.json`);
+            console.log(`- ${pkg.name}: ${pkg.version}`);
+          }
+          console.log('\nThe extension is released by its own repository workflow. VS Code Marketplace upload remains manual.');
+          JS
+      - name: Create GitHub Release
         env:
-          OVSX_PAT: ${{ secrets.OVSX_PAT }}
-      - name: Publish to VS Code Marketplace
-        working-directory: an5OrmVScode
-        run: |
-          if [ -z "$VSCE_PAT" ]; then
-            echo "VSCE_PAT not provided, skipping Marketplace publish"
-            exit 0
-          fi
-          npx @vscode/vsce publish -p "$VSCE_PAT"
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" --notes-file release-notes.md

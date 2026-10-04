@@ -9,7 +9,7 @@
     Path to the root of the git monorepo. Defaults to current directory.
 .PARAMETER Branch
     Target branch name. Defaults to "main".
-.PARAMETER DryRun
+.PARAMETER Preview
     If set, only shows what would be done without making changes.
 .EXAMPLE
     .\scripts\git-reset-history.ps1
@@ -19,7 +19,7 @@
 param(
     [string]$RepoPath = (Get-Location).Path,
     [string]$Branch = "main",
-    [switch]$DryRun
+    [switch]$Preview
 )
 
 $ErrorActionPreference = "Stop"
@@ -27,7 +27,7 @@ $ErrorActionPreference = "Stop"
 Write-Host "=== Git History Reset ===" -ForegroundColor Cyan
 Write-Host "Repo: $RepoPath"
 Write-Host "Branch: $Branch"
-if ($DryRun) { Write-Host "DRY RUN MODE - No changes will be made" -ForegroundColor Yellow }
+if ($Preview) { Write-Host "PREVIEW MODE - No changes will be made" -ForegroundColor Yellow }
 Write-Host ""
 
 Set-Location $RepoPath
@@ -58,8 +58,8 @@ function Reset-RepoHistory {
     $currentBranch = git rev-parse --abbrev-ref HEAD 2>$null
     if (-not $currentBranch) { $currentBranch = $Branch }
 
-    if ($DryRun) {
-        Write-Host "  [DRY-RUN] Would reset history for $Name on branch $currentBranch" -ForegroundColor DarkYellow
+    if ($Preview) {
+        Write-Host "  [PREVIEW] Would reset history for $Name on branch $currentBranch" -ForegroundColor DarkYellow
         return
     }
 
@@ -92,7 +92,7 @@ foreach ($sm in $submodules) {
 # ── Update submodule pointers in parent ──────────────────────────────────────
 Write-Host ">>> Updating submodule pointers in parent repo" -ForegroundColor Yellow
 Set-Location $RepoPath
-if (-not $DryRun) {
+if (-not $Preview) {
     git add $submodules
 }
 Write-Host ""

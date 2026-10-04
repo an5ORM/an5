@@ -1,4 +1,4 @@
-.PHONY: help install build test clean release release-all dryrun pull status lint
+.PHONY: help install build test clean release release-all preview pull status lint
 
 CLI := node an5Cli/dist/index.js
 
@@ -10,7 +10,7 @@ help: ## Show this help
 	@echo "  make clean       - Clean all dist/node_modules"
 	@echo "  make release     - Release current repo"
 	@echo "  make release-all - Release all repos in workspace (run weekly)"
-	@echo "  make dryrun      - Preview release"
+	@echo "  make preview     - Preview release"
 	@echo "  make pull        - Update submodules"
 	@echo "  make status      - Show git status"
 	@echo "  make generate    - Run code generator"
@@ -36,10 +36,10 @@ release: ## Release current repo
 	$(CLI) release . --push
 
 release-all: ## Release all repos in workspace (run weekly)
-	$(CLI) ws . --push --tag v$$(node -p "new Date().toISOString().slice(0,10).replaceAll('-','.')")
+	$(CLI) ws . --push
 
-dryrun: ## Preview workspace release
-	$(CLI) ws . --dry-run
+preview: ## Preview workspace release
+	$(CLI) ws . --preview
 
 pull: ## Pull latest for all submodules
 	git submodule update --remote --merge

@@ -7,7 +7,7 @@
  *
  * Usage:
  *   node scripts/git-cleanup-branches.js
- *   node scripts/git-cleanup-branches.js --dry-run   # preview only
+ *   node scripts/git-cleanup-branches.js --preview   # preview only
  */
 
 const { execSync } = require("child_process");
@@ -15,13 +15,16 @@ const fs = require("fs");
 const path = require("path");
 
 const ROOT = process.cwd();
-const DRY_RUN = process.argv.includes("--dry-run");
+for (const arg of process.argv.slice(2)) {
+  if (arg.startsWith('--') && !['--preview'].includes(arg)) throw new Error(`Unknown option: ${arg}; use --preview to inspect without changes`);
+}
+const PREVIEW = process.argv.includes("--preview");
 const KEEP = new Set(["main", "HEAD"]);
 
 function run(cmd, opts = {}) {
   const cwd = opts.cwd || ROOT;
   console.log(`  $ ${cmd}`);
-  if (DRY_RUN) return "";
+  if (PREVIEW) return "";
   try {
     return execSync(cmd, { cwd, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }).trim();
   } catch (e) {
@@ -64,7 +67,7 @@ for (const sm of submodules) {
   }
 }
 
-console.log(DRY_RUN ? "🔍 DRY RUN — no changes will be made\n" : "🗑️  Cleaning up branches across all repos\n");
+console.log(PREVIEW ? "🔍 PREVIEW — no changes will be made\n" : "🗑️  Cleaning up branches across all repos\n");
 console.log(`Found ${allRepos.length} repo(s) to process\n`);
 
 let totalDeleted = 0;
@@ -84,4 +87,4 @@ for (const repo of allRepos) {
 }
 
 console.log(`\n✅ Done. Deleted ${totalDeleted} branch(es) total.`);
-if (DRY_RUN) console.log("   (dry run — nothing was actually deleted)");
+if (PREVIEW) console.log("   (preview — nothing was actually deleted)");

@@ -328,8 +328,8 @@ These run as npm scripts from the `an5Orm/` repository:
 | `npm run db:seed`             | Seed database with sample data                                                           |
 | `npm run db:migrate diff`     | Compare schema with database                                                             |
 | `npm run db:migrate:generate` | Generate migration SQL                                                                   |
-| `npm run db:migrate:apply`    | Apply pending migration files; pass `-- --dry-run` to preview SQL                        |
-| `npm run db:migrate:rollback` | Roll back the latest applied migration; pass `-- --dry-run`, `-- 3`, or `-- --to <file>` |
+| `npm run db:migrate:apply`    | Apply pending migration files; pass `-- --preview` to preview SQL                        |
+| `npm run db:migrate:rollback` | Roll back the latest applied migration; pass `-- --preview`, `-- 3`, or `-- --to <file>` |
 | `npm run db:migrate:status`   | Show migration status                                                                    |
 
 ### Development
@@ -342,7 +342,7 @@ These run as npm scripts from the `an5Orm/` repository:
 | `npm run test:integration:live` | Run live adapter Postgres/SQL Server checks                                         |
 | `npm run test:lang`             | Check that every comment, message, and document in the workspace is English-only |
 | `npm run generate`              | Generate client code (`-w an5Orm`)                                                  |
-| `npm run dryrun`                | Preview workspace release changes                                                   |
+| `npm run preview`                | Preview workspace release changes                                                   |
 | `npm run release`               | Release across the workspace                                                        |
 
 ---
@@ -439,3 +439,9 @@ Documentation source and deployment are maintained in [an5ORM/docs](https://gith
 ## License
 
 MIT
+
+### Publication routes
+
+`npm run release` commits and pushes workspace changes through an5Cli; it does not create a publication tag. A versioned `v*` tag in this repository runs the full cross-language gate, publishes the five public npm packages and the three Python packages, and creates a workspace GitHub Release. Every job uses the submodule commits recorded in that tag, without updating remote heads.
+
+The extension repository releases its tested VSIX and publishes to Open VSX on its own `main` workflow. VS Code Marketplace upload remains manual using that VSIX. Avoid creating child package publication tags when using the workspace publication route for the same versions.
