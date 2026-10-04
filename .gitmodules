@@ -42,3 +42,7 @@
 	path = an5Docs
 	url = https://github.com/an5ORM/docs.git
 	branch = main
+[submodule "an5Brand"]
+	path = an5Brand
+	url = https://github.com/an5ORM/an5Brand.git
+	branch = main
