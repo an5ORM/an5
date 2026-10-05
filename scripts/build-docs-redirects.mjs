@@ -4,7 +4,7 @@ import path from 'node:path';
 const output = process.argv[2] || '_site';
 const guides = ['agent-tools', 'api-reference', 'architecture', 'browser-support', 'cli', 'configuration', 'crud', 'deployment', 'examples', 'feature-status', 'getting-started', 'queries', 'relations', 'schema', 'transactions', 'troubleshooting', 'vector-search', 'vscode-mcp'];
 const routes = ['', 'architecture/', 'genkit/', ...guides.map(g => `guides/${g}/`)];
-for (const code of ['typescript', 'python', 'dotnet', 'golang', 'rust', '{code}']) {
+for (const code of ['typescript', 'python', 'dotnet', 'golang', 'rust', 'java', 'kotlin', 'swift', '{code}']) {
   for (const provider of code === '{code}' ? ['{provider}'] : ['sqlserver', 'postgresql', 'mysql', 'sqlite', 'googlesheets', 'nbase']) {
     for (const guide of ['queries', 'vector-search']) routes.push(`${code}/${provider}/guides/${guide}/`);
   }

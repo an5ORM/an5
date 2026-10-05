@@ -3,6 +3,7 @@
 ## [1.2.0] - 2026-10-04
 
 ### Added
+- Add Java, Kotlin and Swift client generation and runtimes, alongside the existing TypeScript, Python, .NET, Go and Rust clients.
 - Add the repository-local an5-release skill for reviewed changelogs, documentation checks, selected-file delivery and release verification.
 - Publish npm adapters, ORM, client, agent and CLI, plus Python adapters, ORM and client, through the workspace tag workflow, and create a version manifest in the GitHub Release.
 ### Changed

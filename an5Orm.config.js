@@ -72,6 +72,30 @@ module.exports = {
       /** Output directory for generated Rust crate (Cargo.toml + src/) */
       outputDir: 'an5Client/rust',
     },
+    /**
+     * Java output configuration
+     */
+    java: {
+      /** Output directory for generated Java files */
+      outputDir: 'an5Client/java',
+    },
+
+    /**
+     * Kotlin output configuration
+     */
+    kotlin: {
+      /** Output directory for generated Kotlin files */
+      outputDir: 'an5Client/kotlin',
+    },
+
+    /**
+     * Swift output configuration
+     */
+    swift: {
+      /** Output directory for generated Swift files */
+      outputDir: 'an5Client/swift',
+    },
+
   },
 
   /**

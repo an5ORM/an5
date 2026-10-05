@@ -17,6 +17,12 @@ env:
   PYTHON_VERSION: '3.11'
   DOTNET_VERSION: '8.0.x'
   GO_VERSION: '1.24.x'
+  JAVA_VERSION: '21'
+  KOTLIN_VERSION: '2.0.21'
+  # Pinned rather than the runner's preinstalled Gradle: the Kotlin plugin declares the
+  # Gradle versions it supports, and a runner image update would silently move past them.
+  GRADLE_VERSION: '8.14.3'
+  SWIFT_VERSION: '6.0.3'
   RUST_VERSION: 'stable'
 
 jobs:
@@ -179,6 +185,29 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ env.RUST_VERSION }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - name: Install Kotlin
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/kotlinc.zip" "https://github.com/JetBrains/kotlin/releases/download/v$KOTLIN_VERSION/kotlin-compiler-$KOTLIN_VERSION.zip"
+          unzip -q -o "$RUNNER_TEMP/kotlinc.zip" -d "$RUNNER_TEMP"
+          echo "KOTLIN_HOME=$RUNNER_TEMP/kotlinc" >> "$GITHUB_ENV"
+          echo "$RUNNER_TEMP/kotlinc/bin" >> "$GITHUB_PATH"
+      - name: Install Swift
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/swift.tar.gz" "https://download.swift.org/swift-$SWIFT_VERSION-release/ubuntu2204/swift-$SWIFT_VERSION-RELEASE/swift-$SWIFT_VERSION-RELEASE-ubuntu22.04.tar.gz"
+          mkdir -p "$RUNNER_TEMP/swift"
+          tar xzf "$RUNNER_TEMP/swift.tar.gz" -C "$RUNNER_TEMP/swift" --strip-components=1
+          echo "SWIFT_HOME=$RUNNER_TEMP/swift" >> "$GITHUB_ENV"
+          echo "$RUNNER_TEMP/swift/usr/bin" >> "$GITHUB_PATH"
+      - name: Install Gradle
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/gradle.zip" "https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip"
+          unzip -q -o "$RUNNER_TEMP/gradle.zip" -d "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/gradle-$GRADLE_VERSION/bin" >> "$GITHUB_PATH"
+      - run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
       - run: npm ci
       - run: npm run build
       - run: npm test -w an5Adapters
@@ -191,6 +220,12 @@ jobs:
       - run: npm run test:dotnet -w an5Adapters
       - run: npm run test:go -w an5Adapters
       - run: npm run test:rust -w an5Adapters
+      - run: npm run test:java -w an5Adapters
+      - run: npm run test:kotlin -w an5Adapters
+      # The Kotlin manifest is what a Gradle consumer resolves, so it is built by Gradle
+      # here rather than only being compiled by kotlinc above.
+      - run: npm run test:gradle -w an5Adapters
+      - run: npm run test:swift -w an5Adapters
 
   # ── an5Agent ────────────────────────────────────────────────────────────────
   test-agent:
@@ -264,6 +299,24 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ env.RUST_VERSION }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - name: Install Kotlin
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/kotlinc.zip" "https://github.com/JetBrains/kotlin/releases/download/v$KOTLIN_VERSION/kotlin-compiler-$KOTLIN_VERSION.zip"
+          unzip -q -o "$RUNNER_TEMP/kotlinc.zip" -d "$RUNNER_TEMP"
+          echo "KOTLIN_HOME=$RUNNER_TEMP/kotlinc" >> "$GITHUB_ENV"
+          echo "$RUNNER_TEMP/kotlinc/bin" >> "$GITHUB_PATH"
+      - name: Install Swift
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/swift.tar.gz" "https://download.swift.org/swift-$SWIFT_VERSION-release/ubuntu2204/swift-$SWIFT_VERSION-RELEASE/swift-$SWIFT_VERSION-RELEASE-ubuntu22.04.tar.gz"
+          mkdir -p "$RUNNER_TEMP/swift"
+          tar xzf "$RUNNER_TEMP/swift.tar.gz" -C "$RUNNER_TEMP/swift" --strip-components=1
+          echo "SWIFT_HOME=$RUNNER_TEMP/swift" >> "$GITHUB_ENV"
+          echo "$RUNNER_TEMP/swift/usr/bin" >> "$GITHUB_PATH"
+      - run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
       - run: npm ci
       - run: npm run build
       - run: npm test -w an5Client
@@ -272,6 +325,56 @@ jobs:
       - run: npm run test:dotnet -w an5Client
       - run: npm run test:go -w an5Client
       - run: npm run test:rust -w an5Client
+      - run: npm run test:java -w an5Client
+
+  # ── an5example ───────────────────────────────────────────────────────────────
+  test-example:
+    name: 🧪 an5example
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.RUST_VERSION }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+      - name: Install Kotlin
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/kotlinc.zip" "https://github.com/JetBrains/kotlin/releases/download/v$KOTLIN_VERSION/kotlin-compiler-$KOTLIN_VERSION.zip"
+          unzip -q -o "$RUNNER_TEMP/kotlinc.zip" -d "$RUNNER_TEMP"
+          echo "KOTLIN_HOME=$RUNNER_TEMP/kotlinc" >> "$GITHUB_ENV"
+          echo "$RUNNER_TEMP/kotlinc/bin" >> "$GITHUB_PATH"
+      - name: Install Swift
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/swift.tar.gz" "https://download.swift.org/swift-$SWIFT_VERSION-release/ubuntu2204/swift-$SWIFT_VERSION-RELEASE/swift-$SWIFT_VERSION-RELEASE-ubuntu22.04.tar.gz"
+          mkdir -p "$RUNNER_TEMP/swift"
+          tar xzf "$RUNNER_TEMP/swift.tar.gz" -C "$RUNNER_TEMP/swift" --strip-components=1
+          echo "SWIFT_HOME=$RUNNER_TEMP/swift" >> "$GITHUB_ENV"
+          echo "$RUNNER_TEMP/swift/usr/bin" >> "$GITHUB_PATH"
+      - run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
+      - run: npm ci
+      - run: npm run build
+      # Maven is what runs the Java example; without it the gate would skip rather than
+      # fail, and a green job that never compiled Java would be worse than no job.
+      - run: mvn -v
+      - run: npm test -w an5example
 
   # ── an5Tasks ────────────────────────────────────────────────────────────────
   test-tasks:
@@ -303,6 +406,7 @@ jobs:
       - test-cli
       - test-vscode
       - test-client
+      - test-example
       - test-tasks
     if: always()
     steps:
