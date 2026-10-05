@@ -207,6 +207,10 @@ jobs:
           curl -fsSL -o "$RUNNER_TEMP/gradle.zip" "https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip"
           unzip -q -o "$RUNNER_TEMP/gradle.zip" -d "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/gradle-$GRADLE_VERSION/bin" >> "$GITHUB_PATH"
+          # GRADLE_HOME, not only PATH: the gate prefers it, and the runner's own Gradle
+          # may sit ahead of a prepended PATH entry on a newer major version whose Test
+          # task rejects a source set with no tests in it.
+          echo "GRADLE_HOME=$RUNNER_TEMP/gradle-$GRADLE_VERSION" >> "$GITHUB_ENV"
       - run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
       - run: npm ci
       - run: npm run build

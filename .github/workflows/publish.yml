@@ -237,6 +237,7 @@ jobs:
           curl -fsSL -o "$RUNNER_TEMP/gradle.zip" "https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip"
           unzip -q -o "$RUNNER_TEMP/gradle.zip" -d "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/gradle-$GRADLE_VERSION/bin" >> "$GITHUB_PATH"
+          echo "GRADLE_HOME=$RUNNER_TEMP/gradle-$GRADLE_VERSION" >> "$GITHUB_ENV"
 
       - name: Check the tag matches the published versions
         if: github.event_name == 'push'
