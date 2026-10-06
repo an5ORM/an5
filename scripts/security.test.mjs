@@ -28,12 +28,40 @@ test('all braces copies reject excessive nesting before recursive walkers', () =
   }
 });
 
+test('all sprintf-js copies bound the precision before converting it', () => {
+  const found = Object.keys(lock.packages).filter(p => p.endsWith('/sprintf-js') && fs.existsSync(new URL(p, root)));
+  assert.ok(found.length > 0, 'the mitigation must verify a real installed package');
+  for (const location of found) {
+    // The advisory is the conversion throwing, so the assertion is that the call completes:
+    // a precision past the ECMAScript limit comes back clamped instead of aborting, and the
+    // conversions the format string really uses are untouched.
+    execFileSync(process.execPath, ['-e', `
+      const assert = require('node:assert/strict');
+      const sprintf = require(${JSON.stringify(new URL(location + '/src/sprintf.js', root).pathname)}).sprintf;
+      assert.equal(sprintf('%f', 1.5), '1.5');
+      assert.equal(sprintf('%.2f', 1.5), '1.50');
+      assert.equal(sprintf('%.3s', 'abcdef'), 'abc');
+      assert.equal(typeof sprintf('%.' + (10 ** 9) + 'f', 1.5), 'string');
+      assert.equal(typeof sprintf('%.' + (10 ** 9) + 's', 'abcdef'), 'string');
+    `], { timeout: 10000, stdio: 'pipe' });
+    const guard = new URL(location + '/src/an5-precision-guard.js', root);
+    assert.ok(fs.existsSync(guard), `Missing mitigation: ${location}`);
+  }
+});
+
 test('dependency audit contains no unmitigated advisory', () => {
   const result = spawnSync(process.platform === 'win32' ? 'npm.cmd' : 'npm', ['audit', '--json'], { cwd: root, encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
   if (result.error) throw result.error;
   const audit = JSON.parse(result.stdout);
   assert.ok(audit.metadata && !audit.error, `npm audit failed: ${JSON.stringify(audit.error)}`);
   const vulnerabilities = audit.vulnerabilities || {};
+  // Both advisories the tree is allowed to carry are backported in postinstall and verified
+  // above: the braces depth guard and the sprintf-js precision bound. A third URL means a
+  // new advisory upstream, which is a decision to make, not a version to bump.
+  const mitigated = new Set([
+    'https://github.com/advisories/GHSA-vfj7-8cjw-p6xm', // braces: stack exhaustion, guarded by an5-depth-guard
+    'https://github.com/advisories/GHSA-hp3w-g68c-fv3c', // sprintf-js: unbounded precision, clamped by an5-precision-guard
+  ]);
   const checked = new Set();
   function verify(name, visiting = new Set()) {
     if (checked.has(name)) return;
@@ -43,7 +71,7 @@ test('dependency audit contains no unmitigated advisory', () => {
     assert.ok(item, `Missing audit dependency ${name}`);
     for (const advisory of item.via) {
       if (typeof advisory === 'string') verify(advisory, new Set(visiting));
-      else assert.equal(advisory.url, 'https://github.com/advisories/GHSA-vfj7-8cjw-p6xm', `Unmitigated advisory: ${name}: ${advisory.title}`);
+      else assert.ok(mitigated.has(advisory.url), `Unmitigated advisory: ${name}: ${advisory.title} (${advisory.url})`);
     }
     if (name === 'braces') for (const location of item.nodes) {
       const parser = fs.readFileSync(new URL(location + '/lib/parse.js', root), 'utf8');
@@ -52,5 +80,5 @@ test('dependency audit contains no unmitigated advisory', () => {
     checked.add(name);
   }
   for (const name of Object.keys(vulnerabilities)) verify(name);
-  console.log(`Audit: ${Object.keys(vulnerabilities).length} affected entries, all covered by the tested braces backport`);
+  console.log(`Audit: ${Object.keys(vulnerabilities).length} affected entries, all covered by the tested backports`);
 });
