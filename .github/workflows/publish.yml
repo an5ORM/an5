@@ -239,18 +239,20 @@ jobs:
           echo "$RUNNER_TEMP/gradle-$GRADLE_VERSION/bin" >> "$GITHUB_PATH"
           echo "GRADLE_HOME=$RUNNER_TEMP/gradle-$GRADLE_VERSION" >> "$GITHUB_ENV"
 
-      - name: Check the tag matches the published versions
+      - name: Check the tag matches the workspace version
+        # A tag publishes whatever each submodule manifest declares, so a tag that does not
+        # match the workspace version republishes the previous release's package versions —
+        # which the registries reject as already existing, halfway through a deployment.
         if: github.event_name == 'push'
         env:
           TAG: ${{ github.ref_name }}
         run: |
           version=${TAG#v}
-          for manifest in an5Adapters/java/pom.xml an5Adapters/kotlin/build.gradle.kts; do
-            if ! grep -Eq "<version>$version</version>|^version = \"$version\"$" "$manifest"; then
-              echo "::error::tag $TAG does not match $manifest — bump the module versions or the release would publish the old one"
-              exit 1
-            fi
-          done
+          workspace=$(node -p "require('./package.json').version")
+          if [ "$version" != "$workspace" ]; then
+            echo "::error::tag $TAG does not match the workspace version $workspace — bump package.json or publish a different tag"
+            exit 1
+          fi
 
       # Both manifests are built before anything is uploaded: a publish that fails halfway
       # leaves a deployment the portal still has to be cleaned up for, and a broken build

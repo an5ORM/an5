@@ -1,6 +1,6 @@
 {
   "name": "an5-workspace",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "description": "AN5 ORM monorepo workspace — lightweight, type-safe ORM for TypeScript, Python, .NET, Go, Rust, Java, Kotlin, and Swift",
   "author": "an5ORM",

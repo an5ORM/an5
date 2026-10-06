@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.3.0] - 2026-10-06
+
+### Added
+- Ship the Java (JDBC), Kotlin and Swift adapter runtimes and the generated clients for all three, each with a compile gate and a SQLite smoke, plus runnable examples in an5example (Maven, kotlinc, SwiftPM).
+- Publish the Java and Kotlin adapters to Maven Central from a workspace tag: `org.an5orm:an5-adapters-java` and `org.an5orm:an5-adapters-kotlin` with sources, javadoc and detached GPG signatures. The job builds both manifests before uploading anything and fails when the tag does not match the workspace version.
+- Build the Kotlin manifest with Gradle in CI (`test:gradle`) — the resolution path a Gradle consumer takes, which the kotlinc gate does not exercise.
+
+### Fixed
+- The Kotlin example and adapter gates find `kotlin-stdlib.jar` through the compiler's real path, so a symlinked or runner-installed compiler runs the smoke instead of failing on a missing class.
+- CI resolves Gradle through `GRADLE_HOME`, so the pinned distribution is used even when the runner's own Gradle comes first on PATH.
+
 ## [1.2.0] - 2026-10-04
 
 ### Added
