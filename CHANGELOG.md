@@ -18,7 +18,7 @@
   other seven clients. Python already exposed it through `AdapterTableClient`.
 
 ### Changed
-- The Maven coordinates are `io.github.an5orm:an5-adapters-java` and `io.github.an5orm:an5-adapters-kotlin`. The first `publish-maven` run under `org.an5orm` was rejected with `Namespace 'org.an5orm' is not allowed`: that namespace needs the `an5orm.org` domain, while `io.github.an5orm` is granted from the GitHub identity that owns the repository.
+- The Maven coordinates are `io.github.an5orm:an5-adapters-java` and `io.github.an5orm:an5-adapters-kotlin`. The first `publish-maven` run under `org.an5orm` was rejected with `Namespace 'org.an5orm' is not allowed`: that namespace needs the `an5orm.org` domain, while `io.github.an5orm` is granted from the GitHub identity that owns the repository. Both artifacts are live on Maven Central as `0.2.11`.
 
 ### Fixed
 - An update whose value is a float32 vector no longer reads as a Prisma-style `{ set: … }`
