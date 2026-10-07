@@ -2,10 +2,28 @@
 
 ## [Unreleased]
 
+### Added
+- **Vector search on SQLite** — a `VECTOR(n)` column is stored as a BLOB of little-endian
+  float32 and ranked inside the database, instead of loading the table into the client. Every
+  runtime tries the same four strategies in order: the sqlite-vec extension, its own
+  `an5_vec_cosine` / `an5_vec_l2` / `an5_vec_ip` functions, `json_each` in plain SQL, and
+  finally the in-memory fallback. Only the matching rows are transferred, and a row whose
+  stored vector cannot be scored is left out rather than returned with a null distance.
+  `sqliteVec` (a sqlite-vec path) and `vectorStrategy` (`sqlite-vec`, `udf`, `sql`, `memory`)
+  configure it; nothing is required, since a plain SQLite connection still ranks in-database.
+- Adapters accept a `number[]` for a `VECTOR(n)` column and encode it to the float32 BLOB on
+  write, and decode both that and the older JSON text form on read. A column written before
+  this change keeps working, so no migration is needed.
+- The generated Rust client gains `vector_search` and `<Model>VectorSearchArgs`, matching the
+  other seven clients. Python already exposed it through `AdapterTableClient`.
+
 ### Changed
 - The Maven coordinates are `io.github.an5orm:an5-adapters-java` and `io.github.an5orm:an5-adapters-kotlin`. The first `publish-maven` run under `org.an5orm` was rejected with `Namespace 'org.an5orm' is not allowed`: that namespace needs the `an5orm.org` domain, while `io.github.an5orm` is granted from the GitHub identity that owns the repository.
 
 ### Fixed
+- An update whose value is a float32 vector no longer reads as a Prisma-style `{ set: … }`
+  operator. `TypedArray.prototype.set` is the copy method, so a `Buffer` or `Uint8Array`
+  bound to an `UPDATE` was turned into an unbound parameter and SQLite rejected the query.
 - `publish-maven` writes the `central` server entry with `${env.…}` instead of letting `setup-java` copy the variable name into `settings.xml`. The publishing plugin sends that username as a `userId` query parameter, so the Portal read the deployment as belonging to an unknown organization and refused it with `Bundle has content that does NOT have a .pom file`.
 
 ## [1.3.0] - 2026-10-06

@@ -24,7 +24,7 @@
 | **Schema-First**           | Define models in `.an5` files, generate multi-language clients                               |
 | **Automated Migrations**   | Diff schema against database, generate up/down SQL, apply and rollback migrations            |
 | **AI Agent**               | 7 intelligent tools for natural language database queries                                    |
-| **Vector Search**          | Semantic search through NBase, pgvector, SQL Server 2025, or in-memory                        |
+| **Vector Search**          | Semantic search through NBase, pgvector, SQL Server 2025, SQLite, or in-memory                  |
 | **Relations**              | One-to-one and one-to-many with nested queries                                               |
 | **Transactions**           | Atomic operations with rollback support                                                      |
 | **VS Code Extension**      | Syntax highlighting, formatting, and an MCP server for agentic clients                       |
