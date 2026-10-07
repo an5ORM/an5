@@ -3,6 +3,12 @@
 ## [Unreleased]
 
 ### Added
+- Add an optional shared SQLite vector extension written in C, covering cosine,
+  Euclidean and negative dot product without host-language callbacks. It reads
+  float32 BLOBs directly, uses SSE2 on x86-64 and caches query operands per
+  statement. Add native build, correctness/sanitizer and benchmark commands;
+  preserve loaded native functions in the TypeScript, Python, .NET and Swift
+  connection setup.
 - **Vector search on SQLite** — a `VECTOR(n)` column is stored as a BLOB of little-endian
   float32 and ranked inside the database, instead of loading the table into the client. Every
   runtime tries the same four strategies in order: the sqlite-vec extension, its own
