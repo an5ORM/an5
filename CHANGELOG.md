@@ -1,10 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- The Maven coordinates are `io.github.an5orm:an5-adapters-java` and `io.github.an5orm:an5-adapters-kotlin`. The first `publish-maven` run under `org.an5orm` was rejected with `Namespace 'org.an5orm' is not allowed`: that namespace needs the `an5orm.org` domain, while `io.github.an5orm` is granted from the GitHub identity that owns the repository.
+
 ## [1.3.0] - 2026-10-06
 
 ### Added
 - Ship the Java (JDBC), Kotlin and Swift adapter runtimes and the generated clients for all three, each with a compile gate and a SQLite smoke, plus runnable examples in an5example (Maven, kotlinc, SwiftPM).
-- Publish the Java and Kotlin adapters to Maven Central from a workspace tag: `org.an5orm:an5-adapters-java` and `org.an5orm:an5-adapters-kotlin` with sources, javadoc and detached GPG signatures. The job builds both manifests before uploading anything and fails when the tag does not match the workspace version.
+- Publish the Java and Kotlin adapters to Maven Central from a workspace tag: `io.github.an5orm:an5-adapters-java` and `io.github.an5orm:an5-adapters-kotlin` with sources, javadoc and detached GPG signatures. The job builds both manifests before uploading anything and fails when the tag does not match the workspace version.
 - Build the Kotlin manifest with Gradle in CI (`test:gradle`) — the resolution path a Gradle consumer takes, which the kotlinc gate does not exercise.
 
 ### Fixed
