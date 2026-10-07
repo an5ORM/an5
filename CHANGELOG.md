@@ -5,6 +5,9 @@
 ### Changed
 - The Maven coordinates are `io.github.an5orm:an5-adapters-java` and `io.github.an5orm:an5-adapters-kotlin`. The first `publish-maven` run under `org.an5orm` was rejected with `Namespace 'org.an5orm' is not allowed`: that namespace needs the `an5orm.org` domain, while `io.github.an5orm` is granted from the GitHub identity that owns the repository.
 
+### Fixed
+- `publish-maven` writes the `central` server entry with `${env.…}` instead of letting `setup-java` copy the variable name into `settings.xml`. The publishing plugin sends that username as a `userId` query parameter, so the Portal read the deployment as belonging to an unknown organization and refused it with `Bundle has content that does NOT have a .pom file`.
+
 ## [1.3.0] - 2026-10-06
 
 ### Added

@@ -218,17 +218,39 @@ jobs:
           submodules: recursive
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # setup-java writes the settings.xml entry with id `central` that the publishing
-      # plugin reads, and imports the signing key as MAVEN_GPG_PASSPHRASE.
+      # setup-java imports the signing key as MAVEN_GPG_PASSPHRASE. It is deliberately not
+      # asked to write the `central` server: setup-java copies `server-username` into
+      # settings.xml verbatim, so the plugin would upload with `userId=MAVEN_CENTRAL_USERNAME`
+      # — the variable's name rather than the token's owner — and the Portal rejects the
+      # deployment with `Bundle has content that does NOT have a .pom file`. The server entry
+      # is written below with `${env.…}`, which Maven resolves from the environment.
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
-          server-id: central
-          server-username: MAVEN_CENTRAL_USERNAME
-          server-password: MAVEN_CENTRAL_TOKEN
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Write the Central Portal server entry
+        # Written whole rather than appended: setup-java writes settings.xml only when it is
+        # asked for a server, and an appended <server> block outside a <servers> element is
+        # silently ignored.
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<XML
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+            <servers>
+              <server>
+                <id>central</id>
+                <username>\${env.MAVEN_CENTRAL_USERNAME}</username>
+                <password>\${env.MAVEN_CENTRAL_TOKEN}</password>
+              </server>
+            </servers>
+          </settings>
+          XML
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
 
       - name: Install Gradle
         env:
