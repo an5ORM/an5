@@ -47,6 +47,11 @@
 - publish the adapters under io.github.an5orm (26256ef)
 - resolve the Central server credentials from the environment (00fa0ae)
 - point the an5Docs submodule at the link-check fix (694848d)
+- The Maven job reported success while `an5-adapters-kotlin` was not on Central. Gradle
+  publishes through the legacy OSSRH endpoint, which reports success once the upload is
+  accepted; being released is a separate step the job did not check. The job now confirms both
+  artifacts are on Central and fails if either is missing, and treats a version Central already
+  lists as published.
 - The Maven Central step ran `mvn deploy`, but the release profile binds
   `central-publishing-maven-plugin:publish` to `verify`, so the upload had already happened by
   the time `maven-deploy-plugin:default-deploy` ran and failed on a missing

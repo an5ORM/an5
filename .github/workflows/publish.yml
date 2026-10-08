@@ -308,7 +308,41 @@ jobs:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
       - name: Publish the Kotlin adapter
-        run: gradle -p an5Adapters/kotlin publish --console=plain --no-daemon
+        run: |
+          version=$(node -p "require('./an5Adapters/package.json').version")
+          if gradle -p an5Adapters/kotlin publish --console=plain --no-daemon; then
+            echo "published an5-adapters-kotlin:$version"
+          else
+            if curl -fsS "https://central.sonatype.com/api/internal/browse/component/versions?sortField=normalizedVersion&sortDirection=desc&page=0&size=20&filter=namespace%3Aio.github.an5orm&filter=name%3Aan5-adapters-kotlin" | grep -q "\"$version\""; then
+              echo "already on Central, skipping an5-adapters-kotlin:$version"
+            else
+              echo "::error::gradle publish failed and an5-adapters-kotlin:$version is not on Central"
+              exit 1
+            fi
+          fi
+      - name: Confirm both artifacts are on Central
+        # Gradle reports success once the upload is accepted, which for the legacy
+        # OSSRH endpoint is not the same as being released: the artifact can sit in a
+        # staging repository. This step is what turns that difference into a failure
+        # instead of a green run that published nothing.
+        run: |
+          version=$(node -p "require('./an5Adapters/package.json').version")
+          status=0
+          for artifact in an5-adapters-java an5-adapters-kotlin; do
+            url="https://repo1.maven.org/maven2/io/github/an5orm/$artifact/$version/$artifact-$version.jar"
+            found=""
+            for _ in $(seq 1 60); do
+              if [ "$(curl -s -o /dev/null -w '%{http_code}' "$url")" = "200" ]; then found=yes; break; fi
+              sleep 30
+            done
+            if [ "$found" = "yes" ]; then
+              echo "$artifact:$version is on Central"
+            else
+              echo "::error::$artifact:$version is not on Central after 30 minutes"
+              status=1
+            fi
+          done
+          exit $status
         env:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
