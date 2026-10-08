@@ -330,6 +330,36 @@ jobs:
           MAVEN_GPG_PRIVATE_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
+      - name: Forward the staged Kotlin deployment to the Portal
+        # Gradle's built-in maven-publish only PUTs files into the OSSRH staging service.
+        # Sonatype documents that as a "Maven-API-like" plugin: those requests carry no
+        # signal about where a deployment ends, so the staged files stay in the staging
+        # service and are never transferred to the Central Publisher Portal — the upload
+        # reports success, the job stays green and the artifact never reaches Central.
+        # The documented fix is a POST from the same IP that did the upload.
+        # See https://central.sonatype.org/publish/publish-portal-ossrh-staging-api/
+        run: |
+          version=$(node -p "require('./an5Adapters/package.json').version")
+          jar="https://repo1.maven.org/maven2/io/github/an5orm/an5-adapters-kotlin/$version/an5-adapters-kotlin-$version.jar"
+          if [ "$(curl -s -o /dev/null -w '%{http_code}' "$jar")" = "200" ]; then
+            echo "an5-adapters-kotlin:$version is already on Central"
+            exit 0
+          fi
+          group=$(sed -n 's/^group = "\([^"]*\)"/\1/p' an5Adapters/kotlin/build.gradle.kts)
+          bearer=$(printf '%s:%s' "$MAVEN_CENTRAL_USERNAME" "$MAVEN_CENTRAL_TOKEN" | base64 | tr -d '\n')
+          body="$RUNNER_TEMP/portal-upload.json"
+          code=$(curl --silent --output "$body" --write-out '%{http_code}' --request POST \
+            --header "Authorization: Bearer $bearer" \
+            "https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/$group?publishing_type=automatic")
+          echo "portal upload returned $code: $(cat "$body")"
+          if [ "$code" -ge 400 ]; then
+            echo "::error::could not forward an5-adapters-kotlin:$version to the Central Publisher Portal"
+            exit 1
+          fi
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+
       - name: Confirm both artifacts are on Central
         # Gradle reports success once the upload is accepted, which for the legacy
         # OSSRH endpoint is not the same as being released: the artifact can sit in a

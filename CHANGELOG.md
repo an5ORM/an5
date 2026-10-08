@@ -47,6 +47,12 @@
 - publish the adapters under io.github.an5orm (26256ef)
 - resolve the Central server credentials from the environment (00fa0ae)
 - point the an5Docs submodule at the link-check fix (694848d)
+- Gradle's built-in `maven-publish` only PUTs files into the OSSRH staging service. Sonatype
+  documents that as a "Maven-API-like" plugin, which means the staged files are never moved to
+  the Central Publisher Portal unless the CI asks for it, so the upload reported success while
+  `an5-adapters-kotlin` stayed off Maven Central. The workflow now POSTs
+  `/manual/upload/defaultRepository/<namespace>?publishing_type=automatic` from the same IP that
+  did the upload.
 - The Kotlin publish step never received `MAVEN_CENTRAL_USERNAME` or
   `MAVEN_CENTRAL_TOKEN`. Gradle reads them from the environment, not the `~/.m2/settings.xml`
   only Maven uses, so `publish` stopped at configuration time with `credentials.username
