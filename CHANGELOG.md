@@ -47,6 +47,11 @@
 - publish the adapters under io.github.an5orm (26256ef)
 - resolve the Central server credentials from the environment (00fa0ae)
 - point the an5Docs submodule at the link-check fix (694848d)
+- The Kotlin publish step never received `MAVEN_CENTRAL_USERNAME` or
+  `MAVEN_CENTRAL_TOKEN`. Gradle reads them from the environment, not the `~/.m2/settings.xml`
+  only Maven uses, so `publish` stopped at configuration time with `credentials.username
+  doesn't have a configured value` — and no `an5-adapters-kotlin` version after 0.2.11 reached
+  Central.
 - The Maven job reported success while `an5-adapters-kotlin` was not on Central. Gradle
   publishes through the legacy OSSRH endpoint, which reports success once the upload is
   accepted; being released is a separate step the job did not check. The job now confirms both

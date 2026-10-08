@@ -320,6 +320,16 @@ jobs:
               exit 1
             fi
           fi
+        # Gradle takes its Central credentials from the environment rather than
+        # ~/.m2/settings.xml, which only Maven reads. Without these the publish task
+        # stops at configuration time with "credentials.username doesn't have a
+        # configured value".
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PRIVATE_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
       - name: Confirm both artifacts are on Central
         # Gradle reports success once the upload is accepted, which for the legacy
         # OSSRH endpoint is not the same as being released: the artifact can sit in a
