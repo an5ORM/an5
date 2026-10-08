@@ -285,7 +285,23 @@ jobs:
           gradle -p an5Adapters/kotlin build --console=plain --no-daemon
 
       - name: Publish the Java adapter
-        run: mvn -B -f an5Adapters/java/pom.xml -Prelease deploy
+        # `verify` is the phase the release profile binds
+        # central-publishing-maven-plugin:publish to. Asking for `deploy` runs that
+        # upload and then falls through to maven-deploy-plugin:default-deploy, which
+        # needs a <distributionManagement> this POM does not have, so the artifact is
+        # already published by the time that goal fails.
+        run: |
+          version=$(node -p "require('./an5Adapters/package.json').version")
+          if mvn -B -f an5Adapters/java/pom.xml -Prelease verify; then
+            echo "published an5-adapters-java:$version"
+          else
+            if curl -fsS "https://central.sonatype.com/api/internal/browse/component/versions?sortField=normalizedVersion&sortDirection=desc&page=0&size=20&filter=namespace%3Aio.github.an5orm&filter=name%3Aan5-adapters-java" | grep -q "\"$version\""; then
+              echo "already on Central, skipping an5-adapters-java:$version"
+            else
+              echo "::error::maven publish failed and an5-adapters-java:$version is not on Central"
+              exit 1
+            fi
+          fi
         env:
           MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}

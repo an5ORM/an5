@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- Update `.github/workflows/publish.yml`.
+- Update `an5Orm`.
+
 ## [1.4.0] - 2026-10-08
 
 ### Added
@@ -41,6 +47,12 @@
 - publish the adapters under io.github.an5orm (26256ef)
 - resolve the Central server credentials from the environment (00fa0ae)
 - point the an5Docs submodule at the link-check fix (694848d)
+- The Maven Central step ran `mvn deploy`, but the release profile binds
+  `central-publishing-maven-plugin:publish` to `verify`, so the upload had already happened by
+  the time `maven-deploy-plugin:default-deploy` ran and failed on a missing
+  `<distributionManagement>`. The artifact was published while the job reported failure, and
+  the Kotlin step never ran. The step now asks for `verify` and treats a version Central
+  already lists as published, the same guard the npm step uses.
 - The live integration job now runs SQL Server 2025, whose `VECTOR` type the vector work needs.
   A 2022 instance rejects `VECTOR(3)` outright (`Cannot find data type VECTOR`), and the ORM
   already emitted that type for SQL Server, so the live schema and the generated client are
