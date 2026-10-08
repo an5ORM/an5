@@ -105,7 +105,7 @@ jobs:
           --health-timeout 5s
           --health-retries 20
       mssql:
-        image: mcr.microsoft.com/mssql/server:2022-latest
+        image: mcr.microsoft.com/mssql/server:2025-latest
         env:
           ACCEPT_EULA: 'Y'
           MSSQL_SA_PASSWORD: 'An5_ci_Passw0rd!'
@@ -230,6 +230,9 @@ jobs:
       # here rather than only being compiled by kotlinc above.
       - run: npm run test:gradle -w an5Adapters
       - run: npm run test:swift -w an5Adapters
+      # The shared C vector extension, compiled and tested for real. It needs the
+      # SQLite headers the previous step installs, plus a C compiler from the runner.
+      - run: npm run test:sqlite:native -w an5Adapters
 
   # ── an5Agent ────────────────────────────────────────────────────────────────
   test-agent:

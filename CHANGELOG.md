@@ -1,8 +1,9 @@
 # Changelog
 
-## [Unreleased]
+## [1.4.0] - 2026-10-08
 
 ### Added
+- rank SQLite vectors in the database, in every runtime (272a644)
 - Add an optional shared SQLite vector extension written in C, covering cosine,
   Euclidean and negative dot product without host-language callbacks. It reads
   float32 BLOBs directly, uses SSE2 on x86-64 and caches query operands per
@@ -24,12 +25,33 @@
   other seven clients. Python already exposed it through `AdapterTableClient`.
 
 ### Changed
+- Update `.github/workflows/ci.yml`.
+- Update `an5Adapters`.
+- Update `an5Client`.
+- Update `an5Docs`.
+- Update `an5example`.
+- Update `an5Orm`.
+- Create SECURITY.md for security policy (7ebb4b3)
+- record that the Java and Kotlin adapters are live on Maven Central (08b2e6f)
+- deliver the native vector extension and Swift compile fixes (ec6fa21)
+- point an5Adapters at the sql.js test guard (3a1de53)
 - The Maven coordinates are `io.github.an5orm:an5-adapters-java` and `io.github.an5orm:an5-adapters-kotlin`. The first `publish-maven` run under `org.an5orm` was rejected with `Namespace 'org.an5orm' is not allowed`: that namespace needs the `an5orm.org` domain, while `io.github.an5orm` is granted from the GitHub identity that owns the repository. Both artifacts are live on Maven Central as `0.2.11`.
 
 ### Fixed
+- publish the adapters under io.github.an5orm (26256ef)
+- resolve the Central server credentials from the environment (00fa0ae)
+- point the an5Docs submodule at the link-check fix (694848d)
+- The live integration job now runs SQL Server 2025, whose `VECTOR` type the vector work needs.
+  A 2022 instance rejects `VECTOR(3)` outright (`Cannot find data type VECTOR`), and the ORM
+  already emitted that type for SQL Server, so the live schema and the generated client are
+  now tested against a server that accepts them.
 - An update whose value is a float32 vector no longer reads as a Prisma-style `{ set: … }`
   operator. `TypedArray.prototype.set` is the copy method, so a `Buffer` or `Uint8Array`
   bound to an `UPDATE` was turned into an unbound parameter and SQLite rejected the query.
+- The Swift adapter's vector search did not compile. Its registered SQLite callback called an
+  instance method, which Swift rejects because a C function pointer cannot capture `Self`, and
+  `update`/`updateMany` skipped vector encoding. The Swift gate now runs on Linux CI instead
+  of skipping, so this cannot regress unnoticed again.
 - `publish-maven` writes the `central` server entry with `${env.…}` instead of letting `setup-java` copy the variable name into `settings.xml`. The publishing plugin sends that username as a `userId` query parameter, so the Portal read the deployment as belonging to an unknown organization and refused it with `Bundle has content that does NOT have a .pom file`.
 
 ## [1.3.0] - 2026-10-06
