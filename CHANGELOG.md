@@ -6,6 +6,18 @@
 - Update `.github/workflows/publish.yml`.
 - Update `an5Orm`.
 
+## [1.4.1] - 2026-10-11
+
+### Added
+- Java, Kotlin and Swift coverage in the `crud`, `getting-started`, `configuration`, `queries`, `relations` and `transactions` guides in the docs repository. Those guides previously fell through to the TypeScript branch for those languages, so a Java, Kotlin or Swift reader was shown the wrong runtime: `getting-started` even led with "TypeScript 5.0+". Each language branch is now written against the generated client, and a guard renders all six guides in all eight languages and fails when a page shows a runtime the reader did not choose.
+- The Java, Kotlin and Swift adapters and generated clients to the docs' adapters and generated-clients tables, naming the Maven Central artifacts and the gates that build and run them.
+
+### Fixed
+- `test:security` no longer fails on an unmitigated advisory. `handlebars` 4.7.9, reached through `@an5/agent` → `genkit` → `@genkit-ai/ai`, carried three JavaScript-injection advisories (GHSA-xw65-4hp5-5hc7, GHSA-8r5x-fm3f-whwj, GHSA-p8wg-vrv2-v86f) and none of them is covered by the tree's two tested postinstall backports. An override pins it to 4.7.10, which clears the critical finding; every other reported entry resolves to `braces` or `sprintf-js`, which the existing depth and precision guards already mitigate and the test already verifies. The lockfile also picked up the workspace versions that had drifted from it.
+- The generated Java client's `An5DbContext` javadoc example, and the generated Python client's `An5Client` and `an5_orm_types` docstrings, documented calls that could not work: `findUnique(Filters.eq("name", "Ada"))` does not compile because `Filters.eq` takes the filter value alone, `order_by` on `created_at` reached a column that does not exist because the SQL builder quotes a query key verbatim and the schema column is `createdAt`, and `UserWhereInput(...)` was offered as a query argument although the Python adapter has no dataclass support. Regenerated in the client and example repositories from the corrected generator.
+- The docs no longer present the TypeScript API as though every runtime had it. Relation filters (`some`/`none`/`every`/`is`/`isNot`), the interactive `$begin()`/`$commit()`/`$rollback()` transaction API and the `*Unsafe` raw variants are TypeScript-only; the relations, transactions and raw-SQL rows now name each runtime's own entry points, and the Python relation-filter example, which used a `some` key the Python parser drops silently, now filters from the related side. Several Python samples also ordered or filtered on snake_case keys, which the SQL builder quotes verbatim.
+- The published-packages table in the docs matches the registries, the stale "PyPI upload" gap is gone, and the Swift install snippets use a path dependency: the generated Swift client's `.package(url: ..., from: "0.2.11")` cannot resolve, because the runtime's `Package.swift` is in `swift/` inside its repository rather than at the root and no matching tag exists.
+
 ## [1.4.0] - 2026-10-08
 
 ### Added
