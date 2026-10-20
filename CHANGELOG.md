@@ -5,6 +5,7 @@
 ### Changed
 - Update `.github/workflows/publish.yml`.
 - Update `an5Orm`.
+- Update `an5Adapters` vector search documentation examples to use standard ORM model delegates (`db.article.*`, `db.document.*`).
 
 ## [1.4.1] - 2026-10-11
 
