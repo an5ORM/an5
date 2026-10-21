@@ -7,6 +7,17 @@
 - Update `an5Orm`.
 - Update `an5Adapters` vector search documentation examples to use standard ORM model delegates (`db.article.*`, `db.document.*`).
 
+## [1.4.2] - 2026-10-21
+
+### Fixed
+- **SQLite vector search fixes across TypeScript, Python, .NET and Go** (`@an5/adapters` `0.2.14`, `@an5/orm` `1.3.2`, `an5-client` `0.1.7`):
+  - TypeScript `vectorSearch` honors per-query `args.vectorStrategy`, preserves `vectorStrategy` on browser SQLite adapters, and forwards `sqliteVectorSupport()` and `vectorStrategy` into `An5AdapterTx` transactions.
+  - TypeScript and Python `hasBinaryRows` / `has_binary_rows` quote table and column identifiers and re-check for newly inserted `BLOB` rows on legacy `TEXT` columns instead of caching `false` indefinitely.
+  - .NET `AdapterTableClient<T>.VectorSearch(VectorSearchArgs)` parses and applies `args.Where`.
+  - The generated .NET `TableClient<T>.VectorSearch` decodes `float[]`, `double[]`, `byte[]` and JSON vectors in its in-memory fallback and computes Euclidean and negative dot-product distances accurately.
+  - The generated Go `TableClient[T].VectorSearch` skips the SQL Server `VECTOR_DISTANCE` query when running on SQLite.
+- Pin `follow-redirects` to `^1.16.1`, `markdown-it` to `^14.3.3` and `vite` to `^8.2.4` in root `overrides` so `npm run test:security` passes with zero unmitigated advisories.
+
 ## [1.4.1] - 2026-10-11
 
 ### Added

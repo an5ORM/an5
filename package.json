@@ -1,6 +1,6 @@
 {
   "name": "an5-workspace",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "private": true,
   "description": "AN5 ORM monorepo workspace — lightweight, type-safe ORM for TypeScript, Python, .NET, Go, Rust, Java, Kotlin, and Swift",
   "author": "an5ORM",
@@ -56,6 +56,9 @@
     "@opentelemetry/api-logs": "^0.222.0",
     "@opentelemetry/context-async-hooks": "^2.11.0",
     "source-map-js": "^1.2.2",
-    "handlebars": "^4.7.10"
+    "handlebars": "^4.7.10",
+    "follow-redirects": "^1.16.1",
+    "markdown-it": "^14.3.3",
+    "vite": "^8.2.4"
   }
 }
