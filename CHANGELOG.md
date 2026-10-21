@@ -17,6 +17,7 @@
   - The generated .NET `TableClient<T>.VectorSearch` decodes `float[]`, `double[]`, `byte[]` and JSON vectors in its in-memory fallback and computes Euclidean and negative dot-product distances accurately.
   - The generated Go `TableClient[T].VectorSearch` skips the SQL Server `VECTOR_DISTANCE` query when running on SQLite.
 - Pin `follow-redirects` to `^1.16.1`, `markdown-it` to `^14.3.3` and `vite` to `^8.2.4` in root `overrides` so `npm run test:security` passes with zero unmitigated advisories.
+- Upgrade `org.sonatype.central:central-publishing-maven-plugin` from `0.8.0` to `0.12.0` in `an5Adapters/java/pom.xml` so Maven 3.10+ strips local repository metadata files before bundling for Maven Central.
 
 ## [1.4.1] - 2026-10-11
 
