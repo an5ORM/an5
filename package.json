@@ -57,7 +57,7 @@
     "@opentelemetry/context-async-hooks": "^2.11.0",
     "source-map-js": "^1.2.2",
     "handlebars": "^4.7.10",
-    "follow-redirects": "^1.16.1",
+    "follow-redirects": "^1.16.2",
     "markdown-it": "^14.3.3",
     "vite": "^8.2.4"
   }
