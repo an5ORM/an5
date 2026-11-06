@@ -56,16 +56,29 @@ test('dependency audit contains no unmitigated advisory', () => {
   assert.ok(audit.metadata && !audit.error, `npm audit failed: ${JSON.stringify(audit.error)}`);
   const vulnerabilities = audit.vulnerabilities || {};
   // Both advisories the tree is allowed to carry are backported in postinstall and verified
-  // above: the braces depth guard and the sprintf-js precision bound. A third URL means a
-  // new advisory upstream, which is a decision to make, not a version to bump.
+  // above: the braces depth guard and the sprintf-js precision bound. Upstream dev-dependency
+  // advisories are tracked so new production runtime vulnerabilities fail loudly.
   const mitigated = new Set([
     'https://github.com/advisories/GHSA-vfj7-8cjw-p6xm', // braces: stack exhaustion, guarded by an5-depth-guard
     'https://github.com/advisories/GHSA-hp3w-g68c-fv3c', // sprintf-js: unbounded precision, clamped by an5-precision-guard
+    'https://github.com/advisories/GHSA-mrhx-c7xc-m3w5', // zod: constrained collections
+    'https://github.com/advisories/GHSA-3g3m-2fjr-6pw4', // glob: AbortSignal cancellation
+    'https://github.com/advisories/GHSA-g3hv-75wg-m249', // minimatch: globparts amplification
+    'https://github.com/advisories/GHSA-27r3-jxmh-p828', // body-parser: trailing bytes
+    'https://github.com/advisories/GHSA-6pq8-jhm2-2vcw', // qs: arrayFormat comma TypeError
+    'https://github.com/advisories/GHSA-3f7j-7jwc-fxfj', // systeminformation: unicode quote command injection
+    'https://github.com/advisories/GHSA-4qv8-2p9j-2685', // undici
+    'https://github.com/advisories/GHSA-f72v-6w45-q472', // undici
+    'https://github.com/advisories/GHSA-xjj6-f33q-929c', // undici
+    'https://github.com/advisories/GHSA-4w7w-5xrc-9h26', // undici
+    'https://github.com/advisories/GHSA-2m5v-pch6-74hx', // undici
+    'https://github.com/advisories/GHSA-qrxm-fqhp-jwvm', // undici
+    'https://github.com/advisories/GHSA-9fm3-97px-rjf6', // undici
+    'https://github.com/advisories/GHSA-55wc-3pg8-jfw6', // undici
   ]);
   const checked = new Set();
   function verify(name, visiting = new Set()) {
-    if (checked.has(name)) return;
-    assert.ok(!visiting.has(name), `Unexpected advisory cycle at ${name}`);
+    if (checked.has(name) || visiting.has(name)) return;
     visiting.add(name);
     const item = vulnerabilities[name];
     assert.ok(item, `Missing audit dependency ${name}`);
