@@ -1,0 +1,436 @@
+From c8d56c3b5f626c284672b7989a83bc1913431012 Mon Sep 17 00:00:00 2001
+From: so95 <22739578+isthaison@users.noreply.github.com>
+Date: Fri, 13 Nov 2026 04:34:04 +0000
+Subject: [PATCH] feat(examples): add TypeScript examples for Qdrant, Chroma,
+ Pinecone, Weaviate, and Milvus
+
+---
+ examples/README.md                   | 29 ++++++++++++-
+ examples/typescript/chroma/crud.ts   | 63 +++++++++++++++++++++++++++
+ examples/typescript/milvus/crud.ts   | 63 +++++++++++++++++++++++++++
+ examples/typescript/pinecone/crud.ts | 63 +++++++++++++++++++++++++++
+ examples/typescript/qdrant/crud.ts   | 64 ++++++++++++++++++++++++++++
+ examples/typescript/weaviate/crud.ts | 63 +++++++++++++++++++++++++++
+ package.json                         |  7 ++-
+ 7 files changed, 349 insertions(+), 3 deletions(-)
+ create mode 100644 examples/typescript/chroma/crud.ts
+ create mode 100644 examples/typescript/milvus/crud.ts
+ create mode 100644 examples/typescript/pinecone/crud.ts
+ create mode 100644 examples/typescript/qdrant/crud.ts
+ create mode 100644 examples/typescript/weaviate/crud.ts
+
+diff --git a/examples/README.md b/examples/README.md
+index 50e46df..fda0e00 100644
+--- a/examples/README.md
++++ b/examples/README.md
+@@ -4,9 +4,9 @@ This directory contains runnable examples demonstrating the use of AN5 ORM gener
+ 
+ ## Provider Support Matrix
+ 
+-| Language | SQLite | PostgreSQL | MySQL | SQL Server (MSSQL) | Google Sheets | NBase Vector DB |
++| Language | SQLite | PostgreSQL | MySQL | SQL Server (MSSQL) | Google Sheets | Vector DBs (NBase, Qdrant, Chroma, Pinecone, Weaviate, Milvus) |
+ | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+-| **TypeScript** | `examples/typescript/sqlite` | `examples/typescript/postgres` | `examples/typescript/mysql` | `examples/typescript/mssql` | `examples/typescript/googlesheets` | `examples/typescript/nbase` |
++| **TypeScript** | `examples/typescript/sqlite` | `examples/typescript/postgres` | `examples/typescript/mysql` | `examples/typescript/mssql` | `examples/typescript/googlesheets` | `examples/typescript/{nbase,qdrant,chroma,pinecone,weaviate,milvus}` |
+ | **Python** | `examples/python/sqlite` | `examples/python/postgres` | — | `examples/python/mssql` | — | — |
+ | **.NET (C#)** | `examples/dotnet/Sqlite` | `examples/dotnet/Postgres` | — | `examples/dotnet/Mssql` | — | — |
+ | **Golang** | `examples/golang/sqlite` | `examples/golang/postgres` | — | `examples/golang/mssql` | — | — |
+@@ -55,6 +55,31 @@ Dedicated neural vector database supporting standalone similarity search and hyb
+ NBASE_URL="nbase://localhost:1307" node dist/examples/typescript/nbase/crud.js
+ ```
+ 
++### 7. Qdrant (`examples/typescript/qdrant/crud.ts`)
++```bash
++QDRANT_URL="qdrant://localhost:6333?collection=an5_example" node dist/examples/typescript/qdrant/crud.js
++```
++
++### 8. Chroma / ChromaDB (`examples/typescript/chroma/crud.ts`)
++```bash
++CHROMA_URL="chroma://localhost:8000?collection=an5_example" node dist/examples/typescript/chroma/crud.js
++```
++
++### 9. Pinecone (`examples/typescript/pinecone/crud.ts`)
++```bash
++PINECONE_URL="pinecone://my-index.svc.region.pinecone.io?apiKey=...&namespace=an5_example" node dist/examples/typescript/pinecone/crud.js
++```
++
++### 10. Weaviate (`examples/typescript/weaviate/crud.ts`)
++```bash
++WEAVIATE_URL="weaviate://localhost:8080?className=An5Example" node dist/examples/typescript/weaviate/crud.js
++```
++
++### 11. Milvus / Zilliz (`examples/typescript/milvus/crud.ts`)
++```bash
++MILVUS_URL="milvus://localhost:19530?collection=an5_example" node dist/examples/typescript/milvus/crud.js
++```
++
+ ---
+ 
+ ## Python Examples (`examples/python/`)
+diff --git a/examples/typescript/chroma/crud.ts b/examples/typescript/chroma/crud.ts
+new file mode 100644
+index 0000000..a2c4a0f
+--- /dev/null
++++ b/examples/typescript/chroma/crud.ts
+@@ -0,0 +1,63 @@
++/**
++ * AN5 TypeScript Example: Chroma / ChromaDB Vector Database Provider
++ *
++ * Provider: Chroma
++ * Protocol: chroma://
++ *
++ * Run:
++ *   npx tsc -p tsconfig.json && node dist/examples/typescript/chroma/crud.js
++ *   CHROMA_URL="chroma://localhost:8000?collection=an5_example" node dist/examples/typescript/chroma/crud.js
++ */
++import { createAn5Adapter, setAdapterMetadata } from '@an5/adapters';
++import { createChromaClient } from '@an5/adapters/chroma';
++import { modelToTable, modelFields, relationMap } from '../../../generated/typescript/an5Metadata';
++
++export function configureChromaMetadata(): void {
++  const tables: Record<string, string> = {};
++  for (const [model, table] of Object.entries(modelToTable)) {
++    tables[model] = String(table).replace(/^\[dbo\]\./, '').replace(/^\[|\]$/g, '');
++  }
++  setAdapterMetadata({ modelToTable: tables, modelFields, relationMap });
++}
++
++export async function runChromaExample(): Promise<void> {
++  const chromaUri = process.env.CHROMA_URL || 'chroma://localhost:8000?collection=an5_example';
++  console.log('--- [TypeScript / Chroma Vector DB Provider] Starting example ---');
++  configureChromaMetadata();
++
++  const client = createChromaClient(chromaUri);
++  try {
++    const health = await client.health();
++    console.log('[TypeScript/Chroma] Connected:', health);
++
++    await client.upsert([
++      { id: 'User:1', vector: [1.0, 0.0, 0.0], metadata: { an5Id: '1', an5Model: 'User', label: 'red' } },
++      { id: 'User:2', vector: [0.0, 1.0, 0.0], metadata: { an5Id: '2', an5Model: 'User', label: 'green' } },
++    ]);
++    const hits = await client.search([0.9, 0.1, 0.0], { k: 2, distanceMetric: 'cosine' });
++    console.log('[TypeScript/Chroma] Top hits:', hits);
++    await client.delete(['User:1', 'User:2']);
++  } catch (err: any) {
++    console.log(
++      `[TypeScript/Chroma] SKIPPED: Chroma is not reachable at "${chromaUri}".\n` +
++      `  Reason: ${err?.message || err}\n` +
++      '  To run live: start Chroma (port 8000) and set CHROMA_URL=chroma://localhost:8000?collection=an5_example'
++    );
++  }
++
++  const _sidecarHint = () =>
++    createAn5Adapter({
++      connectionString: 'sqlite::memory:',
++      vectorStore: chromaUri,
++    });
++  void _sidecarHint;
++  console.log('[TypeScript/Chroma] Sidecar usage: createAn5Adapter({ connectionString: "sqlite::memory:", vectorStore: "' + chromaUri + '" })');
++  console.log('--- [TypeScript / Chroma Vector DB Provider] Completed ---\n');
++}
++
++if (require.main === module) {
++  runChromaExample().catch((err) => {
++    console.error('[TypeScript/Chroma] Error:', err);
++    process.exit(1);
++  });
++}
+diff --git a/examples/typescript/milvus/crud.ts b/examples/typescript/milvus/crud.ts
+new file mode 100644
+index 0000000..f0c6657
+--- /dev/null
++++ b/examples/typescript/milvus/crud.ts
+@@ -0,0 +1,63 @@
++/**
++ * AN5 TypeScript Example: Milvus / Zilliz Vector Database Provider
++ *
++ * Provider: Milvus / Zilliz
++ * Protocol: milvus://
++ *
++ * Run:
++ *   npx tsc -p tsconfig.json && node dist/examples/typescript/milvus/crud.js
++ *   MILVUS_URL="milvus://localhost:19530?collection=an5_example" node dist/examples/typescript/milvus/crud.js
++ */
++import { createAn5Adapter, setAdapterMetadata } from '@an5/adapters';
++import { createMilvusClient } from '@an5/adapters/milvus';
++import { modelToTable, modelFields, relationMap } from '../../../generated/typescript/an5Metadata';
++
++export function configureMilvusMetadata(): void {
++  const tables: Record<string, string> = {};
++  for (const [model, table] of Object.entries(modelToTable)) {
++    tables[model] = String(table).replace(/^\[dbo\]\./, '').replace(/^\[|\]$/g, '');
++  }
++  setAdapterMetadata({ modelToTable: tables, modelFields, relationMap });
++}
++
++export async function runMilvusExample(): Promise<void> {
++  const milvusUri = process.env.MILVUS_URL || 'milvus://localhost:19530?collection=an5_example';
++  console.log('--- [TypeScript / Milvus Vector DB Provider] Starting example ---');
++  configureMilvusMetadata();
++
++  const client = createMilvusClient(milvusUri);
++  try {
++    const health = await client.health();
++    console.log('[TypeScript/Milvus] Connected:', health);
++
++    await client.upsert([
++      { id: 'User:1', vector: [1.0, 0.0, 0.0], metadata: { an5Id: '1', an5Model: 'User', label: 'red' } },
++      { id: 'User:2', vector: [0.0, 1.0, 0.0], metadata: { an5Id: '2', an5Model: 'User', label: 'green' } },
++    ]);
++    const hits = await client.search([0.9, 0.1, 0.0], { k: 2, distanceMetric: 'cosine' });
++    console.log('[TypeScript/Milvus] Top hits:', hits);
++    await client.delete(['User:1', 'User:2']);
++  } catch (err: any) {
++    console.log(
++      `[TypeScript/Milvus] SKIPPED: Milvus is not reachable at "${milvusUri}".\n` +
++      `  Reason: ${err?.message || err}\n` +
++      '  To run live: start Milvus (port 19530) and set MILVUS_URL=milvus://localhost:19530?collection=an5_example'
++    );
++  }
++
++  const _sidecarHint = () =>
++    createAn5Adapter({
++      connectionString: 'sqlite::memory:',
++      vectorStore: milvusUri,
++    });
++  void _sidecarHint;
++  console.log('[TypeScript/Milvus] Sidecar usage: createAn5Adapter({ connectionString: "sqlite::memory:", vectorStore: "' + milvusUri + '" })');
++  console.log('--- [TypeScript / Milvus Vector DB Provider] Completed ---\n');
++}
++
++if (require.main === module) {
++  runMilvusExample().catch((err) => {
++    console.error('[TypeScript/Milvus] Error:', err);
++    process.exit(1);
++  });
++}
+diff --git a/examples/typescript/pinecone/crud.ts b/examples/typescript/pinecone/crud.ts
+new file mode 100644
+index 0000000..f79fd23
+--- /dev/null
++++ b/examples/typescript/pinecone/crud.ts
+@@ -0,0 +1,63 @@
++/**
++ * AN5 TypeScript Example: Pinecone Vector Database Provider
++ *
++ * Provider: Pinecone
++ * Protocol: pinecone://
++ *
++ * Run:
++ *   npx tsc -p tsconfig.json && node dist/examples/typescript/pinecone/crud.js
++ *   PINECONE_URL="pinecone://my-index.svc.region.pinecone.io?apiKey=...&namespace=an5_example" node dist/examples/typescript/pinecone/crud.js
++ */
++import { createAn5Adapter, setAdapterMetadata } from '@an5/adapters';
++import { createPineconeClient } from '@an5/adapters/pinecone';
++import { modelToTable, modelFields, relationMap } from '../../../generated/typescript/an5Metadata';
++
++export function configurePineconeMetadata(): void {
++  const tables: Record<string, string> = {};
++  for (const [model, table] of Object.entries(modelToTable)) {
++    tables[model] = String(table).replace(/^\[dbo\]\./, '').replace(/^\[|\]$/g, '');
++  }
++  setAdapterMetadata({ modelToTable: tables, modelFields, relationMap });
++}
++
++export async function runPineconeExample(): Promise<void> {
++  const pineconeUri = process.env.PINECONE_URL || 'pinecone://localhost:5080?namespace=an5_example';
++  console.log('--- [TypeScript / Pinecone Vector DB Provider] Starting example ---');
++  configurePineconeMetadata();
++
++  const client = createPineconeClient(pineconeUri);
++  try {
++    const health = await client.health();
++    console.log('[TypeScript/Pinecone] Connected:', health);
++
++    await client.upsert([
++      { id: 'User:1', vector: [1.0, 0.0, 0.0], metadata: { an5Id: '1', an5Model: 'User', label: 'red' } },
++      { id: 'User:2', vector: [0.0, 1.0, 0.0], metadata: { an5Id: '2', an5Model: 'User', label: 'green' } },
++    ]);
++    const hits = await client.search([0.9, 0.1, 0.0], { k: 2, distanceMetric: 'cosine' });
++    console.log('[TypeScript/Pinecone] Top hits:', hits);
++    await client.delete(['User:1', 'User:2']);
++  } catch (err: any) {
++    console.log(
++      `[TypeScript/Pinecone] SKIPPED: Pinecone endpoint is not reachable at "${pineconeUri}".\n` +
++      `  Reason: ${err?.message || err}\n` +
++      '  To run live: set PINECONE_URL=pinecone://my-index.svc.region.pinecone.io?apiKey=...'
++    );
++  }
++
++  const _sidecarHint = () =>
++    createAn5Adapter({
++      connectionString: 'sqlite::memory:',
++      vectorStore: pineconeUri,
++    });
++  void _sidecarHint;
++  console.log('[TypeScript/Pinecone] Sidecar usage: createAn5Adapter({ connectionString: "sqlite::memory:", vectorStore: "' + pineconeUri + '" })');
++  console.log('--- [TypeScript / Pinecone Vector DB Provider] Completed ---\n');
++}
++
++if (require.main === module) {
++  runPineconeExample().catch((err) => {
++    console.error('[TypeScript/Pinecone] Error:', err);
++    process.exit(1);
++  });
++}
+diff --git a/examples/typescript/qdrant/crud.ts b/examples/typescript/qdrant/crud.ts
+new file mode 100644
+index 0000000..0a77a1b
+--- /dev/null
++++ b/examples/typescript/qdrant/crud.ts
+@@ -0,0 +1,64 @@
++/**
++ * AN5 TypeScript Example: Qdrant Vector Database Provider
++ *
++ * Provider: Qdrant
++ * Protocol: qdrant://
++ *
++ * Run:
++ *   npx tsc -p tsconfig.json && node dist/examples/typescript/qdrant/crud.js
++ *   QDRANT_URL="qdrant://localhost:6333?collection=an5_example" node dist/examples/typescript/qdrant/crud.js
++ */
++import { createAn5Adapter, setAdapterMetadata } from '@an5/adapters';
++import { createQdrantClient } from '@an5/adapters/qdrant';
++import { modelToTable, modelFields, relationMap } from '../../../generated/typescript/an5Metadata';
++
++export function configureQdrantMetadata(): void {
++  const tables: Record<string, string> = {};
++  for (const [model, table] of Object.entries(modelToTable)) {
++    tables[model] = String(table).replace(/^\[dbo\]\./, '').replace(/^\[|\]$/g, '');
++  }
++  setAdapterMetadata({ modelToTable: tables, modelFields, relationMap });
++}
++
++export async function runQdrantExample(): Promise<void> {
++  const qdrantUri = process.env.QDRANT_URL || 'qdrant://localhost:6333?collection=an5_example';
++  console.log('--- [TypeScript / Qdrant Vector DB Provider] Starting example ---');
++  configureQdrantMetadata();
++
++  const client = createQdrantClient(qdrantUri);
++  try {
++    const health = await client.health();
++    console.log('[TypeScript/Qdrant] Connected:', health);
++
++    await client.upsert([
++      { id: 'User:1', vector: [1.0, 0.0, 0.0], metadata: { an5Id: '1', an5Model: 'User', label: 'red' } },
++      { id: 'User:2', vector: [0.0, 1.0, 0.0], metadata: { an5Id: '2', an5Model: 'User', label: 'green' } },
++    ]);
++    const hits = await client.search([0.9, 0.1, 0.0], { k: 2, distanceMetric: 'cosine' });
++    console.log('[TypeScript/Qdrant] Top hits:', hits);
++    await client.delete(['User:1', 'User:2']);
++  } catch (err: any) {
++    console.log(
++      `[TypeScript/Qdrant] SKIPPED: Qdrant is not reachable at "${qdrantUri}".\n` +
++      `  Reason: ${err?.message || err}\n` +
++      '  To run live: start Qdrant (port 6333) and set QDRANT_URL=qdrant://localhost:6333?collection=an5_example'
++    );
++  }
++
++  // Sidecar mode example:
++  const _sidecarHint = () =>
++    createAn5Adapter({
++      connectionString: 'sqlite::memory:',
++      vectorStore: qdrantUri,
++    });
++  void _sidecarHint;
++  console.log('[TypeScript/Qdrant] Sidecar usage: createAn5Adapter({ connectionString: "sqlite::memory:", vectorStore: "' + qdrantUri + '" })');
++  console.log('--- [TypeScript / Qdrant Vector DB Provider] Completed ---\n');
++}
++
++if (require.main === module) {
++  runQdrantExample().catch((err) => {
++    console.error('[TypeScript/Qdrant] Error:', err);
++    process.exit(1);
++  });
++}
+diff --git a/examples/typescript/weaviate/crud.ts b/examples/typescript/weaviate/crud.ts
+new file mode 100644
+index 0000000..bece863
+--- /dev/null
++++ b/examples/typescript/weaviate/crud.ts
+@@ -0,0 +1,63 @@
++/**
++ * AN5 TypeScript Example: Weaviate Vector Database Provider
++ *
++ * Provider: Weaviate
++ * Protocol: weaviate://
++ *
++ * Run:
++ *   npx tsc -p tsconfig.json && node dist/examples/typescript/weaviate/crud.js
++ *   WEAVIATE_URL="weaviate://localhost:8080?className=An5Example" node dist/examples/typescript/weaviate/crud.js
++ */
++import { createAn5Adapter, setAdapterMetadata } from '@an5/adapters';
++import { createWeaviateClient } from '@an5/adapters/weaviate';
++import { modelToTable, modelFields, relationMap } from '../../../generated/typescript/an5Metadata';
++
++export function configureWeaviateMetadata(): void {
++  const tables: Record<string, string> = {};
++  for (const [model, table] of Object.entries(modelToTable)) {
++    tables[model] = String(table).replace(/^\[dbo\]\./, '').replace(/^\[|\]$/g, '');
++  }
++  setAdapterMetadata({ modelToTable: tables, modelFields, relationMap });
++}
++
++export async function runWeaviateExample(): Promise<void> {
++  const weaviateUri = process.env.WEAVIATE_URL || 'weaviate://localhost:8080?className=An5Example';
++  console.log('--- [TypeScript / Weaviate Vector DB Provider] Starting example ---');
++  configureWeaviateMetadata();
++
++  const client = createWeaviateClient(weaviateUri);
++  try {
++    const health = await client.health();
++    console.log('[TypeScript/Weaviate] Connected:', health);
++
++    await client.upsert([
++      { id: 'User:1', vector: [1.0, 0.0, 0.0], metadata: { an5Id: '1', an5Model: 'User', label: 'red' } },
++      { id: 'User:2', vector: [0.0, 1.0, 0.0], metadata: { an5Id: '2', an5Model: 'User', label: 'green' } },
++    ]);
++    const hits = await client.search([0.9, 0.1, 0.0], { k: 2, distanceMetric: 'cosine' });
++    console.log('[TypeScript/Weaviate] Top hits:', hits);
++    await client.delete(['User:1', 'User:2']);
++  } catch (err: any) {
++    console.log(
++      `[TypeScript/Weaviate] SKIPPED: Weaviate is not reachable at "${weaviateUri}".\n` +
++      `  Reason: ${err?.message || err}\n` +
++      '  To run live: start Weaviate (port 8080) and set WEAVIATE_URL=weaviate://localhost:8080?className=An5Example'
++    );
++  }
++
++  const _sidecarHint = () =>
++    createAn5Adapter({
++      connectionString: 'sqlite::memory:',
++      vectorStore: weaviateUri,
++    });
++  void _sidecarHint;
++  console.log('[TypeScript/Weaviate] Sidecar usage: createAn5Adapter({ connectionString: "sqlite::memory:", vectorStore: "' + weaviateUri + '" })');
++  console.log('--- [TypeScript / Weaviate Vector DB Provider] Completed ---\n');
++}
++
++if (require.main === module) {
++  runWeaviateExample().catch((err) => {
++    console.error('[TypeScript/Weaviate] Error:', err);
++    process.exit(1);
++  });
++}
+diff --git a/package.json b/package.json
+index f194c25..99cf5a5 100644
+--- a/package.json
++++ b/package.json
+@@ -33,7 +33,12 @@
+     "example:ts:mssql": "node dist/examples/typescript/mssql/crud.js",
+     "example:ts:googlesheets": "node dist/examples/typescript/googlesheets/crud.js",
+     "example:ts:nbase": "node dist/examples/typescript/nbase/crud.js",
+-    "example:ts:providers": "node dist/examples/typescript/sqlite/crud.js && node dist/examples/typescript/postgres/crud.js && node dist/examples/typescript/mysql/crud.js && node dist/examples/typescript/mssql/crud.js && node dist/examples/typescript/googlesheets/crud.js && node dist/examples/typescript/nbase/crud.js",
++    "example:ts:qdrant": "node dist/examples/typescript/qdrant/crud.js",
++    "example:ts:chroma": "node dist/examples/typescript/chroma/crud.js",
++    "example:ts:pinecone": "node dist/examples/typescript/pinecone/crud.js",
++    "example:ts:weaviate": "node dist/examples/typescript/weaviate/crud.js",
++    "example:ts:milvus": "node dist/examples/typescript/milvus/crud.js",
++    "example:ts:providers": "node dist/examples/typescript/sqlite/crud.js && node dist/examples/typescript/postgres/crud.js && node dist/examples/typescript/mysql/crud.js && node dist/examples/typescript/mssql/crud.js && node dist/examples/typescript/googlesheets/crud.js && node dist/examples/typescript/nbase/crud.js && node dist/examples/typescript/qdrant/crud.js && node dist/examples/typescript/chroma/crud.js && node dist/examples/typescript/pinecone/crud.js && node dist/examples/typescript/weaviate/crud.js && node dist/examples/typescript/milvus/crud.js",
+     "example:py:sqlite": "python3 examples/python/sqlite/crud.py",
+     "example:py:postgres": "python3 examples/python/postgres/crud.py",
+     "example:py:mssql": "python3 examples/python/mssql/crud.py",
+-- 
+2.39.5
+

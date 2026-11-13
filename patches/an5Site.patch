@@ -1,0 +1,86 @@
+From 7dfc105d1316bd02486d241d440badafbfdceea5 Mon Sep 17 00:00:00 2001
+From: so95 <22739578+isthaison@users.noreply.github.com>
+Date: Fri, 13 Nov 2026 04:34:04 +0000
+Subject: [PATCH] feat(site): add Qdrant, Chroma, Pinecone, Weaviate, and
+ Milvus vector DB cards
+
+---
+ index.html | 35 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 30 insertions(+), 5 deletions(-)
+
+diff --git a/index.html b/index.html
+index 03df58f..9bd2ba9 100644
+--- a/index.html
++++ b/index.html
+@@ -4,9 +4,9 @@
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>AN5 ORM | Type-Safe ORM for TypeScript, Python, .NET, Go &amp; Rust</title>
+-  <meta name="description" content="AN5 ORM is a lightweight, type-safe ORM supporting TypeScript, Python, .NET, Golang and Rust for SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets and NBase.">
++  <meta name="description" content="AN5 ORM is a lightweight, type-safe ORM supporting TypeScript, Python, .NET, Golang, Rust, Java, Kotlin, and Swift for SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, NBase, Qdrant, Chroma, Pinecone, Weaviate, and Milvus.">
+   <meta property="og:title" content="AN5 ORM - Lightweight, Type-Safe ORM for Every Platform">
+-  <meta property="og:description" content="Type-safe database access for TypeScript, Python, .NET, Golang &amp; Rust. Works with SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets and NBase.">
++  <meta property="og:description" content="Type-safe database access for TypeScript, Python, .NET, Golang &amp; Rust. Works with SQL Server, PostgreSQL, MySQL, SQLite, Google Sheets, and vector databases (NBase, Qdrant, Chroma, Pinecone, Weaviate, Milvus).">
+   <meta property="og:url" content="https://an5orm.github.io/">
+   <link rel="canonical" href="https://an5orm.github.io/">
+   <meta property="og:type" content="website">
+@@ -14,13 +14,13 @@
+   <meta property="og:locale" content="en_US">
+   <meta name="twitter:card" content="summary">
+   <meta name="twitter:title" content="AN5 ORM | Type-Safe Database Access">
+-  <meta name="twitter:description" content="Explore AN5 ORM for TypeScript, Python, .NET, Go, Rust, Java, Kotlin, and Swift, with documentation for SQL databases, Google Sheets and NBase.">
++  <meta name="twitter:description" content="Explore AN5 ORM for TypeScript, Python, .NET, Go, Rust, Java, Kotlin, and Swift, with documentation for SQL databases, Google Sheets, and vector databases.">
+   <script type="application/ld+json">
+   {
+     "@context": "https://schema.org",
+     "@graph": [
+       {"@type": "WebSite", "@id": "https://an5orm.github.io/#website", "name": "AN5 ORM", "url": "https://an5orm.github.io/", "inLanguage": "en"},
+-      {"@type": "SoftwareSourceCode", "@id": "https://an5orm.github.io/#software", "name": "AN5 ORM", "url": "https://an5orm.github.io/", "codeRepository": "https://github.com/an5ORM/an5", "programmingLanguage": ["TypeScript", "Python", "C#", "Go", "Rust"], "description": "A lightweight, type-safe ORM for SQL databases, Google Sheets and NBase."}
++      {"@type": "SoftwareSourceCode", "@id": "https://an5orm.github.io/#software", "name": "AN5 ORM", "url": "https://an5orm.github.io/", "codeRepository": "https://github.com/an5ORM/an5", "programmingLanguage": ["TypeScript", "Python", "C#", "Go", "Rust", "Java", "Kotlin", "Swift"], "description": "A lightweight, type-safe ORM for SQL databases, Google Sheets, and vector databases (NBase, Qdrant, Chroma, Pinecone, Weaviate, Milvus)."}
+     ]
+   }
+   </script>
+@@ -73,7 +73,7 @@
+       </h1>
+       <p class="hero-subtitle">
+         Type-safe database access for <strong>TypeScript</strong>, <strong>Python</strong>, <strong>.NET</strong>, <strong>Golang</strong> &amp; <strong>Rust</strong>.<br>
+-        SQL Server · PostgreSQL · MySQL · SQLite · Google Sheets · NBase
++        SQL Server · PostgreSQL · MySQL · SQLite · Google Sheets · NBase · Qdrant · Chroma · Pinecone · Weaviate · Milvus
+       </p>
+       <div class="hero-actions">
+         <a href="#quickstart" class="btn btn-primary">
+@@ -498,6 +498,31 @@ sqlx<span class="c-punct">::</span>any<span class="c-punct">::</span><span class
+           <div class="db-name">NBase</div>
+           <div class="db-status status-beta">Vector Ready</div>
+         </div>
++        <div class="db-card">
++          <div class="db-logo">🔷</div>
++          <div class="db-name">Qdrant</div>
++          <div class="db-status status-beta">Vector Ready</div>
++        </div>
++        <div class="db-card">
++          <div class="db-logo">🎨</div>
++          <div class="db-name">Chroma</div>
++          <div class="db-status status-beta">Vector Ready</div>
++        </div>
++        <div class="db-card">
++          <div class="db-logo">🌲</div>
++          <div class="db-name">Pinecone</div>
++          <div class="db-status status-beta">Vector Ready</div>
++        </div>
++        <div class="db-card">
++          <div class="db-logo">🕸️</div>
++          <div class="db-name">Weaviate</div>
++          <div class="db-status status-beta">Vector Ready</div>
++        </div>
++        <div class="db-card">
++          <div class="db-logo">⚡</div>
++          <div class="db-name">Milvus</div>
++          <div class="db-status status-beta">Vector Ready</div>
++        </div>
+       </div>
+     </div>
+   </section>
+-- 
+2.39.5
+
