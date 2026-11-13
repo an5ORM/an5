@@ -18,13 +18,13 @@
 
 | Feature                    | Description                                                                                                |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| **Multi-Database Runtime** | Native support for MSSQL, PostgreSQL, MySQL, SQLite, Google Sheets, and NBase via `@an5/adapters`, in TypeScript, Python, .NET, Go, Rust, Java, Kotlin, and Swift |
+| **Multi-Database Runtime** | Native support for MSSQL, PostgreSQL, MySQL, SQLite, Google Sheets, and vector databases (NBase, Qdrant, Chroma, Pinecone, Weaviate, Milvus) via `@an5/adapters`, in TypeScript, Python, .NET, Go, Rust, Java, Kotlin, and Swift |
 | **Type-Safe Queries**      | Full TypeScript, Python, .NET, Golang, Rust, Java, Kotlin, and Swift support with autocompletion and type checking               |
 | **Model & Table Access**   | `db.user` or `adapter.table('User')` for fluent CRUD, aggregates, groupBy, and vector search |
 | **Schema-First**           | Define models in `.an5` files, generate multi-language clients                               |
 | **Automated Migrations**   | Diff schema against database, generate up/down SQL, apply and rollback migrations            |
 | **AI Agent**               | 7 intelligent tools for natural language database queries                                    |
-| **Vector Search**          | Semantic search through NBase, pgvector, SQL Server 2025, SQLite, or in-memory                  |
+| **Vector Search**          | Semantic search through NBase, Qdrant, Chroma, Pinecone, Weaviate, Milvus, pgvector, SQL Server 2025, SQLite, or in-memory |
 | **Relations**              | One-to-one and one-to-many with nested queries                                               |
 | **Transactions**           | Atomic operations with rollback support                                                      |
 | **VS Code Extension**      | Syntax highlighting, formatting, and an MCP server for agentic clients                       |
@@ -212,7 +212,7 @@ func main() {
 
 | Package                                           | Description                     | Key Features                                                                                       |
 | ------------------------------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------- |
-| **[an5Adapters](an5Adapters/)** (`@an5/adapters`) | Runtime Query Engine & Adapters | MSSQL, PostgreSQL, MySQL, SQLite, Google Sheets, NBase, Dynamic Table Client, Query Builder, Transactions |
+| **[an5Adapters](an5Adapters/)** (`@an5/adapters`) | Runtime Query Engine & Adapters | MSSQL, PostgreSQL, MySQL, SQLite, Google Sheets, Vector DBs (NBase, Qdrant, Chroma, Pinecone, Weaviate, Milvus), Dynamic Table Client, Query Builder, Transactions |
 | **[an5Orm](an5Orm/)** (`@an5/orm`)                | Schema, Generator & Migrations  | Multi-language code generator, `db:push`, `db:pull`, `db:migrate`, `db:seed`, `db:cleanup`         |
 | **[an5Client](an5Client/)**                       | Generated client code           | Type-safe models for TypeScript, Python, .NET (C#), Golang, Rust, Java, Kotlin, and Swift                                     |
 | **[an5Agent](an5Agent/)** (`@an5/agent`)          | AI Database Agent               | 7 tools: schema, query, database, generateClientCode, analyzeSchema, retrieve, task                |
