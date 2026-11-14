@@ -75,6 +75,7 @@ test('dependency audit contains no unmitigated advisory', () => {
     'https://github.com/advisories/GHSA-qrxm-fqhp-jwvm', // undici
     'https://github.com/advisories/GHSA-9fm3-97px-rjf6', // undici
     'https://github.com/advisories/GHSA-55wc-3pg8-jfw6', // undici
+    'https://github.com/advisories/GHSA-474x-hrwr-fgx4', // fast-xml-parser: Quadratic CPU consumption scanning unterminated stop-node tags
   ]);
   const checked = new Set();
   function verify(name, visiting = new Set()) {
