@@ -206,6 +206,31 @@ func main() {
 }
 ```
 
+**Vector Search (Sidecar Mode or Standalone)**
+
+```typescript
+import { createAn5Adapter } from "@an5/adapters";
+
+// Sidecar mode: Pair a relational database with any of 6 external vector stores
+// (NBase, Qdrant, Chroma, Pinecone, Weaviate, Milvus)
+const db = createAn5Adapter({
+  connectionString: "sqlite:///app.db", // or postgres://, sqlserver://
+  vectorStore: "qdrant://localhost:6333?collection=articles&apiKey=secret",
+});
+
+// 1. Synchronize vectors into the vector database tagged with an5Id
+await db.article.indexVectors({ vectorField: "embedding" });
+
+// 2. Perform semantic vector search (hydrates full typed rows from the SQL table)
+const results = await db.article.vectorSearch({
+  vector: queryEmbedding,
+  vectorField: "embedding",
+  take: 5,
+  distanceMetric: "cosine", // 'cosine' | 'euclidean' | 'dot'
+});
+console.log(results); // [{ id: "...", title: "...", embedding: [...], distance: 0.12 }]
+```
+
 ---
 
 ## Packages
