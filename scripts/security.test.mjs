@@ -3,6 +3,7 @@ import { createRequire } from 'node:module';
 import { execFileSync, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import { test } from 'node:test';
+import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const root = new URL('../', import.meta.url);
@@ -15,7 +16,7 @@ test('all braces copies reject excessive nesting before recursive walkers', () =
     // A child process ensures an actual process crash or hang fails the test.
     execFileSync(process.execPath, ['-e', `
       const assert = require('node:assert/strict');
-      const braces = require(${JSON.stringify(new URL(location + '/index.js', root).pathname)});
+      const braces = require(${JSON.stringify(fileURLToPath(new URL(location + '/index.js', root)))});
       assert.deepEqual(braces.expand('a/{b,c}/{1..2}'), ['a/b/1','a/b/2','a/c/1','a/c/2']);
       const deep = '{'.repeat(10000) + 'a,b' + '}'.repeat(10000);
       for (const method of ['parse','compile','expand','stringify']) {
@@ -37,7 +38,7 @@ test('all sprintf-js copies bound the precision before converting it', () => {
     // conversions the format string really uses are untouched.
     execFileSync(process.execPath, ['-e', `
       const assert = require('node:assert/strict');
-      const sprintf = require(${JSON.stringify(new URL(location + '/src/sprintf.js', root).pathname)}).sprintf;
+      const sprintf = require(${JSON.stringify(fileURLToPath(new URL(location + '/src/sprintf.js', root)))}).sprintf;
       assert.equal(sprintf('%f', 1.5), '1.5');
       assert.equal(sprintf('%.2f', 1.5), '1.50');
       assert.equal(sprintf('%.3s', 'abcdef'), 'abc');
@@ -50,7 +51,16 @@ test('all sprintf-js copies bound the precision before converting it', () => {
 });
 
 test('dependency audit contains no unmitigated advisory', () => {
-  const result = spawnSync(process.platform === 'win32' ? 'npm.cmd' : 'npm', ['audit', '--json'], { cwd: root, encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
+  const npmExecPath = process.env.npm_execpath;
+  const command = npmExecPath
+    ? [process.execPath, [npmExecPath, 'audit', '--json']]
+    : [process.platform === 'win32' ? 'npm.cmd' : 'npm', ['audit', '--json']];
+  const result = spawnSync(command[0], command[1], {
+    cwd: fileURLToPath(root),
+    encoding: 'utf8',
+    maxBuffer: 10 * 1024 * 1024,
+    ...(!npmExecPath && process.platform === 'win32' ? { shell: true } : {}),
+  });
   if (result.error) throw result.error;
   const audit = JSON.parse(result.stdout);
   assert.ok(audit.metadata && !audit.error, `npm audit failed: ${JSON.stringify(audit.error)}`);

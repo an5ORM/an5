@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0] - 2026-11-28
+
+### Added
+- **PostgreSQL migrations** (`@an5/orm` 1.5.0) — `db:migrate` now introspects PostgreSQL tables, columns, views and indexes, generates PostgreSQL-specific DDL and rollback SQL, records migration checksums, and serializes concurrent migrations with transaction-scoped advisory locks.
+
+### Fixed
+- Make the dependency security test Windows-safe by resolving installed package paths with `fileURLToPath` and invoking npm audit through the active Node/npm CLI.
+
 ## [1.5.0] - 2026-11-28
 
 ### Added
