@@ -29,7 +29,7 @@ jobs:
   # ── Full workspace gate ─────────────────────────────────────────────────────
   full-workspace-gate:
     name: 🧪 Full workspace gate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -63,7 +63,7 @@ jobs:
   # full cross-language gate.
   english-only:
     name: 🌐 English-only guard
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -78,7 +78,7 @@ jobs:
   # ── Live database integration ───────────────────────────────────────────────
   live-db-integration:
     name: 🧪 Live DB integration
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     services:
       postgres:
         image: postgres:16
@@ -148,7 +148,7 @@ jobs:
   # ── an5Orm ──────────────────────────────────────────────────────────────────
   test-orm:
     name: 🧪 an5Orm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -164,7 +164,7 @@ jobs:
   # ── an5Adapters ─────────────────────────────────────────────────────────────
   test-adapters:
     name: 🧪 an5Adapters
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -197,7 +197,7 @@ jobs:
           echo "$RUNNER_TEMP/kotlinc/bin" >> "$GITHUB_PATH"
       - name: Install Swift
         run: |
-          curl -fsSL -o "$RUNNER_TEMP/swift.tar.gz" "https://download.swift.org/swift-$SWIFT_VERSION-release/ubuntu2204/swift-$SWIFT_VERSION-RELEASE/swift-$SWIFT_VERSION-RELEASE-ubuntu22.04.tar.gz"
+          curl -fsSL -o "$RUNNER_TEMP/swift.tar.gz" "https://download.swift.org/swift-$SWIFT_VERSION-release/ubuntu2404/swift-$SWIFT_VERSION-RELEASE/swift-$SWIFT_VERSION-RELEASE-ubuntu24.04.tar.gz"
           mkdir -p "$RUNNER_TEMP/swift"
           tar xzf "$RUNNER_TEMP/swift.tar.gz" -C "$RUNNER_TEMP/swift" --strip-components=1
           echo "SWIFT_HOME=$RUNNER_TEMP/swift" >> "$GITHUB_ENV"
@@ -237,7 +237,7 @@ jobs:
   # ── an5Agent ────────────────────────────────────────────────────────────────
   test-agent:
     name: 🧪 an5Agent
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -253,7 +253,7 @@ jobs:
   # ── an5Cli ──────────────────────────────────────────────────────────────────
   test-cli:
     name: 🧪 an5Cli
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -269,7 +269,7 @@ jobs:
   # ── an5OrmVScode ────────────────────────────────────────────────────────────
   test-vscode:
     name: 🧪 an5OrmVScode
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -285,7 +285,7 @@ jobs:
   # ── an5Client ───────────────────────────────────────────────────────────────
   test-client:
     name: 🧪 an5Client
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -318,7 +318,7 @@ jobs:
           echo "$RUNNER_TEMP/kotlinc/bin" >> "$GITHUB_PATH"
       - name: Install Swift
         run: |
-          curl -fsSL -o "$RUNNER_TEMP/swift.tar.gz" "https://download.swift.org/swift-$SWIFT_VERSION-release/ubuntu2204/swift-$SWIFT_VERSION-RELEASE/swift-$SWIFT_VERSION-RELEASE-ubuntu22.04.tar.gz"
+          curl -fsSL -o "$RUNNER_TEMP/swift.tar.gz" "https://download.swift.org/swift-$SWIFT_VERSION-release/ubuntu2404/swift-$SWIFT_VERSION-RELEASE/swift-$SWIFT_VERSION-RELEASE-ubuntu24.04.tar.gz"
           mkdir -p "$RUNNER_TEMP/swift"
           tar xzf "$RUNNER_TEMP/swift.tar.gz" -C "$RUNNER_TEMP/swift" --strip-components=1
           echo "SWIFT_HOME=$RUNNER_TEMP/swift" >> "$GITHUB_ENV"
@@ -337,7 +337,7 @@ jobs:
   # ── an5example ───────────────────────────────────────────────────────────────
   test-example:
     name: 🧪 an5example
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -370,7 +370,7 @@ jobs:
           echo "$RUNNER_TEMP/kotlinc/bin" >> "$GITHUB_PATH"
       - name: Install Swift
         run: |
-          curl -fsSL -o "$RUNNER_TEMP/swift.tar.gz" "https://download.swift.org/swift-$SWIFT_VERSION-release/ubuntu2204/swift-$SWIFT_VERSION-RELEASE/swift-$SWIFT_VERSION-RELEASE-ubuntu22.04.tar.gz"
+          curl -fsSL -o "$RUNNER_TEMP/swift.tar.gz" "https://download.swift.org/swift-$SWIFT_VERSION-release/ubuntu2404/swift-$SWIFT_VERSION-RELEASE/swift-$SWIFT_VERSION-RELEASE-ubuntu24.04.tar.gz"
           mkdir -p "$RUNNER_TEMP/swift"
           tar xzf "$RUNNER_TEMP/swift.tar.gz" -C "$RUNNER_TEMP/swift" --strip-components=1
           echo "SWIFT_HOME=$RUNNER_TEMP/swift" >> "$GITHUB_ENV"
@@ -386,7 +386,7 @@ jobs:
   # ── an5Tasks ────────────────────────────────────────────────────────────────
   test-tasks:
     name: 🧪 an5Tasks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -402,7 +402,7 @@ jobs:
   # ── Summary ─────────────────────────────────────────────────────────────────
   ci-summary:
     name: ✅ CI Summary
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - full-workspace-gate
       - english-only

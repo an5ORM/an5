@@ -26,7 +26,7 @@ permissions:
 jobs:
   build-and-test:
     name: Build & Test All Packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,7 +54,7 @@ jobs:
   publish-npm:
     name: Publish npm packages
     needs: build-and-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: (github.event_name == 'workflow_dispatch' && github.event.inputs.publish-npm == 'true') || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
     steps:
       - uses: actions/checkout@v4
@@ -159,7 +159,7 @@ jobs:
   publish-pypi:
     name: Publish PyPI packages
     needs: build-and-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: (github.event_name == 'workflow_dispatch' && github.event.inputs.publish-pypi == 'true') || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
     steps:
       - uses: actions/checkout@v4
@@ -210,7 +210,7 @@ jobs:
   publish-maven:
     name: Publish Java and Kotlin adapters to Maven Central
     needs: build-and-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: (github.event_name == 'workflow_dispatch' && github.event.inputs.publish-maven == 'true') || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
     steps:
       - uses: actions/checkout@v4
@@ -393,7 +393,7 @@ jobs:
     name: Publish workspace release manifest
     needs: [build-and-test, publish-npm, publish-pypi]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
