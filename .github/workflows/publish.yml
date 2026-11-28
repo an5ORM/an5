@@ -45,7 +45,7 @@ jobs:
         with:
           go-version: '1.24.x'
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build all workspaces
         run: npm run build
       - name: Run full cross-language gate
@@ -69,7 +69,7 @@ jobs:
 
       - name: Install dependencies & build
         run: |
-          npm install
+          npm ci
           npm run build
 
       - name: Publish @an5/adapters to npm
