@@ -1,11 +1,19 @@
 # Changelog
 
-## [Unreleased]
+## [1.5.0] - 2026-11-28
+
+### Added
+- **Query parity across every generated client and adapter** (`@an5/orm` 1.4.0, `@an5/adapters` 0.3.0, `an5-client` 0.2.0): typed relation filters (`some`/`none`/`every`, `is`/`isNot`), case-insensitive `mode`, `groupBy` HAVING filters, per-field and filtered `_count`, eager `include` pagination, and Rust aggregate/upsert/batch parity.
+- **Agent code generation for Java, Kotlin and Swift** (`@an5/agent` 0.3.1).
+- **Scoped release notes and versioned changelogs in the CLI** (`an5-cli` 0.2.1), including `--since`, source-aware commit messages, and independent release notes.
 
 ### Changed
-- Update `.github/workflows/publish.yml`.
-- Update `an5Orm`.
-- Update `an5Adapters` vector search documentation examples to use standard ORM model delegates (`db.article.*`, `db.document.*`).
+- Strict filter validation now rejects unknown fields, operators, relation keys and invalid `mode` values in every runtime. Python accepts snake_case keys and filter dataclasses, Go adds `BoolFilter.Not`, and Swift compares `NSNull`.
+- Java and Kotlin generated filter builders expose `.insensitive()`, Swift exposes `StringFilter.insensitive()`, and the Kotlin and Swift clients expose `relationCounts()`.
+
+### Fixed
+- Nested `not` filters inherit the outer case-insensitive mode; `include` pagination and `select` composition no longer drop or duplicate rows; Rust `upsert` returns the updated row.
+- The Gradle build check rebuilds when cached outputs are stale.
 
 ## [1.4.2] - 2026-10-21
 
